@@ -175,6 +175,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
+	case WM_SIZE:
+		if (game)
+		{
+			game->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+		}
+
+		break;
+
 	case WM_ENTERSIZEMOVE:
 		inSizemove = true;
 		break;

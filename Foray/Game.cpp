@@ -38,13 +38,13 @@ void Game::Initialize(HWND window, int width, int height)
 
 void Game::CreateLabels()
 {
-	menuScreen_gameTitleLabel = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 10.0f, 10.0f }; }, Layer::Menu, 0 }, 100.0f);
+	menuScreen_gameTitleLabel = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 20.0f, 10.0f }; }, Layer::Menu, 0 }, 100.0f);
 }
 
 void Game::CreateMenuItems()
 {
-	menuScreen_startMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 24.0f, 60.0f }; }, Layer::Menu, 0 }, 100.0f, "Start");
-	menuScreen_optionsMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 24.0f, 80.0f }; }, Layer::Menu, 0 }, 100.0f, "Options");
+	menuScreen_startMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 100.0f }; }, Layer::Menu, 0 }, 100.0f, "Start", true);
+	menuScreen_optionsMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 120.0f }; }, Layer::Menu, 0 }, 100.0f, "Options");
 }
 
 void Game::CreateMenuItemGroups()
@@ -77,22 +77,29 @@ void Game::InitializeTextFormats()
 {
 	auto writeFactory = deviceResources->GetWriteFactory();
 
-	// FPS / MousePos
-	writeFactory->CreateTextFormat(ARIAL_FONT_FAMILY, nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12.0f, LOCALE, defaultTextFormat.ReleaseAndGetAddressOf());
+	writeFactory->CreateTextFormat(TREBUCHET_FONT_FAMILY, nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 40.0f, LOCALE, gameTitleTextFormat.ReleaseAndGetAddressOf());
+	gameTitleTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	gameTitleTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	writeFactory->CreateTextFormat(ARIAL_FONT_FAMILY, nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 14.0f, LOCALE, defaultTextFormat.ReleaseAndGetAddressOf());
 	defaultTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	defaultTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+	writeFactory->CreateTextFormat(ARIAL_FONT_FAMILY, nullptr, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15.0f, LOCALE, bulletTextFormat.ReleaseAndGetAddressOf());
+	bulletTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	bulletTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 }
 
 void Game::InitializeLabels()
 {
-	menuScreen_gameTitleLabel->Initialize(whiteBrush.Get(), defaultTextFormat.Get());
+	menuScreen_gameTitleLabel->Initialize(whiteBrush.Get(), gameTitleTextFormat.Get());
 	menuScreen_gameTitleLabel->SetText("Foray");
 }
 
 void Game::InitializeMenuItems()
 {
-	menuScreen_startMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get());
-	menuScreen_optionsMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get());
+	menuScreen_startMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get(), bulletTextFormat.Get());
+	menuScreen_optionsMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get(), bulletTextFormat.Get());
 }
 
 void Game::InitializeMenuItemGroups()
@@ -179,12 +186,19 @@ void Game::SetActiveLayer(const Layer layer)
 
 void Game::OnWindowSizeChanged(int width, int height)
 {
-	// TODO
+	if (!deviceResources->WindowSizeChanged(width, height))
+		return;
+
+	g_clientWidth = static_cast<float>(width);
+	g_clientHeight = static_cast<float>(height);
+
+	CreateWindowSizeDependentResources();
 }
 
 void Game::OnWindowMoved()
 {
-	// TODO
+	const auto r = deviceResources->GetOutputSize();
+	deviceResources->WindowSizeChanged(r.right, r.bottom);
 }
 
 void Game::OnDeviceLost()
@@ -197,5 +211,9 @@ void Game::OnDeviceLost()
 
 void Game::OnDeviceRestored()
 {
-	// TODO
+	CreateDeviceDependentResources();
+
+	CreateWindowSizeDependentResources();
+
+	SetActiveLayer(activeLayer);
 }

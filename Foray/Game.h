@@ -40,7 +40,9 @@ private:
 	ComPtr<ID2D1SolidColorBrush> whiteBrush;
 
 	// TextFormats
+	ComPtr<IDWriteTextFormat> gameTitleTextFormat;
 	ComPtr<IDWriteTextFormat> defaultTextFormat;
+	ComPtr<IDWriteTextFormat> bulletTextFormat;
 
 	// Labels
 	std::unique_ptr<UILabel> menuScreen_gameTitleLabel;
