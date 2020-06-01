@@ -4,5 +4,7 @@ enum class EventType
 {
 	LeftMouseDown,
 	MouseMove,
-	SystemKeyDown
+	SystemKeyDown,
+	WindowResize,
+	ChangeActiveLayer
 };
