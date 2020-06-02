@@ -6,5 +6,6 @@ enum class EventType
 	MouseMove,
 	SystemKeyDown,
 	WindowResize,
-	ChangeActiveLayer
+	ChangeActiveLayer,
+	GamepadInput
 };

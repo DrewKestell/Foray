@@ -1,14 +1,18 @@
 #pragma once
 
-#include "UIComponent.h"
+#include "UIMenuItem.h"
+#include "../Events/EventHandler.h"
 #include "../Events/Observer.h"
-#include "../Events/Event.h"
 
-class UIMenuItemGroup : public UIComponent
+class UIMenuItemGroup : public Observer
 {
+	const Layer uiLayer{ Layer::MainMenu };
+	EventHandler& eventHandler;
+	bool active{ false };
+	std::vector<UIMenuItem*> inputs;
 public:
-	UIMenuItemGroup(UIComponentArgs uiComponentArgs);
-	void Initialize();
-	void Draw() override;
+	UIMenuItemGroup(const Layer uiLayer, EventHandler& eventHandler);
 	const void HandleEvent(const Event* const event) override;
+	void AddInput(UIMenuItem* input) { inputs.push_back(input); }
+	~UIMenuItemGroup();
 };

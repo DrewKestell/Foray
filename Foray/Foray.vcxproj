@@ -92,6 +92,7 @@
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventHandler.h" />
     <ClInclude Include="Events\EventType.h" />
+    <ClInclude Include="Events\GamepadInputEvent.h" />
     <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Events\Observer.h" />
     <ClInclude Include="Events\SystemKeyDownEvent.h" />

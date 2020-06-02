@@ -7,7 +7,7 @@ UILabel::UILabel(
 	UIComponentArgs uiComponentArgs,
 	const float width)
 	: UIComponent(uiComponentArgs),
-	width{ width }
+	  width{ width }
 {
 }
 
@@ -27,7 +27,7 @@ void UILabel::Draw()
 	deviceResources->GetD2DDeviceContext()->DrawTextLayout(D2D1::Point2F(position.x, position.y), textLayout.Get(), textBrush);
 }
 
-void UILabel::SetText(const char* text)
+void UILabel::SetText(const wchar_t* text)
 {
 	this->text = text;
 
@@ -37,7 +37,7 @@ void UILabel::SetText(const char* text)
 void UILabel::CreateTextLayout()
 {
 	const auto hr = deviceResources->GetWriteFactory()->CreateTextLayout(
-		Utility::s2ws(this->text).c_str(),
+		this->text.c_str(),
 		static_cast<unsigned int>(this->text.size()),
 		textFormat,
 		width,

@@ -10,13 +10,13 @@ class UILabel : public UIComponent
 	ID2D1SolidColorBrush* textBrush{ nullptr };
 	IDWriteTextFormat* textFormat{ nullptr };
 	ComPtr<IDWriteTextLayout> textLayout;
-	std::string text;
+	std::wstring text;
 
 public:
 	UILabel(UIComponentArgs uiComponentArgs, const float width);
 	void Initialize(ID2D1SolidColorBrush* textBrush, IDWriteTextFormat* textFormat);
 	void Draw() override;
 	const void HandleEvent(const Event* const event) override;
-	void SetText(const char* arr);
+	void SetText(const wchar_t* arr);
 	void CreateTextLayout();
 };

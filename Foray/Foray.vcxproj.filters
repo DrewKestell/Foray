@@ -39,6 +39,7 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="UI\UIMenuItem.h" />
     <ClInclude Include="UI\UIMenuItemGroup.h" />
+    <ClInclude Include="Events\GamepadInputEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Foray.ico" />

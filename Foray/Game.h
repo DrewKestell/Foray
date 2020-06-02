@@ -17,7 +17,7 @@ private:
 	EventHandler& eventHandler;
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
-	Layer activeLayer{ Layer::Menu };
+	Layer activeLayer{ Layer::MainMenu };
 
 	void PublishEvents();
 	void Render();
@@ -26,7 +26,6 @@ private:
 
 	void CreateLabels();
 	void CreateMenuItems();
-	void CreateMenuItemGroups();
 
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
@@ -34,7 +33,6 @@ private:
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
-	void InitializeMenuItemGroups();
 
 	// Brushes
 	ComPtr<ID2D1SolidColorBrush> whiteBrush;
@@ -46,13 +44,16 @@ private:
 
 	// Labels
 	std::unique_ptr<UILabel> menuScreen_gameTitleLabel;
+	std::unique_ptr<UILabel> menuScreen_mainOptionsLabel;
 
 	// MenuItems
 	std::unique_ptr<UIMenuItem> menuScreen_startMenuItem;
 	std::unique_ptr<UIMenuItem> menuScreen_optionsMenuItem;
+	std::unique_ptr<UIMenuItem> menuScreen_mainOptionsBackItem;
 
 	// MenuItemGroups
 	std::unique_ptr<UIMenuItemGroup> menuScreen_menuItemGroup;
+	std::unique_ptr<UIMenuItemGroup> menuScreen_mainOptionsGroup;
 
 public:
 	Game(EventHandler& eventHandler);

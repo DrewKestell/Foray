@@ -10,6 +10,7 @@
 #include "Events/MouseEvent.h"
 #include "Events/EventHandler.h"
 #include "Events/SystemKeyDownEvent.h"
+#include "Events/GamepadInputEvent.h"
 
 // Global Variables:
 HINSTANCE hInst;
@@ -18,6 +19,11 @@ wchar_t szTitle[] = L"Foray Client";
 
 static EventHandler eventHandler;
 static auto gamepad = std::make_unique<Gamepad>(0);
+
+static bool upPressed = false;
+static bool downPressed = false;
+static bool aPressed = false;
+static bool bPressed = false;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void HandleGamepadInput();
@@ -291,13 +297,27 @@ void HandleGamepadInput()
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
-			// TODO
+			if (!upPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0);
+				eventHandler.QueueEvent(e);
+			}
+			upPressed = true;
 		}
+		else
+			upPressed = false;
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
-			// TODO
+			if (!downPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0);
+				eventHandler.QueueEvent(e);
+			}
+			downPressed = true;
 		}
+		else
+			downPressed = false;
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 		{
@@ -311,13 +331,27 @@ void HandleGamepadInput()
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_A)
 		{
-			// TODO
+			if (!aPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0);
+				eventHandler.QueueEvent(e);
+			}
+			aPressed = true;
 		}
+		else
+			aPressed = false;
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_B)
 		{
-			// TODO
+			if (!bPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0);
+				eventHandler.QueueEvent(e);
+			}
+			bPressed = true;
 		}
+		else
+			bPressed = false;
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_X)
 		{

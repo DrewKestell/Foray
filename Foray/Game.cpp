@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include <queue>
 #include <DirectXColors.h>
 #include "Game.h"
@@ -6,6 +6,7 @@
 #include "Events/Event.h"
 #include "Events/Observer.h"
 #include "Events/ChangeActiveLayerEvent.h"
+#include "Events/GamepadInputEvent.h"
 
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
@@ -23,7 +24,6 @@ void Game::Initialize(HWND window, int width, int height)
 {
 	CreateLabels();
 	CreateMenuItems();
-	CreateMenuItemGroups();
 
 	deviceResources->SetWindow(window, width, height);
 	deviceResources->CreateDeviceResources();
@@ -33,23 +33,41 @@ void Game::Initialize(HWND window, int width, int height)
 	CreateWindowSizeDependentResources();
 
 	timer.Reset();
-	SetActiveLayer(Layer::Menu);
+	SetActiveLayer(Layer::MainMenu);
 }
 
 void Game::CreateLabels()
 {
-	menuScreen_gameTitleLabel = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 20.0f, 10.0f }; }, Layer::Menu, 0 }, 100.0f);
+	menuScreen_gameTitleLabel = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 20.0f, 10.0f }; }, Layer::MainMenu, 0 }, 100.0f);
+	menuScreen_mainOptionsLabel = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 20.0f, 10.0f }; }, Layer::MainOptions, 0 }, 400.0f);
 }
 
 void Game::CreateMenuItems()
 {
-	menuScreen_startMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 100.0f }; }, Layer::Menu, 0 }, 100.0f, "Start", true);
-	menuScreen_optionsMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 120.0f }; }, Layer::Menu, 0 }, 100.0f, "Options");
-}
+	const auto onActivateStartItem = [this]()
+	{
+		SetActiveLayer(Layer::Game);
+	};
+	menuScreen_startMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 100.0f }; }, Layer::MainMenu, 0 }, 100.0f, "Start", onActivateStartItem, true);
+	
+	const auto onActivateOptionsItem = [this]()
+	{
+		SetActiveLayer(Layer::MainOptions);
+	};
+	menuScreen_optionsMenuItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 120.0f }; }, Layer::MainMenu, 0 }, 100.0f, "Options", onActivateOptionsItem);
+	
+	menuScreen_menuItemGroup = std::make_unique<UIMenuItemGroup>(Layer::MainMenu, eventHandler);
+	menuScreen_menuItemGroup->AddInput(menuScreen_startMenuItem.get());
+	menuScreen_menuItemGroup->AddInput(menuScreen_optionsMenuItem.get());
 
-void Game::CreateMenuItemGroups()
-{
-	// TODO
+	const auto onActivateMainOptionsBackItem = [this]()
+	{
+		SetActiveLayer(Layer::MainMenu);
+	};
+	menuScreen_mainOptionsBackItem = std::make_unique<UIMenuItem>(UIComponentArgs{ deviceResources.get(), uiComponents, [](const float, const float) { return XMFLOAT2{ 42.0f, 100.0f }; }, Layer::MainOptions, 0 }, 100.0f, "Back", onActivateMainOptionsBackItem);
+
+	menuScreen_mainOptionsGroup = std::make_unique<UIMenuItemGroup>(Layer::MainMenu, eventHandler);
+	menuScreen_mainOptionsGroup->AddInput(menuScreen_mainOptionsBackItem.get());
 }
 
 void Game::CreateDeviceDependentResources()
@@ -58,7 +76,6 @@ void Game::CreateDeviceDependentResources()
 	InitializeTextFormats();
 	InitializeLabels();
 	InitializeMenuItems();
-	InitializeMenuItemGroups();
 }
 
 void Game::CreateWindowSizeDependentResources()
@@ -93,18 +110,18 @@ void Game::InitializeTextFormats()
 void Game::InitializeLabels()
 {
 	menuScreen_gameTitleLabel->Initialize(whiteBrush.Get(), gameTitleTextFormat.Get());
-	menuScreen_gameTitleLabel->SetText("Foray");
+	menuScreen_gameTitleLabel->SetText(L"Foray");
+
+	menuScreen_mainOptionsLabel->Initialize(whiteBrush.Get(), gameTitleTextFormat.Get());
+	menuScreen_mainOptionsLabel->SetText(L"Foray ⇾ Options");
 }
 
 void Game::InitializeMenuItems()
 {
 	menuScreen_startMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get(), bulletTextFormat.Get());
 	menuScreen_optionsMenuItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get(), bulletTextFormat.Get());
-}
+	menuScreen_mainOptionsBackItem->Initialize(whiteBrush.Get(), defaultTextFormat.Get(), bulletTextFormat.Get());
 
-void Game::InitializeMenuItemGroups()
-{
-	// TODO
 }
 
 void Game::Tick()
@@ -173,7 +190,20 @@ void Game::Render()
 
 const void Game::HandleEvent(const Event* const event)
 {
-	// TODO
+	const auto type = event->type;
+	switch (type)
+	{
+		case EventType::GamepadInput:
+		{
+			const auto derivedEvent = (GamepadInputEvent*)event;
+
+			if (derivedEvent->inputValue == XINPUT_GAMEPAD_B)
+			{
+				if (activeLayer == Layer::MainOptions)
+					SetActiveLayer(Layer::MainMenu);
+			}
+		}
+	}
 }
 
 void Game::SetActiveLayer(const Layer layer)

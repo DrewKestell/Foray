@@ -6,20 +6,27 @@
 
 class UIMenuItem : public UIComponent
 {
-	const float width;
 	ComPtr<IDWriteTextLayout> textLayout;
 	ComPtr<IDWriteTextLayout> bulletTextLayout;
+	const float width;
 	std::string text;
+	const std::function<void()> onActivate;
 	ID2D1SolidColorBrush* textBrush{ nullptr };
 	IDWriteTextFormat* textFormat{ nullptr };
 	IDWriteTextFormat* bulletTextFormat{ nullptr };
 	bool isActive{ false };
 
 public:
-	UIMenuItem(UIComponentArgs uiComponentArgs, const float width, const char* text, const bool isActive = false);
+	UIMenuItem(
+		UIComponentArgs uiComponentArgs,
+		const float width,
+		const char* text,
+		const std::function<void()> onActivate,
+		const bool isActive = false);
 	void Initialize(ID2D1SolidColorBrush* textBrush, IDWriteTextFormat* textFormat, IDWriteTextFormat* bulletTextFormat);
 	void Draw() override;
 	const void HandleEvent(const Event* const event) override;
 	void CreateTextLayouts();
+	const bool IsActive();
 	void SetActive(const bool isActive);
 };

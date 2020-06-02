@@ -1,6 +1,9 @@
 #include "../stdafx.h"
+#include <Windows.h>
+#include <Xinput.h>
 #include "UIMenuItem.h"
 #include "../Events/ChangeActiveLayerEvent.h"
+#include "../Events/GamepadInputEvent.h"
 #include "../Utility.h"
 #include "../Constants.h"
 
@@ -8,10 +11,12 @@ UIMenuItem::UIMenuItem(
 	UIComponentArgs uiComponentArgs,
 	const float width,
 	const char* text,
+	const std::function<void()> onActivate,
 	const bool isActive)
 	: UIComponent(uiComponentArgs),
 	  width{ width },
 	  text{ text },
+	  onActivate{ onActivate },
 	  isActive{ isActive }
 {
 }
@@ -82,7 +87,21 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 
 			break;
 		}
+		case EventType::GamepadInput:
+		{
+			const auto derivedEvent = (GamepadInputEvent*)event;
+
+			if (isVisible && isActive && derivedEvent->inputValue == XINPUT_GAMEPAD_A)
+				onActivate();
+
+			break;
+		}
 	}
+}
+
+const bool UIMenuItem::IsActive()
+{
+	return isActive;
 }
 
 void UIMenuItem::SetActive(const bool isActive)
