@@ -8,7 +8,6 @@ class UIMenuItem : public UIComponent
 {
 	ComPtr<IDWriteTextLayout> textLayout;
 	ComPtr<IDWriteTextLayout> bulletTextLayout;
-	const float width;
 	std::string text;
 	const std::function<void()> onActivate;
 	ID2D1SolidColorBrush* textBrush{ nullptr };
@@ -19,7 +18,6 @@ class UIMenuItem : public UIComponent
 public:
 	UIMenuItem(
 		UIComponentArgs uiComponentArgs,
-		const float width,
 		const char* text,
 		const std::function<void()> onActivate,
 		const bool isActive = false);

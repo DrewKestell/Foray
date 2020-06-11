@@ -6,14 +6,13 @@
 
 class UILabel : public UIComponent
 {
-	const float width;
 	ID2D1SolidColorBrush* textBrush{ nullptr };
 	IDWriteTextFormat* textFormat{ nullptr };
 	ComPtr<IDWriteTextLayout> textLayout;
 	std::wstring text;
 
 public:
-	UILabel(UIComponentArgs uiComponentArgs, const float width);
+	UILabel(UIComponentArgs uiComponentArgs);
 	void Initialize(ID2D1SolidColorBrush* textBrush, IDWriteTextFormat* textFormat);
 	void Draw() override;
 	const void HandleEvent(const Event* const event) override;

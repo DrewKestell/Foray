@@ -1,13 +1,12 @@
 #include "../stdafx.h"
+#include <cfloat>
 #include "UILabel.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Utility.h"
 
 UILabel::UILabel(
-	UIComponentArgs uiComponentArgs,
-	const float width)
-	: UIComponent(uiComponentArgs),
-	  width{ width }
+	UIComponentArgs uiComponentArgs)
+	: UIComponent(uiComponentArgs)
 {
 }
 
@@ -40,8 +39,8 @@ void UILabel::CreateTextLayout()
 		this->text.c_str(),
 		static_cast<unsigned int>(this->text.size()),
 		textFormat,
-		width,
-		24.0f,
+		FLT_MAX,
+		FLT_MAX,
 		textLayout.ReleaseAndGetAddressOf()
 	);
 

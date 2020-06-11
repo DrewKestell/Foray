@@ -9,6 +9,42 @@
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
+#include "Include/nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
+{
+	{ "Normal", DWRITE_FONT_WEIGHT_NORMAL },
+	{ "Bold",   DWRITE_FONT_WEIGHT_BOLD }
+};
+
+const std::unordered_map<std::string, const DWRITE_FONT_STYLE> FONT_STYLE_MAP
+{
+	{ "Normal", DWRITE_FONT_STYLE_NORMAL }
+};
+
+const std::unordered_map<std::string, const DWRITE_FONT_STRETCH> FONT_STRETCH_MAP
+{
+	{ "Normal", DWRITE_FONT_STRETCH_NORMAL }
+};
+
+const std::unordered_map<std::string, const DWRITE_TEXT_ALIGNMENT> TEXT_ALIGNMENT_MAP
+{
+	{ "Leading", DWRITE_TEXT_ALIGNMENT_LEADING }
+};
+
+const std::unordered_map<std::string, const DWRITE_PARAGRAPH_ALIGNMENT> PARAGRAPH_ALIGNMENT_MAP
+{
+	{ "Near", DWRITE_PARAGRAPH_ALIGNMENT_NEAR }
+};
+
+const std::unordered_map<std::string, Layer> LAYER_MAP
+{
+	{ "MainMenu",    Layer::MainMenu },
+	{ "MainOptions", Layer::MainOptions },
+	{ "Game",        Layer::Game }
+};
 
 class Game : public IDeviceNotify, public Observer
 {
@@ -24,45 +60,35 @@ private:
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
 
-	void CreateLabels();
-	void CreateMenuItems();
-
+	void InitializeUIElements();
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
 	void InitializeBrushes();
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
+	
+	// UI Json
+	json brushesJson;
+	json textFormatsJson;
+	json labelsJson;
+	json menuItemGroupsJson;
 
-	// Brushes
-	ComPtr<ID2D1SolidColorBrush> whiteBrush;
+	// UI ComPtrs
+	std::unordered_map<std::string, ComPtr<ID2D1SolidColorBrush>> brushes;
+	std::unordered_map<std::string, ComPtr<IDWriteTextFormat>> textFormats;
 
-	// TextFormats
-	ComPtr<IDWriteTextFormat> gameTitleTextFormat;
-	ComPtr<IDWriteTextFormat> defaultTextFormat;
-	ComPtr<IDWriteTextFormat> bulletTextFormat;
-
-	// Labels
-	std::unique_ptr<UILabel> menuScreen_gameTitleLabel;
-	std::unique_ptr<UILabel> menuScreen_mainOptionsLabel;
-
-	// MenuItems
-	std::unique_ptr<UIMenuItem> menuScreen_startMenuItem;
-	std::unique_ptr<UIMenuItem> menuScreen_optionsMenuItem;
-	std::unique_ptr<UIMenuItem> menuScreen_mainOptionsBackItem;
-
-	// MenuItemGroups
-	std::unique_ptr<UIMenuItemGroup> menuScreen_menuItemGroup;
-	std::unique_ptr<UIMenuItemGroup> menuScreen_mainOptionsGroup;
+	// UI Elements
+	std::unordered_map<std::string, std::unique_ptr<UILabel>> labels;
+	std::unordered_map<std::string, std::unique_ptr<UIMenuItemGroup>> menuItemGroups;
+	std::unordered_map<std::string, std::unique_ptr<UIMenuItem>> menuItems;
 
 public:
 	Game(EventHandler& eventHandler);
-	void Initialize(HWND window, int width, int height);
 	void Tick();
-	void OnWindowSizeChanged(int width, int height);
+	void Initialize(const HWND window, const int width, const int height);
+	void OnWindowSizeChanged(const int width, const int height);
 	void OnWindowMoved();
-
-	// IDeviceNotify
 	void OnDeviceLost() override;
 	void OnDeviceRestored() override;
 };

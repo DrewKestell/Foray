@@ -1,0 +1,117 @@
+{
+	"uiElements": {
+		"brushes": [
+			{
+				"id": "white",
+				"r": 1.0,
+				"g": 1.0,
+				"b": 1.0,
+				"a": 1.0
+			}
+		],
+		"textFormats": [
+			{
+				"id": "gameTitle",
+				"fontFamily": "Trebuchet",
+				"weight": "Normal",
+				"style": "Normal",
+				"stretch": "Normal",
+				"size": 40.0,
+				"textAlignment": "Leading",
+				"paragraphAlignment": "Near"
+			},
+			{
+				"id": "default",
+				"fontFamily": "Arial",
+				"weight": "Normal",
+				"style": "Normal",
+				"stretch": "Normal",
+				"size": 14.0,
+				"textAlignment": "Leading",
+				"paragraphAlignment": "Near"
+			},
+			{
+				"id": "bullet",
+				"fontFamily": "Arial",
+				"weight": "Bold",
+				"style": "Normal",
+				"stretch": "Normal",
+				"size": 15.0,
+				"textAlignment": "Leading",
+				"paragraphAlignment": "Near"
+			}
+		],
+		"labels": [
+			{
+				"id": "mainScreen_gameTitle",
+				"x": 20.0,
+				"y": 10.0,
+				"layer": "MainMenu",
+				"zIndex": 0,
+				"brushId": "white",
+				"textFormatId": "gameTitle",
+				"initialText": "Foray"
+			},
+			{
+				"id": "mainScreen_mainOptions",
+				"x": 20.0,
+				"y": 10.0,
+				"layer": "MainOptions",
+				"zIndex": 0,
+				"brushId": "white",
+				"textFormatId": "gameTitle",
+				"initialText": "Foray ⇾ Options"
+			}
+		],
+		"menuItemGroups": [
+			{
+				"id": "menuScreen",
+				"layer": "MainMenu",
+				"menuItems": [
+					{
+						"id": "menuScreen_start",
+						"x": 42.0,
+						"y": 100.0,
+						"layer": "MainMenu",
+						"zIndex": 0,
+						"text": "Start",
+						"isActive": true,
+						"brushId": "white",
+						"bodyTextFormatId": "default",
+						"bulletTextFormatId": "bullet"
+					},
+					{
+						"id": "menuScreen_options",
+						"x": 42.0,
+						"y": 120.0,
+						"layer": "MainMenu",
+						"zIndex": 0,
+						"text": "Options",
+						"isActive": false,
+						"brushId": "white",
+						"bodyTextFormatId": "default",
+						"bulletTextFormatId": "bullet"
+					}
+				]
+			},
+			{
+				"id": "mainOptions",
+				"layer": "mainOptions",
+				"menuItems": [
+					{
+						"id": "menuScreen_mainOptionsBack",
+						"x": 42.0,
+						"y": 100.0,
+						"layer": "MainOptions",
+						"zIndex": 0,
+						"text": "Back",
+						"isActive": true,
+						"brushId": "white",
+						"bodyTextFormatId": "default",
+						"bulletTextFormatId": "bullet"
+					}
+				]
+			}
+		]
+	}
+}

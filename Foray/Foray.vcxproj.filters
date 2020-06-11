@@ -44,4 +44,7 @@
   <ItemGroup>
     <Image Include="Foray.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\ui-elements.json" />
+  </ItemGroup>
 </Project>

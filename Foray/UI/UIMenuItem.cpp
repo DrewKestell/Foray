@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include <Windows.h>
 #include <Xinput.h>
+#include <cfloat>
 #include "UIMenuItem.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
@@ -9,12 +10,10 @@
 
 UIMenuItem::UIMenuItem(
 	UIComponentArgs uiComponentArgs,
-	const float width,
 	const char* text,
 	const std::function<void()> onActivate,
 	const bool isActive)
 	: UIComponent(uiComponentArgs),
-	  width{ width },
 	  text{ text },
 	  onActivate{ onActivate },
 	  isActive{ isActive }
@@ -38,7 +37,7 @@ void UIMenuItem::Draw()
 	deviceResources->GetD2DDeviceContext()->DrawTextLayout(D2D1::Point2F(position.x, position.y), textLayout.Get(), textBrush);
 
 	if (isActive)
-		deviceResources->GetD2DDeviceContext()->DrawTextLayout(D2D1::Point2F(position.x - 19, position.y - 3.5), bulletTextLayout.Get(), textBrush);
+		deviceResources->GetD2DDeviceContext()->DrawTextLayout(D2D1::Point2F(position.x - 19.f, position.y - 3.5f), bulletTextLayout.Get(), textBrush);
 }
 
 void UIMenuItem::CreateTextLayouts()
@@ -47,8 +46,8 @@ void UIMenuItem::CreateTextLayouts()
 		Utility::s2ws(this->text).c_str(),
 		static_cast<unsigned int>(this->text.size()),
 		textFormat,
-		width,
-		24.0f,
+		FLT_MAX,
+		FLT_MAX,
 		textLayout.ReleaseAndGetAddressOf()
 	);
 
@@ -59,8 +58,8 @@ void UIMenuItem::CreateTextLayouts()
 		BULLET_TEXT,
 		1,
 		bulletTextFormat,
-		4,
-		24.0f,
+		FLT_MAX,
+		FLT_MAX,
 		bulletTextLayout.ReleaseAndGetAddressOf()
 	);
 
