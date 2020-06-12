@@ -137,16 +137,14 @@
     <ClCompile Include="UI\UILabel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Foray.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Sprites\megaman.DDS">
+    <EmbeddedResource Include="Foray.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\ui-elements.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\megaman.DDS">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

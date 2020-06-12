@@ -50,9 +50,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Foray.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Foray.ico" />
     <EmbeddedResource Include="UI\ui-elements.json" />
     <EmbeddedResource Include="Sprites\megaman.DDS" />
   </ItemGroup>

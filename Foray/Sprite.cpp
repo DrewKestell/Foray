@@ -5,10 +5,21 @@
 
 extern XMMATRIX g_projectionTransform;
 
-Sprite::Sprite(ID3D11VertexShader* vertexShader, ID3D11PixelShader* pixelShader, ID3D11ShaderResourceView* texture, const BYTE* vertexShaderBuffer, const int vertexShaderSize, ID3D11Device* device, const float originX, const float originY, const float width, const float height, const unsigned int zIndex)
+Sprite::Sprite(
+	ID3D11VertexShader* vertexShader,
+	ID3D11PixelShader* pixelShader,
+	ID3D11ShaderResourceView* texture,
+	const BYTE* vertexShaderBuffer,
+	const int vertexShaderSize,
+	ID3D11Device* device,
+	const float originX,
+	const float originY,
+	const float width,
+	const float height,
+	const unsigned int zIndex)
 	: vertexShader{ vertexShader },
-	pixelShader{ pixelShader },
-	texture{ texture }
+	  pixelShader{ pixelShader },
+	  texture{ texture }
 {
 	SpriteVertex vertices[4];
 
@@ -77,8 +88,8 @@ Sprite::Sprite(ID3D11VertexShader* vertexShader, ID3D11PixelShader* pixelShader,
 	// create
 	const D3D11_INPUT_ELEMENT_DESC ied[]
 	{
-		{"POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORDS", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORDS", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	device->CreateInputLayout(ied, ARRAYSIZE(ied), vertexShaderBuffer, vertexShaderSize, inputLayout.ReleaseAndGetAddressOf());

@@ -18,7 +18,7 @@ void Player::Initialize(
 	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman.DDS", nullptr, texture.ReleaseAndGetAddressOf());
 
 	// create sprite
-	XMFLOAT3 pos{ 22.0f + 20.0f, 62.0f + 20.0f, 0.0f };
+	XMFLOAT3 pos{ 150.0f, 740.0f, 0.0f };
 	FXMVECTOR v = XMLoadFloat3(&pos);
 	CXMMATRIX view = XMMatrixIdentity();
 	CXMMATRIX world = XMMatrixIdentity();
@@ -26,7 +26,7 @@ void Player::Initialize(
 	auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
 	XMFLOAT3 vec;
 	XMStoreFloat3(&vec, res);
-	sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture.Get(), vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 40, 40, 3);
+	sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture.Get(), vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 200.0f, 200.0f, 3);
 }
 
 void Player::Draw(ID3D11DeviceContext* d3dContext)

@@ -59,20 +59,21 @@ void Game::PublishEvents()
 void Game::Render()
 {
 	// Clear the views.
-	auto context = deviceResources->GetD3DDeviceContext();
+	auto d2dContext = deviceResources->GetD2DDeviceContext();
+	auto d3dDevice = deviceResources->GetD3DDevice();
+	auto d3dContext = deviceResources->GetD3DDeviceContext();
 	auto renderTarget = deviceResources->GetOffscreenRenderTargetView();
 	auto depthStencil = deviceResources->GetDepthStencilView();
 
-	context->ClearRenderTargetView(renderTarget, DirectX::Colors::CornflowerBlue);
-	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
+	d3dContext->ClearRenderTargetView(renderTarget, DirectX::Colors::CornflowerBlue);
+	d3dContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	d3dContext->OMSetRenderTargets(1, &renderTarget, depthStencil);
 
 	// Set the viewport.
 	const auto viewport = deviceResources->GetScreenViewport();
-	context->RSSetViewports(1, &viewport);
+	d3dContext->RSSetViewports(1, &viewport);
 
 	// Draw UI elements
-	auto d2dContext = deviceResources->GetD2DDeviceContext();
 
 	d2dContext->BeginDraw();
 
@@ -81,10 +82,27 @@ void Game::Render()
 
 	d2dContext->EndDraw();
 
-	// Draw Sprites
-    player.Draw(context);
+	D3D11_BLEND_DESC blendStateDesc;
+	ZeroMemory(&blendStateDesc, sizeof(D3D11_BLEND_DESC));
+	blendStateDesc.AlphaToCoverageEnable = FALSE;
+	blendStateDesc.IndependentBlendEnable = FALSE;
+	blendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+	blendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_DEST_ALPHA;
+	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	const auto d3dContext = deviceResources->GetD3DDeviceContext();
+	if (FAILED(d3dDevice->CreateBlendState(&blendStateDesc, blendState.ReleaseAndGetAddressOf()))) {
+		printf("Failed To Create Blend State\n");
+	}
+	d3dContext->OMSetBlendState(blendState.Get(), NULL, 0xFFFFFF);
+
+	// Draw Sprites
+    player.Draw(d3dContext);
+
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
 	// Show the new frame.

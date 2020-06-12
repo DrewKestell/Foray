@@ -6,6 +6,5 @@ using namespace DirectX;
 
 struct ConstantBufferPerObject
 {
-	XMFLOAT4X4A mWorld;
 	XMFLOAT4X4A mWorldViewProj;
 };

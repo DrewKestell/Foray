@@ -58,6 +58,8 @@ private:
 	Layer activeLayer{ Layer::MainMenu };
 	Player player;
 
+	ComPtr<ID3D11BlendState> blendState;
+
 	void PublishEvents();
 	void Render();
 	virtual const void HandleEvent(const Event* const event);
