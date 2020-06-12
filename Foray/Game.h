@@ -3,9 +3,11 @@
 #include <memory>
 #include "Gamepad.h"
 #include "GameTimer.h"
+#include "Player.h"
+#include "DeviceResources.h"
+#include "Shaders/ShaderBuffer.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"
-#include "DeviceResources.h"
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
@@ -54,20 +56,30 @@ private:
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };
+	Player player;
 
 	void PublishEvents();
 	void Render();
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
+	ShaderBuffer LoadShader(const std::wstring filename);
 
 	void InitializeUIElements();
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
+	void InitializeShaders();
+	void InitializePlayer();
 	void InitializeBrushes();
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
-	
+
+	// Shaders
+	ShaderBuffer spriteVertexShaderBuffer{};
+	ComPtr<ID3D11VertexShader> spriteVertexShader;
+	ShaderBuffer spritePixelShaderBuffer{};
+	ComPtr<ID3D11PixelShader> spritePixelShader;
+
 	// UI Json
 	json brushesJson;
 	json textFormatsJson;

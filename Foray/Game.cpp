@@ -13,6 +13,7 @@
 
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
+XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
 
 Game::Game(EventHandler& eventHandler)
 	: eventHandler{ eventHandler }
@@ -80,6 +81,9 @@ void Game::Render()
 
 	d2dContext->EndDraw();
 
+	// Draw Sprites
+    player.Draw(context);
+
 	const auto d3dContext = deviceResources->GetD3DDeviceContext();
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
@@ -111,6 +115,33 @@ void Game::SetActiveLayer(const Layer layer)
 
 	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(layer);
 	eventHandler.QueueEvent(e);
+}
+
+ShaderBuffer Game::LoadShader(const std::wstring filename)
+{
+	// load precompiled shaders from .cso objects
+	ShaderBuffer sb{ nullptr, 0 };
+	byte* fileData{ nullptr };
+
+	// open the file
+	std::ifstream csoFile(filename, std::ios::in | std::ios::binary | std::ios::ate);
+
+	if (csoFile.is_open())
+	{
+		// get shader size
+		sb.size = (unsigned int)csoFile.tellg();
+
+		// collect shader data
+		fileData = new byte[sb.size];
+		csoFile.seekg(0, std::ios::beg);
+		csoFile.read(reinterpret_cast<char*>(fileData), sb.size);
+		csoFile.close();
+		sb.buffer = fileData;
+	}
+	else
+		throw std::exception("Critical error: Unable to open the compiled shader object!");
+
+	return sb;
 }
 
 void Game::Initialize(const HWND window, const int width, const int height)
@@ -222,6 +253,7 @@ void Game::InitializeUIElements()
 
 void Game::CreateDeviceDependentResources()
 {
+	InitializeShaders();
 	InitializeBrushes();
 	InitializeTextFormats();
 	InitializeLabels();
@@ -230,7 +262,25 @@ void Game::CreateDeviceDependentResources()
 
 void Game::CreateWindowSizeDependentResources()
 {
-	// TODO
+	g_projectionTransform = XMMatrixOrthographicLH(g_clientWidth, g_clientHeight, 0.0f, 5000.0f);
+
+	InitializePlayer();
+}
+
+void Game::InitializeShaders()
+{
+	auto d3dDevice = deviceResources->GetD3DDevice();
+
+	spriteVertexShaderBuffer = LoadShader(L"SpriteVertexShader.cso");
+	d3dDevice->CreateVertexShader(spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, nullptr, spriteVertexShader.ReleaseAndGetAddressOf());
+
+	spritePixelShaderBuffer = LoadShader(L"SpritePixelShader.cso");
+	d3dDevice->CreatePixelShader(spritePixelShaderBuffer.buffer, spritePixelShaderBuffer.size, nullptr, spritePixelShader.ReleaseAndGetAddressOf());
+}
+
+void Game::InitializePlayer()
+{
+	player.Initialize(spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, deviceResources->GetD3DDevice());
 }
 
 void Game::InitializeBrushes()

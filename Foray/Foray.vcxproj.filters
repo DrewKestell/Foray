@@ -13,6 +13,9 @@
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="UI\UIMenuItem.cpp" />
     <ClCompile Include="UI\UIMenuItemGroup.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="DDSTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -39,11 +42,22 @@
     <ClInclude Include="UI\UIMenuItem.h" />
     <ClInclude Include="UI\UIMenuItemGroup.h" />
     <ClInclude Include="Events\GamepadInputEvent.h" />
+    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteVertex.h" />
+    <ClInclude Include="ConstantBufferPerObject.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Shaders\ShaderBuffer.h" />
+    <ClInclude Include="DDSTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Foray.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\ui-elements.json" />
+    <EmbeddedResource Include="Sprites\megaman.DDS" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
+    <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
   </ItemGroup>
 </Project>
