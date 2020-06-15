@@ -16,6 +16,8 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Collider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -49,11 +51,18 @@
     <ClInclude Include="Shaders\ShaderBuffer.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Collider.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />
     <EmbeddedResource Include="UI\ui-elements.json" />
-    <EmbeddedResource Include="Sprites\megaman.DDS" />
+    <EmbeddedResource Include="World\static-geometry.json" />
+    <EmbeddedResource Include="Sprites\*.DDS" />
+    <EmbeddedResource Include="Sprites\*.DDS" />
+    <EmbeddedResource Include="Sprites\*.DDS" />
+    <EmbeddedResource Include="Sprites\*.DDS" />
+    <EmbeddedResource Include="Sprites\*.DDS" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl" />

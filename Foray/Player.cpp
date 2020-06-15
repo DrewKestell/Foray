@@ -14,11 +14,11 @@ extern float g_clientWidth;
 extern float g_clientHeight;
 
 Player::Player(EventHandler& eventHandler)
-	: eventHandler{ eventHandler }
+	: eventHandler{ eventHandler },
+	  collider{ eventHandler, D2D1::RectF(position.x, position.y, position.x + 80.0f, position.y + 80.0f) }
 {
 	eventHandler.Subscribe(*this);
-}
-	
+}	
 
 void Player::Initialize(
 	ID3D11VertexShader* vertexShader,
@@ -44,8 +44,6 @@ void Player::Update()
 {
 	if (activeLayer == Layer::Game)
 	{
-		
-
 		if (movingRight)
 		{
 			position += XMFLOAT2{ PLAYER_HORIZONTAL_MOVE_SPEED, 0.0f };
@@ -111,7 +109,7 @@ void Player::Draw(ID3D11DeviceContext* d3dContext)
 		auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
 		XMFLOAT3 vec;
 		XMStoreFloat3(&vec, res);
-		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 100.0f, 100.0f, 3);
+		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 80.0f, 80.0f, 3);
 
 		sprite->Draw(d3dContext, mirrorHorizontal);
 	}

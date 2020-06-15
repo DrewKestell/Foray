@@ -2,6 +2,7 @@
 
 #include "Sprite.h"
 #include <memory>
+#include "Collider.h"
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"
@@ -22,7 +23,7 @@ private:
 	ID3D11Device* device;
 
 	// locals
-	XMFLOAT2 position{ 150.0f, 740.0f };
+	XMFLOAT2 position{ 150.0f, 600.0f };
 	Layer activeLayer{ Layer::MainMenu };
 	bool mirrorHorizontal{ false };
 	float moveAnimationTimer{ 0.0f };
@@ -34,8 +35,9 @@ private:
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame4;
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame5;
 	std::unique_ptr<Sprite> sprite;
+	Collider collider;
 
-	// states (probably want to move this to a playerController or something
+	// states (probably want to move this to a playerController or something)
 	bool movingLeft{ false };
 	bool movingRight{ false };
 	

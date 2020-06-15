@@ -82,11 +82,17 @@ void Game::Render()
 	d3dContext->RSSetViewports(1, &viewport);
 
 	// Draw UI elements
-
 	d2dContext->BeginDraw();
 
 	for (auto i = 0; i < uiComponents.size(); i++)
 		uiComponents.at(i)->Draw();
+
+	// Draw Static Geometry
+	if (activeLayer == Layer::Game)
+	{
+		for (auto& it : blocks)
+			it.second->Draw();
+	}
 
 	d2dContext->EndDraw();
 
@@ -174,7 +180,8 @@ void Game::Initialize(const HWND window, const int width, const int height)
 {
 	deviceResources->SetWindow(window, width, height);
 
-	InitializeUIElements();
+	CreateUIElements();
+	CreateStaticGeometry();
 
 	deviceResources->CreateDeviceResources();
 	CreateDeviceDependentResources();
@@ -183,10 +190,10 @@ void Game::Initialize(const HWND window, const int width, const int height)
 	CreateWindowSizeDependentResources();
 
 	timer.Reset();
-	SetActiveLayer(Layer::MainMenu);
+	SetActiveLayer(Layer::Game);
 }
 
-void Game::InitializeUIElements()
+void Game::CreateUIElements()
 {
 	wchar_t buffer[MAX_PATH];
 	GetCurrentDirectory(sizeof(buffer), buffer);
@@ -277,13 +284,47 @@ void Game::InitializeUIElements()
 	}
 }
 
+void Game::CreateStaticGeometry()
+{
+	wchar_t buffer[MAX_PATH];
+	GetCurrentDirectory(sizeof(buffer), buffer);
+
+	std::ifstream i;
+	i.open("./World/static-geometry.json");
+
+	json j;
+	i >> j;
+
+	const auto staticGeometry = j["staticGeometry"];
+
+	blocksJson = staticGeometry["blocks"];
+	for (auto i = 0; i < blocksJson.size(); i++)
+	{
+		const auto block = blocksJson[i];
+
+		const auto id = block["id"].get<std::string>();
+		const auto left = block["left"].get<float>();
+		const auto top = block["top"].get<float>();
+		const auto right = block["right"].get<float>();
+		const auto bottom = block["bottom"].get<float>();
+		const auto radiusX = block["radiusX"].get<float>();
+		const auto radiusY = block["radiusY"].get<float>();
+
+		blocks[id] = std::make_unique<Block>(eventHandler, D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY));
+	}
+}
+
 void Game::CreateDeviceDependentResources()
 {
+	// UI Elements
 	InitializeShaders();
 	InitializeBrushes();
 	InitializeTextFormats();
 	InitializeLabels();
 	InitializeMenuItems();
+
+	// Static Geometry
+	InitializeBlocks();
 }
 
 void Game::CreateWindowSizeDependentResources()
@@ -379,6 +420,23 @@ void Game::InitializeMenuItems()
 
 			menuItems.at(id)->Initialize(brushes.at(brushId).Get(), textFormats.at(bodyTextFormatId).Get(), textFormats.at(bulletTextFormatId).Get());
 		}
+	}
+}
+
+void Game::InitializeBlocks()
+{
+	auto d2dContext = deviceResources->GetD2DDeviceContext();
+	auto d2dFactory = deviceResources->GetD2DFactory();
+
+	for (auto i = 0; i < blocksJson.size(); i++)
+	{
+		const auto blockJson = blocksJson[i];
+
+		const auto id = blockJson["id"].get<std::string>();
+		const auto block = blocks.at(id).get();
+		const auto fillBrushId = blockJson["fillBrushId"].get<std::string>();
+		
+		block->Initialize(d2dContext, d2dFactory, brushes.at(fillBrushId).Get());
 	}
 }
 

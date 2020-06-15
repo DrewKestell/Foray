@@ -4,6 +4,7 @@
 #include "Gamepad.h"
 #include "GameTimer.h"
 #include "Player.h"
+#include "Block.h"
 #include "DeviceResources.h"
 #include "Shaders/ShaderBuffer.h"
 #include "Events/Observer.h"
@@ -67,7 +68,8 @@ private:
 	void SetActiveLayer(const Layer layer);
 	ShaderBuffer LoadShader(const std::wstring filename);
 
-	void InitializeUIElements();
+	void CreateUIElements();
+	void CreateStaticGeometry();
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
 	void InitializeShaders();
@@ -76,6 +78,7 @@ private:
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
+	void InitializeBlocks();
 
 	// Shaders
 	ShaderBuffer spriteVertexShaderBuffer{};
@@ -88,6 +91,9 @@ private:
 	json textFormatsJson;
 	json labelsJson;
 	json menuItemGroupsJson;
+	
+	// Static Geometry Json
+	json blocksJson;
 
 	// UI ComPtrs
 	std::unordered_map<std::string, ComPtr<ID2D1SolidColorBrush>> brushes;
@@ -97,6 +103,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<UILabel>> labels;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItemGroup>> menuItemGroups;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItem>> menuItems;
+
+	// Static Geometry
+	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
 
 public:
 	Game(EventHandler& eventHandler);
