@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include <DirectXMath.h>
 #include "ConstantBufferPerObject.h"
+#include "PixelShaderConstantBufferPerObject.h"
 
 extern XMMATRIX g_projectionTransform;
 
@@ -85,6 +86,10 @@ Sprite::Sprite(
 
 	device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.ReleaseAndGetAddressOf());
 
+	bufferDesc.ByteWidth = sizeof(PixelShaderConstantBufferPerObject);
+
+	device->CreateBuffer(&bufferDesc, nullptr, pixelShaderConstantBuffer.ReleaseAndGetAddressOf());
+
 	// create
 	const D3D11_INPUT_ELEMENT_DESC ied[]
 	{
@@ -115,7 +120,7 @@ Sprite::Sprite(
 	device->CreateBuffer(&bufferDesc, &indexData, indexBuffer.ReleaseAndGetAddressOf());
 }
 
-void Sprite::Draw(ID3D11DeviceContext* immediateContext)
+void Sprite::Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal)
 {
 	// set InputLayout
 	immediateContext->IASetInputLayout(inputLayout.Get());
@@ -124,17 +129,25 @@ void Sprite::Draw(ID3D11DeviceContext* immediateContext)
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	immediateContext->Map(constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	auto pCB = reinterpret_cast<ConstantBufferPerObject*>(mappedResource.pData);
-	XMStoreFloat4x4(&pCB->mWorldViewProj, XMMatrixTranspose(g_projectionTransform));
+	XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(g_projectionTransform));
 	immediateContext->Unmap(constantBuffer.Get(), 0);
 
 	// setup VertexShader
 	immediateContext->VSSetShader(vertexShader, nullptr, 0);
 	immediateContext->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
+	// map ConstantBuffer
+	D3D11_MAPPED_SUBRESOURCE pixelShaderMappedResource;
+	immediateContext->Map(pixelShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pixelShaderMappedResource);
+	auto pspCB = reinterpret_cast<PixelShaderConstantBufferPerObject*>(pixelShaderMappedResource.pData);
+	pspCB->gMirrorHorizontal = mirrorHorizontal;
+	immediateContext->Unmap(pixelShaderConstantBuffer.Get(), 0);
+
 	// setup PixelShader
 	immediateContext->PSSetShader(pixelShader, nullptr, 0);
 	immediateContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 	immediateContext->PSSetShaderResources(0, 1, &texture);
+	immediateContext->PSSetConstantBuffers(0, 1, pixelShaderConstantBuffer.GetAddressOf());
 
 	// set VertexBuffer and IndexBuffer then Draw
 	immediateContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &SPRITE_STRIDE, &SPRITE_OFFSET);

@@ -90,7 +90,7 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (isVisible && isActive && derivedEvent->inputValue == XINPUT_GAMEPAD_A)
+			if (isVisible && isActive && derivedEvent->inputValue == XINPUT_GAMEPAD_A && derivedEvent->pressed)
 				onActivate();
 
 			break;

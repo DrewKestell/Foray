@@ -57,6 +57,7 @@ private:
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };
 	Player player;
+	float updateTimer{ 0.0f };
 
 	ComPtr<ID3D11BlendState> blendState;
 

@@ -48,6 +48,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Shaders\ShaderBuffer.h" />
     <ClInclude Include="DDSTextureLoader.h" />
+    <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

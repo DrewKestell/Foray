@@ -32,7 +32,7 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_DOWN)
+			if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_DOWN && derivedEvent->pressed)
 			{
 				for (auto it = inputs.begin(); it != inputs.end(); it++)
 				{
@@ -50,7 +50,7 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					}
 				}
 			}
-			else if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_UP)
+			else if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_UP && derivedEvent->pressed)
 			{
 				for (auto it = inputs.begin(); it != inputs.end(); it++)
 				{

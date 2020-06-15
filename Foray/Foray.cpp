@@ -22,6 +22,8 @@ static auto gamepad = std::make_unique<Gamepad>(0);
 
 static bool upPressed = false;
 static bool downPressed = false;
+static bool leftPressed = false;
+static bool rightPressed = false;
 static bool aPressed = false;
 static bool bPressed = false;
 
@@ -299,59 +301,115 @@ void HandleGamepadInput()
 		{
 			if (!upPressed)
 			{
-				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0);
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0, true);
 				eventHandler.QueueEvent(e);
 			}
 			upPressed = true;
 		}
 		else
+		{
+			if (upPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0, false);
+				eventHandler.QueueEvent(e);
+			}
 			upPressed = false;
+		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
 			if (!downPressed)
 			{
-				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0);
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0, true);
 				eventHandler.QueueEvent(e);
 			}
 			downPressed = true;
 		}
 		else
+		{
+			if (downPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0, false);
+				eventHandler.QueueEvent(e);
+			}
 			downPressed = false;
+		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 		{
-			// TODO
+			if (!leftPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_LEFT, 0, true);
+				eventHandler.QueueEvent(e);
+			}
+			leftPressed = true;
+		}
+		else
+		{
+			if (leftPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_LEFT, 0, false);
+				eventHandler.QueueEvent(e);
+			}
+			leftPressed = false;
 		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 		{
-			// TODO
+			if (!rightPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_RIGHT, 0, true);
+				eventHandler.QueueEvent(e);
+			}
+			rightPressed = true;
+		}
+		else
+		{
+			if (rightPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_RIGHT, 0, false);
+				eventHandler.QueueEvent(e);
+			}
+			rightPressed = false;
 		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_A)
 		{
 			if (!aPressed)
 			{
-				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0);
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0, true);
 				eventHandler.QueueEvent(e);
 			}
 			aPressed = true;
 		}
 		else
+		{
+			if (aPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0, false);
+				eventHandler.QueueEvent(e);
+			}
 			aPressed = false;
+		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_B)
 		{
 			if (!bPressed)
 			{
-				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0);
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0, true);
 				eventHandler.QueueEvent(e);
 			}
 			bPressed = true;
 		}
 		else
+		{
+			if (bPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0, false);
+				eventHandler.QueueEvent(e);
+			}
 			bPressed = false;
+		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_X)
 		{

@@ -13,7 +13,9 @@ class Sprite
 {
 	ComPtr<ID3D11InputLayout> inputLayout;
 	ComPtr<ID3D11Buffer> constantBuffer;
+	ComPtr<ID3D11Buffer> pixelShaderConstantBuffer;
 	ComPtr<ID3D11SamplerState> samplerState;
+	ComPtr<ID3D11SamplerState> mirroredSamplerState;
 	ComPtr<ID3D11Buffer> vertexBuffer;
 	ComPtr<ID3D11Buffer> indexBuffer;
 	ID3D11VertexShader* vertexShader;
@@ -33,5 +35,5 @@ public:
 		const float width,
 		const float height,
 		const unsigned int zIndex);
-	void Draw(ID3D11DeviceContext* immediateContext);
+	void Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal);
 };

@@ -16,7 +16,8 @@ float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
 
 Game::Game(EventHandler& eventHandler)
-	: eventHandler{ eventHandler }
+	: eventHandler{ eventHandler },
+	  player{ eventHandler }
 {
 	eventHandler.Subscribe(*this);
 
@@ -28,8 +29,15 @@ void Game::Tick()
 {
 	timer.Tick();
 
-	PublishEvents();
+	updateTimer += timer.DeltaTime();
+	if (updateTimer >= UPDATE_FREQUENCY)
+	{
+		player.Update();
+		PublishEvents();
 
+		updateTimer -= UPDATE_FREQUENCY;
+	}
+	
 	Render();
 }
 
@@ -101,7 +109,7 @@ void Game::Render()
 	d3dContext->OMSetBlendState(blendState.Get(), NULL, 0xFFFFFF);
 
 	// Draw Sprites
-    player.Draw(d3dContext);
+	player.Draw(d3dContext);
 
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 

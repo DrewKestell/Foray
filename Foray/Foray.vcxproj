@@ -100,6 +100,7 @@
     <ClInclude Include="Events\Observer.h" />
     <ClInclude Include="Events\SystemKeyDownEvent.h" />
     <ClInclude Include="Events\SystemKeyPressEvent.h" />
+    <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Shaders\ShaderBuffer.h" />
