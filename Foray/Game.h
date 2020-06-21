@@ -12,6 +12,7 @@
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
+#include "Physics/PhysicsEngine.h"
 #include "Include/nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -54,6 +55,7 @@ class Game : public IDeviceNotify, public Observer
 private:
 	GameTimer timer;
 	EventHandler& eventHandler;
+	PhysicsEngine physicsEngine;
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };

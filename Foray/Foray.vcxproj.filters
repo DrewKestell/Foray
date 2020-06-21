@@ -17,7 +17,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="Physics\Collider.cpp" />
+    <ClCompile Include="Physics\PhysicsEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -52,7 +53,8 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
     <ClInclude Include="Block.h" />
-    <ClInclude Include="Collider.h" />
+    <ClInclude Include="Physics\PhysicsEngine.h" />
+    <ClInclude Include="Physics\Collider.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

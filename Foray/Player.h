@@ -2,7 +2,7 @@
 
 #include "Sprite.h"
 #include <memory>
-#include "Collider.h"
+#include "Physics/Collider.h"
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"

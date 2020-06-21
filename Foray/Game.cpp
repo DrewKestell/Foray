@@ -17,7 +17,8 @@ XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
 
 Game::Game(EventHandler& eventHandler)
 	: eventHandler{ eventHandler },
-	  player{ eventHandler }
+	  player{ eventHandler },
+	  physicsEngine{ eventHandler }
 {
 	eventHandler.Subscribe(*this);
 

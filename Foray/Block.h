@@ -2,7 +2,7 @@
 
 #include <d2d1_3.h>
 #include <wrl/client.h>
-#include "Collider.h"
+#include "Physics/Collider.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"
 
