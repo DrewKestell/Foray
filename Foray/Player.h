@@ -6,21 +6,22 @@
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"
+#include "GameObject.h"
 
 using namespace DirectX;
 
-class Player : public Observer
+class Player : public Observer, public GameObject
 {
 private:
 	// constructor params
 	EventHandler& eventHandler;
 	
 	// device dependent resources
-	ID3D11VertexShader* vertexShader;
-	ID3D11PixelShader* pixelShader;
-	const BYTE* vertexShaderBuffer;
-	int vertexShaderSize;
-	ID3D11Device* device;
+	ID3D11VertexShader* vertexShader{ nullptr };
+	ID3D11PixelShader* pixelShader{ nullptr };
+	const BYTE* vertexShaderBuffer{ 0 };
+	int vertexShaderSize{ 0 };
+	ID3D11Device* device{ nullptr };
 
 	// locals
 	XMFLOAT2 position{ 150.0f, 600.0f };
@@ -35,7 +36,7 @@ private:
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame4;
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame5;
 	std::unique_ptr<Sprite> sprite;
-	Collider collider;
+	std::unique_ptr<Collider> collider;
 
 	// states (probably want to move this to a playerController or something)
 	bool movingLeft{ false };
@@ -52,5 +53,6 @@ public:
 	void Update();
 	void Draw(ID3D11DeviceContext* d3dContext);
 	virtual const void HandleEvent(const Event* const event);
+	virtual const void OnCollision(Collider* collider);
 	~Player();
 };

@@ -19,6 +19,7 @@ wchar_t szTitle[] = L"Foray Client";
 
 static EventHandler eventHandler;
 static auto gamepad = std::make_unique<Gamepad>(0);
+auto g_physicsEngine = std::make_unique<PhysicsEngine>(eventHandler);
 
 static bool upPressed = false;
 static bool downPressed = false;

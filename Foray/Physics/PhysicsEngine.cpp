@@ -17,6 +17,20 @@ const void PhysicsEngine::HandleEvent(const Event* const event)
 	}
 }
 
+void PhysicsEngine::RegisterCollider(Collider* collider)
+{
+	colliders.push_back(collider);
+}
+
+void PhysicsEngine::UnregisterCollider(Collider* collider)
+{
+	colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
+}
+
+void PhysicsEngine::Update()
+{
+	// collision detection
+}
 
 PhysicsEngine::~PhysicsEngine()
 {

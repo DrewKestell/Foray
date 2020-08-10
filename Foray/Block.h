@@ -16,7 +16,7 @@ private:
 	D2D1_ROUNDED_RECT rect;
 
 	// locals
-	Collider collider;
+	std::unique_ptr<Collider> collider;
 	ID2D1DeviceContext1* d2dContext{ nullptr };
 	ID2D1SolidColorBrush* fillBrush{ nullptr };
 	ComPtr<ID2D1RoundedRectangleGeometry> geometry;

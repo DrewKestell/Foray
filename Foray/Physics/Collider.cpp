@@ -1,9 +1,10 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "Collider.h"
 
-Collider::Collider(EventHandler& eventHandler, const D2D1_RECT_F rect)
+Collider::Collider(EventHandler& eventHandler, const D2D1_RECT_F rect, GameObject* gameObject)
 	: eventHandler{ eventHandler },
-	  rect{ rect }
+	  rect{ rect },
+	  gameObject{ gameObject }
 {
 	eventHandler.Subscribe(*this);
 }

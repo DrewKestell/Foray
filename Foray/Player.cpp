@@ -6,18 +6,22 @@
 #include "DDSTextureLoader.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
+#include "Physics/PhysicsEngine.h"
+#include <iostream>
 
 using namespace DirectX;
 
 extern XMMATRIX g_projectionTransform;
 extern float g_clientWidth;
 extern float g_clientHeight;
+extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
 Player::Player(EventHandler& eventHandler)
 	: eventHandler{ eventHandler },
-	  collider{ eventHandler, D2D1::RectF(position.x, position.y, position.x + 80.0f, position.y + 80.0f) }
+	  collider{ std::make_unique<Collider>(eventHandler, D2D1::RectF(position.x, position.y, position.x + 80.0f, position.y + 80.0f)) }
 {
 	eventHandler.Subscribe(*this);
+	g_physicsEngine->RegisterCollider(collider.get());
 }	
 
 void Player::Initialize(
@@ -151,7 +155,13 @@ const void Player::HandleEvent(const Event* const event)
 	}
 }
 
+const void Player::OnCollision(Collider* collider)
+{
+	std::cout << "Collision detected!" << std::endl;
+}
+
 Player::~Player()
 {
 	eventHandler.Unsubscribe(*this);
+	g_physicsEngine->UnregisterCollider(collider.get());
 }
