@@ -2,6 +2,7 @@
 
 #include "../Events/Observer.h"
 #include "../Events/EventHandler.h"
+#include "Collider.h"
 
 class PhysicsEngine : public Observer
 {

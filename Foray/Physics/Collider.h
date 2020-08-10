@@ -1,8 +1,8 @@
 #pragma once
 
 #include <d2d1_3.h>
-#include "Events/Observer.h"
-#include "Events/EventHandler.h"
+#include "../Events/Observer.h"
+#include "../Events/EventHandler.h"
 
 class Collider : public Observer
 {
