@@ -55,7 +55,6 @@ class Game : public IDeviceNotify, public Observer
 private:
 	GameTimer timer;
 	EventHandler& eventHandler;
-	PhysicsEngine physicsEngine;
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };

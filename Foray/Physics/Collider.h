@@ -12,11 +12,16 @@ private:
 	EventHandler& eventHandler;
 
 	// locals
+	const unsigned int id;
 	D2D1_RECT_F rect;
 	GameObject* gameObject;
 
 public:
-	Collider(EventHandler& eventHandler, const D2D1_RECT_F rect, GameObject* gameObject);
+	Collider(EventHandler& eventHandler, const unsigned int id, const D2D1_RECT_F rect, GameObject* gameObject);
 	virtual const void HandleEvent(const Event* const event);
+	const unsigned int GetId() const;
+	const D2D1_RECT_F GetRect() const;
+	const void SetRect(const D2D1_RECT_F rect);
+	GameObject* GetGameObject();
 	~Collider();
 };

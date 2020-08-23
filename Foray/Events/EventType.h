@@ -3,8 +3,14 @@
 enum class EventType
 {
 	LeftMouseDown,
+	MiddleMouseDown,
+	RightMouseDown,
+	LeftMouseUp,
+	MiddleMouseUp,
+	RightMouseUp,
 	MouseMove,
-	SystemKeyDown,
+	KeyDown,
+	KeyUp,
 	WindowResize,
 	ChangeActiveLayer,
 	GamepadInput

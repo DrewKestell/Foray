@@ -89,6 +89,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Events\KeyDownEvent.h" />
+    <ClInclude Include="Events\KeyPressEvent.h" />
+    <ClInclude Include="Events\KeyUpEvent.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Physics\Collider.h" />
     <ClInclude Include="ConstantBufferPerObject.h" />
@@ -101,8 +104,7 @@
     <ClInclude Include="Events\GamepadInputEvent.h" />
     <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Events\Observer.h" />
-    <ClInclude Include="Events\SystemKeyDownEvent.h" />
-    <ClInclude Include="Events\SystemKeyPressEvent.h" />
+    <ClInclude Include="Physics\CollisionResult.h" />
     <ClInclude Include="Physics\PhysicsEngine.h" />
     <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
     <ClInclude Include="Player.h" />

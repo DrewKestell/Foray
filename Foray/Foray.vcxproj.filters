@@ -28,8 +28,6 @@
     <ClInclude Include="Events\EventType.h" />
     <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Events\Observer.h" />
-    <ClInclude Include="Events\SystemKeyDownEvent.h" />
-    <ClInclude Include="Events\SystemKeyPressEvent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gamepad.h" />
     <ClInclude Include="GameTimer.h" />
@@ -56,6 +54,10 @@
     <ClInclude Include="Physics\PhysicsEngine.h" />
     <ClInclude Include="Physics\Collider.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Events\KeyDownEvent.h" />
+    <ClInclude Include="Events\KeyPressEvent.h" />
+    <ClInclude Include="Events\KeyUpEvent.h" />
+    <ClInclude Include="Physics\CollisionResult.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

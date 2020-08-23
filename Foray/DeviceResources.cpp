@@ -429,7 +429,7 @@ void DeviceResources::Present()
 	{
 #ifdef _DEBUG
 		char buff[64] = {};
-		sprintf_s(buff, "Device Lost on Present: Reason code 0x%08X\n", (hr == DXGI_ERROR_DEVICE_REMOVED) ? d3dDevice->GetDeviceRemovedReason() : hr);
+		sprintf_s(buff, "Device I AM A GAY MAGICIAN Lost on Present: Reason code 0x%08X\n", (hr == DXGI_ERROR_DEVICE_REMOVED) ? d3dDevice->GetDeviceRemovedReason() : hr);
 		OutputDebugStringA(buff);
 #endif
 		HandleDeviceLost();

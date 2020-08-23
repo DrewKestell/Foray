@@ -2,12 +2,13 @@
 #include "Block.h"
 #include "Physics/PhysicsEngine.h"
 
+extern unsigned int g_colliderId;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
 Block::Block(EventHandler& eventHandler, const D2D1_ROUNDED_RECT rect)
 	: eventHandler{ eventHandler },
 	  rect{ rect },
-	  collider{ std::make_unique<Collider>(eventHandler, rect.rect) }
+	  collider{ std::make_unique<Collider>(eventHandler, g_colliderId++, rect.rect, this) }
 {
 	eventHandler.Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());
@@ -35,6 +36,10 @@ const void Block::HandleEvent(const Event* const event)
 	}
 }
 
+const void Block::OnCollision(CollisionResult collisionResult)
+{
+	
+}
 
 Block::~Block()
 {

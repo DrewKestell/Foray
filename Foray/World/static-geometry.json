@@ -13,10 +13,30 @@
 			},
 			{
 				"id": "2",
-				"left": 620.0,
+				"left": 140.0,
+				"top": 600.0,
+				"right": 400.0,
+				"bottom": 640.0,
+				"radiusX": 5.0,
+				"radiusY": 5.0,
+				"fillBrushId": "white"
+			},
+			{
+				"id": "3",
+				"left": 640.0,
 				"top": 800.0,
-				"right": 800.0,
+				"right": 1000.0,
 				"bottom": 840.0,
+				"radiusX": 5.0,
+				"radiusY": 5.0,
+				"fillBrushId": "white"
+			},
+			{
+				"id": "4",
+				"left": 960.0,
+				"top": 300.0,
+				"right": 1000.0,
+				"bottom": 760.0,
 				"radiusX": 5.0,
 				"radiusY": 5.0,
 				"fillBrushId": "white"

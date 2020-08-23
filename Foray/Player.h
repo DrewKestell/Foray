@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include <memory>
 #include "Physics/Collider.h"
+#include "Physics/CollisionResult.h"
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "Events/EventHandler.h"
@@ -15,7 +16,7 @@ class Player : public Observer, public GameObject
 private:
 	// constructor params
 	EventHandler& eventHandler;
-	
+
 	// device dependent resources
 	ID3D11VertexShader* vertexShader{ nullptr };
 	ID3D11PixelShader* pixelShader{ nullptr };
@@ -24,7 +25,7 @@ private:
 	ID3D11Device* device{ nullptr };
 
 	// locals
-	XMFLOAT2 position{ 150.0f, 600.0f };
+	XMFLOAT2 position{ 150.0f, 200.0f };
 	Layer activeLayer{ Layer::MainMenu };
 	bool mirrorHorizontal{ false };
 	float moveAnimationTimer{ 0.0f };
@@ -39,8 +40,17 @@ private:
 	std::unique_ptr<Collider> collider;
 
 	// states (probably want to move this to a playerController or something)
+	float verticalVelocity{ 0.0f };
+	bool jumpPressed{ false };
+	bool jumpReleased{ true };
+	bool canJump{ true };
+	bool landed{ true };
 	bool movingLeft{ false };
 	bool movingRight{ false };
+
+	// methods
+	void Translate(const XMFLOAT2 vector);
+	const CollisionResult CheckCollisionForPosition(const XMFLOAT2 proposedPos) const;
 	
 public:
 	Player(EventHandler& eventHandler);
@@ -53,6 +63,6 @@ public:
 	void Update();
 	void Draw(ID3D11DeviceContext* d3dContext);
 	virtual const void HandleEvent(const Event* const event);
-	virtual const void OnCollision(Collider* collider);
+	virtual const void OnCollision(CollisionResult collisionResult);
 	~Player();
 };

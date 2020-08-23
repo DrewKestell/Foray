@@ -4,12 +4,15 @@
 #include <wrl/client.h>
 #include <DirectXMath.h>
 #include <memory>
+#include <io.h>
+#include <fcntl.h>
 #include "Game.h"
 #include "Constants.h"
 #include "Events/Event.h"
 #include "Events/MouseEvent.h"
 #include "Events/EventHandler.h"
-#include "Events/SystemKeyDownEvent.h"
+#include "Events/KeyDownEvent.h"
+#include "Events/KeyUpEvent.h"
 #include "Events/GamepadInputEvent.h"
 
 // Global Variables:
@@ -33,6 +36,15 @@ void HandleGamepadInput();
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	AllocConsole();
+	HANDLE stdHandle;
+	int hConsole;
+	FILE* fp;
+	stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	hConsole = _open_osfhandle((long)stdHandle, _O_TEXT);
+	fp = _fdopen(hConsole, "w");
+	freopen_s(&fp, "CONOUT$", "w", stdout);
+
 	if (!DirectX::XMVerifyCPUSupport())
 		return 1;
 
@@ -223,7 +235,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		e = std::make_unique<MouseEvent>(EventType::LeftMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
 		eventHandler.QueueEvent(e);
 		break;
-
+	case WM_MBUTTONDOWN:
+		e = std::make_unique<MouseEvent>(EventType::MiddleMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+		eventHandler.QueueEvent(e);
+		break;
+	case WM_RBUTTONDOWN:
+		e = std::make_unique<MouseEvent>(EventType::RightMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+		eventHandler.QueueEvent(e);
+		break;
+	case WM_LBUTTONUP:
+		e = std::make_unique<MouseEvent>(EventType::LeftMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+		eventHandler.QueueEvent(e);
+		break;
+	case WM_MBUTTONUP:
+		e = std::make_unique<MouseEvent>(EventType::MiddleMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+		eventHandler.QueueEvent(e);
+		break;
+	case WM_RBUTTONUP:
+		e = std::make_unique<MouseEvent>(EventType::RightMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+		eventHandler.QueueEvent(e);
+		break;
 	case WM_MOUSEMOVE:
 		e = std::make_unique<MouseEvent>(EventType::MouseMove, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
 		eventHandler.QueueEvent(e);
@@ -264,18 +295,70 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		else
 		{
-			switch (wParam)
-			{
-			case VK_MENU:
-				const auto key = MapLeftRightKeys(wParam, lParam);
-				e = std::make_unique<SystemKeyDownEvent>(key);
-				eventHandler.QueueEvent(e);
-				break;
-			}
+			const auto key = MapLeftRightKeys(wParam, lParam);
+			e = std::make_unique<KeyDownEvent>(key);
+			eventHandler.QueueEvent(e);
 		}
 
 		break;
 
+	case WM_SYSKEYUP:
+	{
+		const auto key = MapLeftRightKeys(wParam, lParam);
+		e = std::make_unique<KeyUpEvent>(key);
+		eventHandler.QueueEvent(e);
+		break;
+	}
+
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+			case VK_SHIFT:
+			case VK_CONTROL:
+				keyCode = MapLeftRightKeys(wParam, lParam);
+				break;
+			default:
+				keyCode = wParam;
+				break;
+		}
+		e = std::make_unique<KeyDownEvent>(keyCode);
+		eventHandler.QueueEvent(e);
+		break;
+
+	case WM_KEYUP:
+		switch (wParam)
+		{
+			case VK_SHIFT:
+			case VK_CONTROL:
+				keyCode = MapLeftRightKeys(wParam, lParam);
+				break;
+			default:
+				keyCode = wParam;
+				break;
+		}
+		e = std::make_unique<KeyUpEvent>(keyCode);
+		eventHandler.QueueEvent(e);
+		break;
+
+	case WM_CHAR:
+		switch (wParam)
+		{
+			case 0x08: // Ignore backspace.
+				break;
+			case 0x0A: // Ignore linefeed.   
+				break;
+			case 0x1B: // Ignore escape. 
+				break;
+			case 0x09: // Ignore tab.          
+				break;
+			case 0x0D: // Ignore carriage return.
+				break;
+			default:   // Process a normal character press.            
+				auto ch = static_cast<wchar_t>(wParam);
+				e = std::make_unique<KeyDownEvent>(ch);
+				eventHandler.QueueEvent(e);
+				break;
+		}
 	case WM_MENUCHAR:
 		// A menu is active and the user presses a key that does not correspond
 		// to any mnemonic or accelerator key. Ignore so we don't produce an error beep.

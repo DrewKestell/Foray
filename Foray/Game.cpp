@@ -14,11 +14,12 @@
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
+unsigned int g_colliderId{ 0 };
+extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
 Game::Game(EventHandler& eventHandler)
 	: eventHandler{ eventHandler },
-	  player{ eventHandler },
-	  physicsEngine{ eventHandler }
+	  player{ eventHandler }
 {
 	eventHandler.Subscribe(*this);
 
@@ -33,8 +34,10 @@ void Game::Tick()
 	updateTimer += timer.DeltaTime();
 	if (updateTimer >= UPDATE_FREQUENCY)
 	{
-		player.Update();
 		PublishEvents();
+
+		g_physicsEngine->Update();
+		player.Update();
 
 		updateTimer -= UPDATE_FREQUENCY;
 	}
@@ -94,6 +97,9 @@ void Game::Render()
 		for (auto& it : blocks)
 			it.second->Draw();
 	}
+	
+	// Debug
+	g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
 
 	d2dContext->EndDraw();
 
