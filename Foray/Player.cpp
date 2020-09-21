@@ -215,13 +215,19 @@ const void Player::HandleEvent(const Event* const event)
 			}
 			else if (derivedEvent->charCode == VK_RIGHT)
 			{
-				movingRight = true;
-				mirrorHorizontal = false;
+				if (!movingLeft)
+				{
+					movingRight = true;
+					mirrorHorizontal = false;
+				}
 			}
 			else if (derivedEvent->charCode == VK_LEFT)
 			{
-				movingLeft = true;
-				mirrorHorizontal = true;
+				if (!movingRight)
+				{
+					movingLeft = true;
+					mirrorHorizontal = true;
+				}
 			}
 
 			break;
