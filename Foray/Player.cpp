@@ -77,6 +77,25 @@ void Player::Update()
 			verticalVelocity = 0.0f;
 		}
 
+		if (!movingLeft && rightPressed)
+		{
+			movingLeft = false;
+			movingRight = true;
+			mirrorHorizontal = false;
+		}
+		else if (!movingRight && leftPressed)
+		{
+			movingRight = false;
+			movingLeft = true;
+			mirrorHorizontal = true;
+		}
+		else
+		{
+			movingRight = false;
+			movingLeft = false;
+			moveFrame = 1;
+		}
+
 		// first handle vertical movement
 		const auto tmpVertVelocity = verticalVelocity == 0 ? PLAYER_DOWNWARD_ACCELERATION : verticalVelocity;
 		const auto proposedVerticalPos = XMFLOAT2{ position.x, position.y + tmpVertVelocity };
@@ -215,19 +234,11 @@ const void Player::HandleEvent(const Event* const event)
 			}
 			else if (derivedEvent->charCode == VK_RIGHT)
 			{
-				if (!movingLeft)
-				{
-					movingRight = true;
-					mirrorHorizontal = false;
-				}
+				rightPressed = true;
 			}
 			else if (derivedEvent->charCode == VK_LEFT)
 			{
-				if (!movingRight)
-				{
-					movingLeft = true;
-					mirrorHorizontal = true;
-				}
+				leftPressed = true;
 			}
 
 			break;
@@ -245,15 +256,12 @@ const void Player::HandleEvent(const Event* const event)
 			}
 			else if (derivedEvent->charCode == VK_RIGHT)
 			{
-				movingRight = false;
+				rightPressed = false;
 			}
 			else if (derivedEvent->charCode == VK_LEFT)
 			{
-				movingLeft = false;
+				leftPressed = false;
 			}
-
-			if (!movingLeft && !movingRight)
-				moveFrame = 1;
 
 			break;
 		}
@@ -263,21 +271,27 @@ const void Player::HandleEvent(const Event* const event)
 
 			if (derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_LEFT)
 			{
-				movingLeft = derivedEvent->pressed;
-				mirrorHorizontal = true;
+				leftPressed = derivedEvent->pressed;
 			}
 			else if (derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_RIGHT)
 			{
-				movingRight = derivedEvent->pressed;
-				mirrorHorizontal = false;
+				rightPressed = derivedEvent->pressed;
 			}
 			else if (derivedEvent->inputValue == XINPUT_GAMEPAD_A)
 			{
-				jumpPressed = derivedEvent->pressed;
+				if (derivedEvent->pressed)
+				{
+					jumpPressed = true;
+					jumpReleased = false;
+				}
+				else
+				{
+					jumpPressed = false;
+					jumpReleased = true;
+					if (landed)
+						canJump = true;
+				}
 			}
-
-			if (!movingLeft && !movingRight)
-				moveFrame = 1;
 
 			break;
 		}

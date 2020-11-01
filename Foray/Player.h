@@ -45,6 +45,8 @@ private:
 	bool jumpReleased{ true };
 	bool canJump{ true };
 	bool landed{ true };
+	bool leftPressed{ false };
+	bool rightPressed{ false };
 	bool movingLeft{ false };
 	bool movingRight{ false };
 
