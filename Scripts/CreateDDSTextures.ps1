@@ -1,0 +1,1 @@
+..\Utilities\Texconv\texconv -r ..\Foray\Sprites\*.png -o ..\Foray\Sprites -y
