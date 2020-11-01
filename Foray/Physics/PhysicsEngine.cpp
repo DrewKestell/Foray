@@ -20,10 +20,10 @@ const unsigned char PhysicsEngine::CheckRectangleOverlap(D2D1_RECT_F l, D2D1_REC
 	const auto isRight = l.left > r.left && l.right > r.right;
 	const auto isLeft  = l.left < r.left && l.right < r.right;
 
-	if (isAbove && l.bottom > r.top && ((l.right > r.left && isLeft) || (l.left < r.right && isRight) || (l.left > r.left && l.right < r.right) || (l.left < r.left && l.right > r.right)))
+	if (isAbove && l.bottom > r.top && ((l.right > r.left && isLeft) || (l.left < r.right && isRight) || (l.left >= r.left && l.right <= r.right) || (l.left <= r.left && l.right >= r.right)))
 		collisionDirection |= COLLISION_DIRECTION_BOTTOM;
 
-	if (isBelow && l.top < r.bottom && ((l.right > r.left && isLeft) || (l.left < r.right && isRight) || (l.left > r.left && l.right < r.right) || (l.left < r.left && l.right > r.right)))
+	if (isBelow && l.top < r.bottom && ((l.right > r.left && isLeft) || (l.left < r.right && isRight) || (l.left >= r.left && l.right <= r.right) || (l.left <= r.left && l.right >= r.right)))
 		collisionDirection |= COLLISION_DIRECTION_TOP;
 
 	if (isRight && l.left < r.right && ((l.bottom > r.top && isAbove) || (l.top < r.bottom && isBelow) || (l.top > r.top && l.bottom < r.bottom) || (l.top < r.top && l.bottom > r.bottom)))

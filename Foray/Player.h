@@ -29,6 +29,7 @@ private:
 	Layer activeLayer{ Layer::MainMenu };
 	bool mirrorHorizontal{ false };
 	float moveAnimationTimer{ 0.0f };
+	float shootAnimationTimer{ 0.0f };
 	unsigned char moveFrame{ 1 };
 	unsigned char lastMoveFrame{ 1 };
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame1;
@@ -36,6 +37,12 @@ private:
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame3;
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame4;
 	ComPtr<ID3D11ShaderResourceView> moveTexture_frame5;
+	ComPtr<ID3D11ShaderResourceView> moveShootTexture_frame1;
+	ComPtr<ID3D11ShaderResourceView> moveShootTexture_frame3;
+	ComPtr<ID3D11ShaderResourceView> moveShootTexture_frame4;
+	ComPtr<ID3D11ShaderResourceView> moveShootTexture_frame5;
+	ComPtr<ID3D11ShaderResourceView> jumpTexture;
+	ComPtr<ID3D11ShaderResourceView> jumpShootTexture;
 	std::unique_ptr<Sprite> sprite;
 	std::unique_ptr<Collider> collider;
 
@@ -49,6 +56,9 @@ private:
 	bool rightPressed{ false };
 	bool movingLeft{ false };
 	bool movingRight{ false };
+	bool canShoot{ true };
+	bool shootPressed{ false };
+	bool shooting{ false };
 
 	// methods
 	void Translate(const XMFLOAT2 vector);

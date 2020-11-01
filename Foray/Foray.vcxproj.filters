@@ -73,4 +73,7 @@
     <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
     <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Sprites\megaman_jumpTexture.DDS" />
+  </ItemGroup>
 </Project>

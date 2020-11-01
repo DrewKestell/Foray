@@ -45,6 +45,12 @@ void Player::Initialize(
 	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame3.DDS", nullptr, moveTexture_frame3.ReleaseAndGetAddressOf());
 	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame4.DDS", nullptr, moveTexture_frame4.ReleaseAndGetAddressOf());
 	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame5.DDS", nullptr, moveTexture_frame5.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame1.DDS", nullptr, moveShootTexture_frame1.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame3.DDS", nullptr, moveShootTexture_frame3.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame4.DDS", nullptr, moveShootTexture_frame4.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame5.DDS", nullptr, moveShootTexture_frame5.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpTexture.DDS", nullptr, jumpTexture.ReleaseAndGetAddressOf());
+	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpShootTexture.DDS", nullptr, jumpShootTexture.ReleaseAndGetAddressOf());
 }
 
 void Player::Translate(const XMFLOAT2 vector)
@@ -107,7 +113,8 @@ void Player::Update()
 			Translate(XMFLOAT2{ 0.0f, -deltaY });
 			verticalVelocity = 0.0f;
 		}
-		else if (verticalVelocity > 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) > 0)
+
+		if (verticalVelocity > 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) > 0)
 		{
 			auto deltaY = verticalCollisionResult.GetCollider()->GetRect().top - collider->GetRect().bottom;
 			Translate(XMFLOAT2{ 0.0f, deltaY });
@@ -148,6 +155,23 @@ void Player::Update()
 		}
 
 		// animation
+		if (canShoot && shootPressed)
+		{
+			canShoot = false;
+			shooting = true;
+			shootAnimationTimer = 0.0f;
+		}
+
+		if (shooting)
+		{
+			shootAnimationTimer += UPDATE_FREQUENCY;
+
+			if (shootAnimationTimer >= UPDATE_FREQUENCY * 40)
+			{
+				shooting = false;
+			}
+		}
+
 		if (movingLeft || movingRight)
 		{
 			moveAnimationTimer += UPDATE_FREQUENCY;
@@ -157,7 +181,12 @@ void Player::Update()
 				lastMoveFrame = moveFrame;
 
 				if (moveFrame == 1)
-					moveFrame = 2;
+				{
+					if (!shooting)
+						moveFrame = 2;
+					else
+						moveFrame = 3;
+				}
 				else if (moveFrame == 2)
 					moveFrame = 3;
 				else if (moveFrame == 3)
@@ -190,21 +219,55 @@ void Player::Draw(ID3D11DeviceContext* d3dContext)
 		CXMMATRIX world = XMMatrixIdentity();
 
 		ID3D11ShaderResourceView* texture;
-		if (moveFrame == 1)
-			texture = moveTexture_frame1.Get();
-		else if (moveFrame == 2)
-			texture = moveTexture_frame2.Get();
-		else if (moveFrame == 3)
-			texture = moveTexture_frame3.Get();
-		else if (moveFrame == 4)
-			texture = moveTexture_frame4.Get();
-		else if (moveFrame == 5)
-			texture = moveTexture_frame5.Get();
+		if (verticalVelocity != 0.0f)
+		{
+			if (shooting)
+			{
+				texture = jumpShootTexture.Get();
+			}
+			else
+			{
+				texture = jumpTexture.Get();
+			}
+		}
+		else
+		{
+			if (moveFrame == 1)
+			{
+				if (shooting)
+					texture = moveShootTexture_frame1.Get();
+				else
+					texture = moveTexture_frame1.Get();
+			}
+			else if (moveFrame == 2)
+				texture = moveTexture_frame2.Get();
+			else if (moveFrame == 3)
+			{
+				if (shooting)
+					texture = moveShootTexture_frame3.Get();
+				else
+					texture = moveTexture_frame3.Get();
+			}
+			else if (moveFrame == 4)
+			{
+				if (shooting)
+					texture = moveShootTexture_frame4.Get();
+				else
+					texture = moveTexture_frame4.Get();
+			}
+			else if (moveFrame == 5)
+			{
+				if (shooting)
+					texture = moveShootTexture_frame5.Get();
+				else
+					texture = moveTexture_frame5.Get();
+			}
+		}
 
 		auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
 		XMFLOAT3 vec;
 		XMStoreFloat3(&vec, res);
-		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 80.0f, 80.0f, 3);
+		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 95.0f, 80.0f, 3);
 
 		sprite->Draw(d3dContext, mirrorHorizontal);
 	}
@@ -292,7 +355,18 @@ const void Player::HandleEvent(const Event* const event)
 						canJump = true;
 				}
 			}
-
+			else if (derivedEvent->inputValue == VK_PAD_RTRIGGER)
+			{
+				if (derivedEvent->pressed)
+				{
+					shootPressed = true;
+				}
+				else
+				{
+					canShoot = true;
+					shootPressed = false;
+				}
+			}
 			break;
 		}
 	}

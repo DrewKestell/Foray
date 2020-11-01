@@ -99,7 +99,7 @@ void Game::Render()
 	}
 	
 	// Debug
-	g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
+	//g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
 
 	d2dContext->EndDraw();
 

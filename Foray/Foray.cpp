@@ -30,6 +30,7 @@ static bool leftPressed = false;
 static bool rightPressed = false;
 static bool aPressed = false;
 static bool bPressed = false;
+static bool rTriggerPressed = false;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void HandleGamepadInput();
@@ -493,6 +494,25 @@ void HandleGamepadInput()
 				eventHandler.QueueEvent(e);
 			}
 			bPressed = false;
+		}
+
+		if (gamepadState.bRightTrigger > 0)
+		{
+			if (!rTriggerPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, VK_PAD_RTRIGGER, 0, true);
+				eventHandler.QueueEvent(e);
+			}
+			rTriggerPressed = true;
+		}
+		else
+		{
+			if (rTriggerPressed)
+			{
+				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, VK_PAD_RTRIGGER, 0, false);
+				eventHandler.QueueEvent(e);
+			}
+			rTriggerPressed = false;
 		}
 
 		if (gamepadState.wButtons & XINPUT_GAMEPAD_X)
