@@ -8,7 +8,6 @@
 #include "DeviceResources.h"
 #include "Shaders/ShaderBuffer.h"
 #include "Events/Observer.h"
-#include "Events/EventHandler.h"
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
@@ -54,7 +53,6 @@ class Game : public IDeviceNotify, public Observer
 {
 private:
 	GameTimer timer;
-	EventHandler& eventHandler;
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };
@@ -107,9 +105,12 @@ private:
 
 	// Static Geometry
 	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
+	
+	// GameObjects
+	std::vector<std::unique_ptr<Projectile>> projectiles;
 
 public:
-	Game(EventHandler& eventHandler);
+	Game();
 	void Tick();
 	void Initialize(const HWND window, const int width, const int height);
 	void OnWindowSizeChanged(const int width, const int height);

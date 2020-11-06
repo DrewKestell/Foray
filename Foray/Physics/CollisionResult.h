@@ -15,7 +15,7 @@ class CollisionResult
 public:
 	CollisionResult(unsigned char collisionDirection, Collider* collider)
 		: collisionDirection{ collisionDirection },
-		collider{ collider }
+		  collider{ collider }
 	{};
 	const unsigned char GetCollisionDirection() const { return collisionDirection; }
 	Collider* GetCollider() { return collider; }

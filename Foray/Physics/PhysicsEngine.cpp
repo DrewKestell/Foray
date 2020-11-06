@@ -1,10 +1,12 @@
 #include "../stdafx.h"
 #include "PhysicsEngine.h"
+#include "../Events/EventHandler.h"
 
-PhysicsEngine::PhysicsEngine(EventHandler& eventHandler)
-	: eventHandler{ eventHandler }
+extern std::unique_ptr<EventHandler> g_eventHandler;
+
+PhysicsEngine::PhysicsEngine()
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 }
 
 const unsigned char PhysicsEngine::CheckRectangleOverlap(D2D1_RECT_F l, D2D1_RECT_F r) const
@@ -99,5 +101,5 @@ void PhysicsEngine::DrawColliders(DeviceResources* deviceResources, ID2D1SolidCo
 
 PhysicsEngine::~PhysicsEngine()
 {
-	eventHandler.Unsubscribe(*this);
+	g_eventHandler->Unsubscribe(*this);
 }

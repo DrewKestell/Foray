@@ -20,9 +20,9 @@ HINSTANCE hInst;
 wchar_t szWindowClass[] = L"win32app";
 wchar_t szTitle[] = L"Foray Client";
 
-static EventHandler eventHandler;
 static auto gamepad = std::make_unique<Gamepad>(0);
-auto g_physicsEngine = std::make_unique<PhysicsEngine>(eventHandler);
+auto g_eventHandler = std::make_unique<EventHandler>();
+auto g_physicsEngine = std::make_unique<PhysicsEngine>();
 
 static bool upPressed = false;
 static bool downPressed = false;
@@ -53,7 +53,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	if (FAILED(hr))
 		return 1;
 
-	static auto game = std::make_unique<Game>(eventHandler);
+	static auto game = std::make_unique<Game>();
 
 	// Register class
 	WNDCLASSEX wcex = {};
@@ -234,31 +234,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		e = std::make_unique<MouseEvent>(EventType::LeftMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	case WM_MBUTTONDOWN:
 		e = std::make_unique<MouseEvent>(EventType::MiddleMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	case WM_RBUTTONDOWN:
 		e = std::make_unique<MouseEvent>(EventType::RightMouseDown, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	case WM_LBUTTONUP:
 		e = std::make_unique<MouseEvent>(EventType::LeftMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	case WM_MBUTTONUP:
 		e = std::make_unique<MouseEvent>(EventType::MiddleMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
-		break;
+		g_eventHandler->QueueEvent(e);
+		g_eventHandler;
 	case WM_RBUTTONUP:
 		e = std::make_unique<MouseEvent>(EventType::RightMouseUp, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	case WM_MOUSEMOVE:
 		e = std::make_unique<MouseEvent>(EventType::MouseMove, (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 
 		if (inSizemove)
 		{
@@ -298,7 +298,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			const auto key = MapLeftRightKeys(wParam, lParam);
 			e = std::make_unique<KeyDownEvent>(key);
-			eventHandler.QueueEvent(e);
+			g_eventHandler->QueueEvent(e);
 		}
 
 		break;
@@ -307,7 +307,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		const auto key = MapLeftRightKeys(wParam, lParam);
 		e = std::make_unique<KeyUpEvent>(key);
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 	}
 
@@ -323,7 +323,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 		}
 		e = std::make_unique<KeyDownEvent>(keyCode);
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 
 	case WM_KEYUP:
@@ -338,7 +338,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 		}
 		e = std::make_unique<KeyUpEvent>(keyCode);
-		eventHandler.QueueEvent(e);
+		g_eventHandler->QueueEvent(e);
 		break;
 
 	case WM_CHAR:
@@ -357,7 +357,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			default:   // Process a normal character press.            
 				auto ch = static_cast<wchar_t>(wParam);
 				e = std::make_unique<KeyDownEvent>(ch);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 				break;
 		}
 	case WM_MENUCHAR:
@@ -387,7 +387,7 @@ void HandleGamepadInput()
 			if (!upPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			upPressed = true;
 		}
@@ -396,7 +396,7 @@ void HandleGamepadInput()
 			if (upPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_UP, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			upPressed = false;
 		}
@@ -406,7 +406,7 @@ void HandleGamepadInput()
 			if (!downPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			downPressed = true;
 		}
@@ -415,7 +415,7 @@ void HandleGamepadInput()
 			if (downPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_DOWN, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			downPressed = false;
 		}
@@ -425,7 +425,7 @@ void HandleGamepadInput()
 			if (!leftPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_LEFT, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			leftPressed = true;
 		}
@@ -434,7 +434,7 @@ void HandleGamepadInput()
 			if (leftPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_LEFT, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			leftPressed = false;
 		}
@@ -444,7 +444,7 @@ void HandleGamepadInput()
 			if (!rightPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_RIGHT, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			rightPressed = true;
 		}
@@ -453,7 +453,7 @@ void HandleGamepadInput()
 			if (rightPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_DPAD_RIGHT, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			rightPressed = false;
 		}
@@ -463,7 +463,7 @@ void HandleGamepadInput()
 			if (!aPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			aPressed = true;
 		}
@@ -472,7 +472,7 @@ void HandleGamepadInput()
 			if (aPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_A, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			aPressed = false;
 		}
@@ -482,7 +482,7 @@ void HandleGamepadInput()
 			if (!bPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			bPressed = true;
 		}
@@ -491,7 +491,7 @@ void HandleGamepadInput()
 			if (bPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, XINPUT_GAMEPAD_B, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			bPressed = false;
 		}
@@ -501,7 +501,7 @@ void HandleGamepadInput()
 			if (!rTriggerPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, VK_PAD_RTRIGGER, 0, true);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			rTriggerPressed = true;
 		}
@@ -510,7 +510,7 @@ void HandleGamepadInput()
 			if (rTriggerPressed)
 			{
 				std::unique_ptr<Event> e = std::make_unique<GamepadInputEvent>(EventType::GamepadInput, VK_PAD_RTRIGGER, 0, false);
-				eventHandler.QueueEvent(e);
+				g_eventHandler->QueueEvent(e);
 			}
 			rTriggerPressed = false;
 		}

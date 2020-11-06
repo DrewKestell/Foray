@@ -1,13 +1,16 @@
 #include "../stdafx.h"
 #include "Collider.h"
+#include "../Events/EventHandler.h"
 
-Collider::Collider(EventHandler& eventHandler, const unsigned int id, const D2D1_RECT_F rect, GameObject* gameObject)
-	: eventHandler{ eventHandler },
-	  id{ id },
+extern std::unique_ptr<EventHandler> g_eventHandler;
+
+Collider::Collider(const unsigned int id, const D2D1_RECT_F rect, GameObject* gameObject, ColliderType colliderType)
+	: id{ id },
 	  rect{ rect },
-	  gameObject{ gameObject }
+	  gameObject{ gameObject },
+	  colliderType{ colliderType }
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 }
 
 
@@ -40,7 +43,12 @@ GameObject* Collider::GetGameObject()
 	return gameObject;
 }
 
+ColliderType Collider::GetColliderType()
+{
+	return colliderType;
+}
+
 Collider::~Collider()
 {
-	eventHandler.Unsubscribe(*this);
+	g_eventHandler->Unsubscribe(*this);
 }

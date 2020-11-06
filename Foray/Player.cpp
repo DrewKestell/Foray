@@ -4,7 +4,9 @@
 #include <Xinput.h>
 #include "Constants.h"
 #include "DDSTextureLoader.h"
+#include "../Events/EventHandler.h"
 #include "../Events/ChangeActiveLayerEvent.h"
+#include "../Events/FireProjectileEvent.h"
 #include "../Events/GamepadInputEvent.h"
 #include "../Events/KeyDownEvent.h"
 #include "../Events/KeyUpEvent.h"
@@ -17,13 +19,13 @@ extern XMMATRIX g_projectionTransform;
 extern float g_clientWidth;
 extern float g_clientHeight;
 extern unsigned int g_colliderId;
+extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
-Player::Player(EventHandler& eventHandler)
-	: eventHandler{ eventHandler },
-	  collider{ std::make_unique<Collider>(eventHandler, g_colliderId++, D2D1::RectF(position.x - 40.0f, position.y - 40.0f, position.x + 40.0f, position.y + 40.0f), this) }
+Player::Player()
+	: collider{ std::make_unique<Collider>(g_colliderId++, D2D1::RectF(position.x - 30.0f, position.y - 40.0f, position.x + 30.0f, position.y + 40.0f), this) }
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());
 }	
 
@@ -40,29 +42,29 @@ void Player::Initialize(
 	this->vertexShaderSize = vertexShaderSize;
 	this->device = device;
 
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame1.DDS", nullptr, moveTexture_frame1.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame2.DDS", nullptr, moveTexture_frame2.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame3.DDS", nullptr, moveTexture_frame3.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame4.DDS", nullptr, moveTexture_frame4.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame5.DDS", nullptr, moveTexture_frame5.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame1.DDS", nullptr, moveShootTexture_frame1.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame3.DDS", nullptr, moveShootTexture_frame3.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame4.DDS", nullptr, moveShootTexture_frame4.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame5.DDS", nullptr, moveShootTexture_frame5.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpTexture.DDS", nullptr, jumpTexture.ReleaseAndGetAddressOf());
-	DirectX::CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpShootTexture.DDS", nullptr, jumpShootTexture.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame1.DDS", nullptr, moveTexture_frame1.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame2.DDS", nullptr, moveTexture_frame2.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame3.DDS", nullptr, moveTexture_frame3.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame4.DDS", nullptr, moveTexture_frame4.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame5.DDS", nullptr, moveTexture_frame5.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame1.DDS", nullptr, moveShootTexture_frame1.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame3.DDS", nullptr, moveShootTexture_frame3.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame4.DDS", nullptr, moveShootTexture_frame4.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame5.DDS", nullptr, moveShootTexture_frame5.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpTexture.DDS", nullptr, jumpTexture.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpShootTexture.DDS", nullptr, jumpShootTexture.ReleaseAndGetAddressOf());
 }
 
 void Player::Translate(const XMFLOAT2 vector)
 {
 	position += vector;
-	collider->SetRect(D2D1::RectF(position.x - 40.0f, position.y - 40.0f, position.x + 40.0f, position.y + 40.0f));
+	collider->SetRect(D2D1::RectF(position.x - 30.0f, position.y - 40.0f, position.x + 30.0f, position.y + 40.0f));
 }
 
 const CollisionResult Player::CheckCollisionForPosition(const XMFLOAT2 proposedPos) const
 {
-	const auto proposedColliderPos = D2D1::RectF(proposedPos.x - 40.0f, proposedPos.y - 40.0f, proposedPos.x + 40.0f, proposedPos.y + 40.0f);
-	const auto proposedCollider = std::make_unique<Collider>(eventHandler, collider.get()->GetId(), proposedColliderPos, nullptr);
+	const auto proposedColliderPos = D2D1::RectF(proposedPos.x - 30.0f, proposedPos.y - 40.0f, proposedPos.x + 30.0f, proposedPos.y + 40.0f);
+	const auto proposedCollider = std::make_unique<Collider>(collider.get()->GetId(), proposedColliderPos, nullptr);
 	
 	return g_physicsEngine->CheckCollision(proposedCollider.get());
 }
@@ -160,6 +162,15 @@ void Player::Update()
 			canShoot = false;
 			shooting = true;
 			shootAnimationTimer = 0.0f;
+
+			XMFLOAT2 direction;
+			if (mirrorHorizontal)
+				direction = VECTOR_LEFT;
+			else
+				direction = VECTOR_RIGHT;
+
+			std::unique_ptr<Event> e = std::make_unique<FireProjectileEvent>(GameObjectId, position, direction);
+			g_eventHandler->QueueEvent(e);
 		}
 
 		if (shooting)
@@ -388,6 +399,6 @@ const void Player::OnCollision(CollisionResult collisionResult)
 
 Player::~Player()
 {
-	eventHandler.Unsubscribe(*this);
+	g_eventHandler->Unsubscribe(*this);
 	g_physicsEngine->UnregisterCollider(collider.get());
 }

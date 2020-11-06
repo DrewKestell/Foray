@@ -7,21 +7,22 @@
 #include "Constants.h"
 #include "Utility.h"
 #include "Events/Event.h"
+#include "Events/EventHandler.h"
 #include "Events/Observer.h"
 #include "Events/ChangeActiveLayerEvent.h"
 #include "Events/GamepadInputEvent.h"
+#include "Events/FireProjectileEvent.h"
 
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
 unsigned int g_colliderId{ 0 };
+extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
-Game::Game(EventHandler& eventHandler)
-	: eventHandler{ eventHandler },
-	  player{ eventHandler }
+Game::Game()
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 
 	deviceResources = std::make_unique<DeviceResources>();
 	deviceResources->RegisterDeviceNotify(this);
@@ -47,7 +48,7 @@ void Game::Tick()
 
 void Game::PublishEvents()
 {
-	std::queue<std::unique_ptr<const Event>>& eventQueue = eventHandler.GetEventQueue();
+	std::queue<std::unique_ptr<const Event>>& eventQueue = g_eventHandler->GetEventQueue();
 	while (!eventQueue.empty())
 	{
 		auto event = std::move(eventQueue.front());
@@ -60,7 +61,7 @@ void Game::PublishEvents()
 		}
 
 		// next let game objects handle the event
-		std::list<Observer*>& observers = eventHandler.GetObservers();
+		std::list<Observer*>& observers = g_eventHandler->GetObservers();
 		for (auto observer : observers)
 		{
 			observer->HandleEvent(event.get());
@@ -123,6 +124,10 @@ void Game::Render()
 
 	// Draw Sprites
 	player.Draw(d3dContext);
+	
+	// Draw Projectiles
+	for (auto& it : projectiles)
+		it->Draw(d3dContext);
 
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
@@ -145,6 +150,14 @@ const void Game::HandleEvent(const Event* const event)
 					SetActiveLayer(Layer::MainMenu);
 			}
 		}
+		case EventType::FireProjectile:
+		{
+			const auto derivedEvent = (FireProjectileEvent*)event;
+
+			auto projectile = std::make_unique<Projectile>(derivedEvent->ownerId, derivedEvent->position, derivedEvent->velocity);
+			projectile->Initialize(spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, deviceResources->GetD3DDevice());
+			projectiles.push_back(std::move(projectile));
+		}
 	}
 }
 
@@ -153,7 +166,7 @@ void Game::SetActiveLayer(const Layer layer)
 	activeLayer = layer;
 
 	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(layer);
-	eventHandler.QueueEvent(e);
+	g_eventHandler->QueueEvent(e);
 }
 
 ShaderBuffer Game::LoadShader(const std::wstring filename)
@@ -247,7 +260,7 @@ void Game::CreateUIElements()
 		const auto menuItemGroupJson = menuItemGroupsJson[i];
 		const auto menuItemGroupId = menuItemGroupJson["id"].get<std::string>();
 		
-		menuItemGroups[menuItemGroupId] = std::make_unique<UIMenuItemGroup>(Layer::MainMenu, eventHandler);
+		menuItemGroups[menuItemGroupId] = std::make_unique<UIMenuItemGroup>(Layer::MainMenu);
 
 		const auto menuItemsJson = menuItemGroupJson["menuItems"];
 
@@ -317,7 +330,7 @@ void Game::CreateStaticGeometry()
 		const auto radiusX = block["radiusX"].get<float>();
 		const auto radiusY = block["radiusY"].get<float>();
 
-		blocks[id] = std::make_unique<Block>(eventHandler, D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY));
+		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY));
 	}
 }
 

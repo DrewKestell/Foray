@@ -1,16 +1,17 @@
 #include "stdafx.h"
 #include "Block.h"
+#include "Events/EventHandler.h"
 #include "Physics/PhysicsEngine.h"
 
 extern unsigned int g_colliderId;
+extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
-Block::Block(EventHandler& eventHandler, const D2D1_ROUNDED_RECT rect)
-	: eventHandler{ eventHandler },
-	  rect{ rect },
-	  collider{ std::make_unique<Collider>(eventHandler, g_colliderId++, rect.rect, this) }
+Block::Block(const D2D1_ROUNDED_RECT rect)
+	: rect{ rect },
+	  collider{ std::make_unique<Collider>(g_colliderId++, rect.rect, this) }
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());
 }
 
@@ -43,6 +44,6 @@ const void Block::OnCollision(CollisionResult collisionResult)
 
 Block::~Block()
 {
-	eventHandler.Unsubscribe(*this);
+	g_eventHandler->Unsubscribe(*this);
 	g_physicsEngine->UnregisterCollider(collider.get());
 }

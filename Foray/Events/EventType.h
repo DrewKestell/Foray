@@ -13,5 +13,6 @@ enum class EventType
 	KeyUp,
 	WindowResize,
 	ChangeActiveLayer,
-	GamepadInput
+	GamepadInput,
+	FireProjectile
 };

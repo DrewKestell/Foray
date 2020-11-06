@@ -19,6 +19,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />
     <ClCompile Include="Physics\PhysicsEngine.cpp" />
+    <ClCompile Include="Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -58,6 +59,8 @@
     <ClInclude Include="Events\KeyPressEvent.h" />
     <ClInclude Include="Events\KeyUpEvent.h" />
     <ClInclude Include="Physics\CollisionResult.h" />
+    <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Events\FireProjectileEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />
@@ -68,12 +71,15 @@
     <EmbeddedResource Include="Sprites\megaman_moveTexture_frame3.DDS" />
     <EmbeddedResource Include="Sprites\megaman_moveTexture_frame4.DDS" />
     <EmbeddedResource Include="Sprites\megaman_moveTexture_frame5.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_jumpTexture.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_jumpShootTexture.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame1.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame3.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame4.DDS" />
+    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame5.DDS" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
     <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Sprites\megaman_jumpTexture.DDS" />
   </ItemGroup>
 </Project>

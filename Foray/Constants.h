@@ -12,3 +12,6 @@ constexpr auto ARIAL_FONT_FAMILY{ L"Arial" };
 constexpr auto TREBUCHET_FONT_FAMILY{ L"Trebuchet" };
 constexpr auto LOCALE{ L"en-US" };
 constexpr auto BULLET_TEXT{ L"⮡" };
+
+constexpr XMFLOAT2 VECTOR_RIGHT{ 1.0f, 0.0f };
+constexpr XMFLOAT2 VECTOR_LEFT{ -1.0f, 0.0f };

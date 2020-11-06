@@ -2,14 +2,16 @@
 #include <Windows.h>
 #include <Xinput.h>
 #include "UIMenuItemGroup.h"
+#include "../Events/EventHandler.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
 
-UIMenuItemGroup::UIMenuItemGroup(const Layer uiLayer, EventHandler& eventHandler)
-	: uiLayer{ uiLayer },
-	  eventHandler{ eventHandler }
+extern std::unique_ptr<EventHandler> g_eventHandler;
+
+UIMenuItemGroup::UIMenuItemGroup(const Layer uiLayer)
+	: uiLayer{ uiLayer }
 {
-	eventHandler.Subscribe(*this);
+	g_eventHandler->Subscribe(*this);
 }
 
 const void UIMenuItemGroup::HandleEvent(const Event* const event)
@@ -74,5 +76,5 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 
 UIMenuItemGroup::~UIMenuItemGroup()
 {
-	eventHandler.Unsubscribe(*this);
+	g_eventHandler->Unsubscribe(*this);
 }
