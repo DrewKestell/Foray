@@ -39,9 +39,18 @@ void Game::Tick()
 
 		g_physicsEngine->Update();
 		player.Update();
-		for (auto& it : projectiles)
-			it->Update();
 
+		auto i = std::begin(projectiles);
+		while (i != std::end(projectiles)) {
+			if (Utility::IsOffScreen(i->get()->GetBoundingBox()))
+				i = projectiles.erase(i);
+			else
+			{
+				i->get()->Update();
+				++i;
+			}	
+		}
+		
 		updateTimer -= UPDATE_FREQUENCY;
 	}
 	

@@ -112,6 +112,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Sound\AudioSource.h" />
     <ClInclude Include="Shaders\ShaderBuffer.h" />
     <ClInclude Include="Sound\SoundEngine.h" />
     <ClInclude Include="Sprite.h" />
@@ -139,6 +140,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Sound\AudioSource.cpp" />
     <ClCompile Include="Sound\SoundEngine.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="UI\UIMenuItem.cpp" />
@@ -154,6 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Music\song.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundEffects\buster.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Sprites\bullet.DDS">

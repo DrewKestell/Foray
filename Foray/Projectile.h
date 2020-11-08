@@ -41,6 +41,7 @@ public:
 		ID3D11Device* device);
 	void Update();
 	void Draw(ID3D11DeviceContext* d3dContext);
+	const D2D1_RECT_F GetBoundingBox() const;
 	virtual const void HandleEvent(const Event* const event);
 	virtual const void OnCollision(CollisionResult collisionResult);
 	~Projectile();

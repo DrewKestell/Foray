@@ -20,40 +20,11 @@ Sprite::Sprite(
 	const unsigned int zIndex)
 	: vertexShader{ vertexShader },
 	  pixelShader{ pixelShader },
-	  texture{ texture }
+	  texture{ texture },
+	  zIndex{ zIndex },
+	  width{ width },
+	  height{ height }
 {
-	SpriteVertex vertices[4];
-
-	// We use 1 / zIndex here to make sure sprites are correctly drawn in front of each other depending on their zIndex.
-	//   zIndex of 4 should be drawn in front of zIndex of 3. vertices with lower z are drawn in front.
-	//   1 / 3 = 0.3333
-	//   1 / 4 = 0.25
-	const auto z = 1 / static_cast<float>(zIndex);
-
-	// top left
-	SpriteVertex topLeftVertex;
-	topLeftVertex.Position = XMFLOAT3{ originX - (width / 2), originY + (height / 2),  z };
-	topLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 0.0f };
-	vertices[0] = topLeftVertex;
-
-	// top right
-	SpriteVertex topRightVertex;
-	topRightVertex.Position = XMFLOAT3{ originX + (width / 2), originY + (height / 2), z };
-	topRightVertex.TexCoords = XMFLOAT2{ 1.0f, 0.0f };
-	vertices[1] = topRightVertex;
-
-	// bottom right
-	SpriteVertex bottomRightVertex;
-	bottomRightVertex.Position = XMFLOAT3{ originX + (width / 2), originY - (height / 2), z };
-	bottomRightVertex.TexCoords = XMFLOAT2{ 1.0f, 1.0f };
-	vertices[2] = bottomRightVertex;
-
-	// bottom left
-	SpriteVertex bottomLeftVertex;
-	bottomLeftVertex.Position = XMFLOAT3{ originX - (width / 2), originY - (height / 2), z };
-	bottomLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 1.0f };
-	vertices[3] = bottomLeftVertex;
-
 	const unsigned int indices[6]{ 0, 1, 3, 1, 2, 3 };
 
 	// create SamplerState - TODO: pass this in as param
@@ -99,25 +70,68 @@ Sprite::Sprite(
 
 	device->CreateInputLayout(ied, ARRAYSIZE(ied), vertexShaderBuffer, vertexShaderSize, inputLayout.ReleaseAndGetAddressOf());
 
-	// create vertex buffer using existing bufferDesc
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.ByteWidth = UINT{ sizeof(SpriteVertex) * 4 };
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	SetPosition(device, originX, originY);
 
-	D3D11_SUBRESOURCE_DATA vertexData;
-	vertexData.pSysMem = vertices;
-
-	device->CreateBuffer(&bufferDesc, &vertexData, vertexBuffer.ReleaseAndGetAddressOf());
 
 	// create index buffer using existing bufferDesc
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.ByteWidth = UINT{ sizeof(unsigned int) * 6 };
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	D3D11_SUBRESOURCE_DATA indexData;
 	indexData.pSysMem = indices;
 
 	device->CreateBuffer(&bufferDesc, &indexData, indexBuffer.ReleaseAndGetAddressOf());
+}
+
+void Sprite::SetPosition(ID3D11Device* device, const float originX, const float originY)
+{
+	SpriteVertex vertices[4];
+
+	// We use 1 / zIndex here to make sure sprites are correctly drawn in front of each other depending on their zIndex.
+	//   zIndex of 4 should be drawn in front of zIndex of 3. vertices with lower z are drawn in front.
+	//   1 / 3 = 0.3333
+	//   1 / 4 = 0.25
+	const auto z = 1 / static_cast<float>(zIndex);
+
+	// top left
+	SpriteVertex topLeftVertex;
+	topLeftVertex.Position = XMFLOAT3{ originX - (width / 2), originY + (height / 2),  z };
+	topLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 0.0f };
+	vertices[0] = topLeftVertex;
+
+	// top right
+	SpriteVertex topRightVertex;
+	topRightVertex.Position = XMFLOAT3{ originX + (width / 2), originY + (height / 2), z };
+	topRightVertex.TexCoords = XMFLOAT2{ 1.0f, 0.0f };
+	vertices[1] = topRightVertex;
+
+	// bottom right
+	SpriteVertex bottomRightVertex;
+	bottomRightVertex.Position = XMFLOAT3{ originX + (width / 2), originY - (height / 2), z };
+	bottomRightVertex.TexCoords = XMFLOAT2{ 1.0f, 1.0f };
+	vertices[2] = bottomRightVertex;
+
+	// bottom left
+	SpriteVertex bottomLeftVertex;
+	bottomLeftVertex.Position = XMFLOAT3{ originX - (width / 2), originY - (height / 2), z };
+	bottomLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 1.0f };
+	vertices[3] = bottomLeftVertex;
+
+	D3D11_SUBRESOURCE_DATA vertexData;
+	vertexData.pSysMem = vertices;
+
+	// create vertex buffer using existing bufferDesc
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.ByteWidth = UINT{ sizeof(SpriteVertex) * 4 };
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	device->CreateBuffer(&bufferDesc, &vertexData, vertexBuffer.ReleaseAndGetAddressOf());
 }
 
 void Sprite::Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal)

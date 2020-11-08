@@ -11,6 +11,9 @@ using namespace Microsoft::WRL;
 
 class Sprite
 {
+	const unsigned int zIndex;
+	const float width;
+	const float height;
 	ComPtr<ID3D11InputLayout> inputLayout;
 	ComPtr<ID3D11Buffer> constantBuffer;
 	ComPtr<ID3D11Buffer> pixelShaderConstantBuffer;
@@ -35,5 +38,6 @@ public:
 		const float width,
 		const float height,
 		const unsigned int zIndex);
+	void SetPosition(ID3D11Device* device, const float originX, const float originY);
 	void Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal);
 };

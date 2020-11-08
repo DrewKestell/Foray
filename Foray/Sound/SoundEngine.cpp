@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "SoundEngine.h"
 #include "../Events/EventHandler.h"
+#include "../Events/FireProjectileEvent.h"
 
 #ifndef _XBOX //Little-Endian
 #define fourccRIFF 'FFIR'
@@ -16,9 +17,15 @@ extern std::unique_ptr<EventHandler> g_eventHandler;
 SoundEngine::SoundEngine()
 {
 	g_eventHandler->Subscribe(*this);
+}
 
-	XAudio2Create(xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
-	xAudio2->CreateMasteringVoice(masterVoice.GetAddressOf());
+void SoundEngine::Initialize()
+{
+    XAudio2Create(xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
+    xAudio2->CreateMasteringVoice(&masterVoice);
+
+    CreateAudioSource(1, L"./Music/song.wav");
+    CreateAudioSource(2, L"./SoundEffects/buster.wav");
 }
 
 const void SoundEngine::HandleEvent(const Event* const event)
@@ -26,7 +33,14 @@ const void SoundEngine::HandleEvent(const Event* const event)
 	const auto type = event->type;
 	switch (type)
 	{
+        case EventType::FireProjectile:
+        {
+            // TODO: figure out which projectile sound to play.
 
+            PlayAudio(2, 1.0f);
+
+            break;
+        }
 	}
 }
 
@@ -97,6 +111,66 @@ HRESULT SoundEngine::ReadChunkData(HANDLE hFile, void* buffer, DWORD buffersize,
     if (0 == ReadFile(hFile, buffer, buffersize, &dwRead, NULL))
         hr = HRESULT_FROM_WIN32(GetLastError());
     return hr;
+}
+
+HRESULT SoundEngine::CreateAudioSource(const unsigned int audioId, const wchar_t* fileName)
+{
+    WAVEFORMATEXTENSIBLE wfx = { 0 };
+    XAUDIO2_BUFFER buffer = { 0 };
+
+    HANDLE hFile = CreateFile(
+        fileName,
+        GENERIC_READ,
+        FILE_SHARE_READ,
+        NULL,
+        OPEN_EXISTING,
+        0,
+        NULL);
+
+    if (INVALID_HANDLE_VALUE == hFile)
+        return HRESULT_FROM_WIN32(GetLastError());
+
+    if (INVALID_SET_FILE_POINTER == SetFilePointer(hFile, 0, NULL, FILE_BEGIN))
+        return HRESULT_FROM_WIN32(GetLastError());
+
+    DWORD dwChunkSize;
+    DWORD dwChunkPosition;
+    //check the file type, should be fourccWAVE or 'XWMA'
+    FindChunk(hFile, fourccRIFF, dwChunkSize, dwChunkPosition);
+    DWORD filetype;
+    ReadChunkData(hFile, &filetype, sizeof(DWORD), dwChunkPosition);
+    if (filetype != fourccWAVE)
+        return S_FALSE;
+
+    FindChunk(hFile, fourccFMT, dwChunkSize, dwChunkPosition);
+    ReadChunkData(hFile, &wfx, dwChunkSize, dwChunkPosition);
+
+    // fill out the audio data buffer with the contents of the fourccDATA chunk
+    FindChunk(hFile, fourccDATA, dwChunkSize, dwChunkPosition);
+    BYTE* pDataBuffer = new BYTE[dwChunkSize];
+    ReadChunkData(hFile, pDataBuffer, dwChunkSize, dwChunkPosition);
+
+    buffer.AudioBytes = dwChunkSize;  //size of the audio buffer in bytes
+    buffer.pAudioData = pDataBuffer;  //buffer containing audio data
+    buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
+
+    const auto audioSource = AudioSource(wfx, buffer);
+    audioSources.insert({ audioId, audioSource });
+}
+
+void SoundEngine::PlayAudio(const unsigned int audioId, const float volume)
+{
+    // TODO: bounds checking and error handling
+    auto audioSource = audioSources.at(audioId);
+    auto wfx = audioSource.GetWaveFormat();
+    auto buffer = audioSource.GetBuffer();
+
+    IXAudio2SourceVoice* pSourceVoice;
+    xAudio2->CreateSourceVoice(&pSourceVoice, (WAVEFORMATEX*)&wfx);
+    pSourceVoice->SubmitSourceBuffer(&buffer);
+    pSourceVoice->SetVolume(volume);
+
+    pSourceVoice->Start(0);
 }
 
 SoundEngine::~SoundEngine()

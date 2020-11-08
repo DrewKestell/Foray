@@ -14,6 +14,7 @@
 #include "Events/KeyDownEvent.h"
 #include "Events/KeyUpEvent.h"
 #include "Events/GamepadInputEvent.h"
+#include "Sound/SoundEngine.h"
 
 // Global Variables:
 HINSTANCE hInst;
@@ -23,6 +24,7 @@ wchar_t szTitle[] = L"Foray Client";
 static auto gamepad = std::make_unique<Gamepad>(0);
 auto g_eventHandler = std::make_unique<EventHandler>();
 auto g_physicsEngine = std::make_unique<PhysicsEngine>();
+auto g_soundEngine = std::make_unique<SoundEngine>();
 
 static bool upPressed = false;
 static bool downPressed = false;
@@ -52,6 +54,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	const HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 	if (FAILED(hr))
 		return 1;
+
+	g_soundEngine->Initialize();
+	//g_soundEngine->PlayAudio(1, 0.3f);
 
 	static auto game = std::make_unique<Game>();
 
