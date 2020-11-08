@@ -20,6 +20,7 @@
     <ClCompile Include="Physics\Collider.cpp" />
     <ClCompile Include="Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Sound\SoundEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -61,6 +62,8 @@
     <ClInclude Include="Physics\CollisionResult.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
+    <ClInclude Include="Physics\ColliderType.h" />
+    <ClInclude Include="Sound\SoundEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />
@@ -77,6 +80,7 @@
     <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame3.DDS" />
     <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame4.DDS" />
     <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame5.DDS" />
+    <EmbeddedResource Include="Sprites\bullet.DDS" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\SpritePixelShader.hlsl" />

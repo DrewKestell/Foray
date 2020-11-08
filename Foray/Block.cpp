@@ -9,7 +9,7 @@ extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
 Block::Block(const D2D1_ROUNDED_RECT rect)
 	: rect{ rect },
-	  collider{ std::make_unique<Collider>(g_colliderId++, rect.rect, this) }
+	  collider{ std::make_unique<Collider>(g_colliderId++, rect.rect, this, ColliderType::StaticGeometry) }
 {
 	g_eventHandler->Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());

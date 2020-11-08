@@ -39,6 +39,8 @@ void Game::Tick()
 
 		g_physicsEngine->Update();
 		player.Update();
+		for (auto& it : projectiles)
+			it->Update();
 
 		updateTimer -= UPDATE_FREQUENCY;
 	}
@@ -122,13 +124,13 @@ void Game::Render()
 	}
 	d3dContext->OMSetBlendState(blendState.Get(), NULL, 0xFFFFFF);
 
-	// Draw Sprites
-	player.Draw(d3dContext);
-	
 	// Draw Projectiles
 	for (auto& it : projectiles)
 		it->Draw(d3dContext);
 
+	// Draw Sprites
+	player.Draw(d3dContext);
+	
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
 	// Show the new frame.
@@ -149,6 +151,8 @@ const void Game::HandleEvent(const Event* const event)
 				if (activeLayer == Layer::MainOptions)
 					SetActiveLayer(Layer::MainMenu);
 			}
+
+			break;
 		}
 		case EventType::FireProjectile:
 		{
@@ -157,6 +161,8 @@ const void Game::HandleEvent(const Event* const event)
 			auto projectile = std::make_unique<Projectile>(derivedEvent->ownerId, derivedEvent->position, derivedEvent->velocity);
 			projectile->Initialize(spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, deviceResources->GetD3DDevice());
 			projectiles.push_back(std::move(projectile));
+
+			break;
 		}
 	}
 }

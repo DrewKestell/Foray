@@ -105,6 +105,7 @@
     <ClInclude Include="Events\GamepadInputEvent.h" />
     <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Events\Observer.h" />
+    <ClInclude Include="Physics\ColliderType.h" />
     <ClInclude Include="Physics\CollisionResult.h" />
     <ClInclude Include="Physics\PhysicsEngine.h" />
     <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Shaders\ShaderBuffer.h" />
+    <ClInclude Include="Sound\SoundEngine.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteVertex.h" />
     <ClInclude Include="UI\UIMenuItem.h" />
@@ -137,6 +139,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Sound\SoundEngine.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="UI\UIMenuItem.cpp" />
     <ClCompile Include="UI\UIMenuItemGroup.cpp" />

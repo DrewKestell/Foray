@@ -18,7 +18,7 @@ Projectile::Projectile(const unsigned int ownedId, const XMFLOAT2 position, cons
 	: ownerId{ ownerId },
 	  position{ position },
 	  velocity{ velocity },
-	  collider{ std::make_unique<Collider>(g_colliderId++, D2D1::RectF(position.x - 16.0f, position.y - 12.0f, position.x + 16.0f, position.y + 12.0f), this) }
+	  collider{ std::make_unique<Collider>(g_colliderId++, D2D1::RectF(position.x - 16.0f, position.y - 12.0f, position.x + 16.0f, position.y + 12.0f), this, ColliderType::Projectile) }
 {
 	g_eventHandler->Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());
@@ -48,7 +48,7 @@ void Projectile::Translate(const XMFLOAT2 vector)
 
 void Projectile::Update()
 {
-	
+	Translate(XMFLOAT2{ velocity });
 }
 
 void Projectile::Draw(ID3D11DeviceContext* d3dContext)

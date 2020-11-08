@@ -23,7 +23,7 @@ extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
 Player::Player()
-	: collider{ std::make_unique<Collider>(g_colliderId++, D2D1::RectF(position.x - 30.0f, position.y - 40.0f, position.x + 30.0f, position.y + 40.0f), this) }
+	: collider{ std::make_unique<Collider>(g_colliderId++, D2D1::RectF(position.x - 30.0f, position.y - 40.0f, position.x + 30.0f, position.y + 40.0f), this, ColliderType::Player) }
 {
 	g_eventHandler->Subscribe(*this);
 	g_physicsEngine->RegisterCollider(collider.get());
@@ -64,7 +64,7 @@ void Player::Translate(const XMFLOAT2 vector)
 const CollisionResult Player::CheckCollisionForPosition(const XMFLOAT2 proposedPos) const
 {
 	const auto proposedColliderPos = D2D1::RectF(proposedPos.x - 30.0f, proposedPos.y - 40.0f, proposedPos.x + 30.0f, proposedPos.y + 40.0f);
-	const auto proposedCollider = std::make_unique<Collider>(collider.get()->GetId(), proposedColliderPos, nullptr);
+	const auto proposedCollider = std::make_unique<Collider>(collider.get()->GetId(), proposedColliderPos, nullptr, ColliderType::Player);
 	
 	return g_physicsEngine->CheckCollision(proposedCollider.get());
 }
@@ -109,14 +109,14 @@ void Player::Update()
 		const auto proposedVerticalPos = XMFLOAT2{ position.x, position.y + tmpVertVelocity };
 		auto verticalCollisionResult = CheckCollisionForPosition(proposedVerticalPos);
 
-		if (verticalVelocity < 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_TOP) > 0)
+		if (verticalVelocity < 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_TOP) > 0 && verticalCollisionResult.GetCollider()->GetColliderType() == ColliderType::StaticGeometry)
 		{
- 			auto deltaY = collider->GetRect().top - verticalCollisionResult.GetCollider()->GetRect().bottom;
+			auto deltaY = collider->GetRect().top - verticalCollisionResult.GetCollider()->GetRect().bottom;
 			Translate(XMFLOAT2{ 0.0f, -deltaY });
 			verticalVelocity = 0.0f;
 		}
 
-		if (verticalVelocity > 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) > 0)
+		if (verticalVelocity > 0.0f && (verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) > 0 && verticalCollisionResult.GetCollider()->GetColliderType() == ColliderType::StaticGeometry)
 		{
 			auto deltaY = verticalCollisionResult.GetCollider()->GetRect().top - collider->GetRect().bottom;
 			Translate(XMFLOAT2{ 0.0f, deltaY });
@@ -125,13 +125,14 @@ void Player::Update()
 			if (jumpReleased)
 				canJump = true;
 		}
-		else if ((verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) == 0)
+		else if ((verticalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_BOTTOM) == 0 || verticalCollisionResult.GetCollider()->GetColliderType() != ColliderType::StaticGeometry)
 		{
 			if (verticalVelocity < PLAYER_MAX_FALL_VELOCITY)
 				verticalVelocity += PLAYER_DOWNWARD_ACCELERATION;
 
 			Translate(XMFLOAT2{ 0.0f, verticalVelocity });
 		}
+		
 
 		// next handle horizontal movement
 		if (movingLeft || movingRight)
@@ -140,17 +141,17 @@ void Player::Update()
 			const auto proposedHorizontalPos = XMFLOAT2{ position.x + horizontalVelocity, position.y };
 			auto horizontalCollisionResult = CheckCollisionForPosition(proposedHorizontalPos);
 
-			if (movingRight && (horizontalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_RIGHT) > 0)
+			if (movingRight && (horizontalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_RIGHT) > 0 && horizontalCollisionResult.GetCollider()->GetColliderType() == ColliderType::StaticGeometry)
 			{
 				auto deltaX = horizontalCollisionResult.GetCollider()->GetRect().left - collider->GetRect().right;
 				Translate(XMFLOAT2{ deltaX, 0.0f });
 			}
-			else if (movingLeft && (horizontalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_LEFT) > 0)
+			else if (movingLeft && (horizontalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_LEFT) > 0 && horizontalCollisionResult.GetCollider()->GetColliderType() == ColliderType::StaticGeometry)
 			{
 				auto deltaX = collider->GetRect().left - horizontalCollisionResult.GetCollider()->GetRect().right;
 				Translate(XMFLOAT2{ -deltaX, 0.0f });
 			}
-			else
+			else if (horizontalCollisionResult.GetCollisionDirection() == COLLISION_DIRECTION_NONE || horizontalCollisionResult.GetCollider()->GetColliderType() != ColliderType::StaticGeometry)
 			{
 				Translate(XMFLOAT2{ horizontalVelocity, 0.0f });
 			}
@@ -163,13 +164,9 @@ void Player::Update()
 			shooting = true;
 			shootAnimationTimer = 0.0f;
 
-			XMFLOAT2 direction;
-			if (mirrorHorizontal)
-				direction = VECTOR_LEFT;
-			else
-				direction = VECTOR_RIGHT;
-
-			std::unique_ptr<Event> e = std::make_unique<FireProjectileEvent>(GameObjectId, position, direction);
+			const XMFLOAT2 direction = mirrorHorizontal ? XMFLOAT2{ -8.0f, 0.0f } : XMFLOAT2{ 8.0f, 0.0f };
+			const XMFLOAT2 spawnPosition = mirrorHorizontal ? position + XMFLOAT2{ -35.0f, 5.0f } : position + XMFLOAT2{ 35.0f, 5.0f };
+			std::unique_ptr<Event> e = std::make_unique<FireProjectileEvent>(GameObjectId, spawnPosition, direction);
 			g_eventHandler->QueueEvent(e);
 		}
 
