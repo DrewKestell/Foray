@@ -1,8 +1,5 @@
 #pragma once
 
-#include <queue>
-#include <list>
-#include <memory>
 #include "Event.h"
 
 class Observer;

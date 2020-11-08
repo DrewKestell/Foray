@@ -1,14 +1,11 @@
 #pragma once
 
-#include <DirectXMath.h>
 #include "Layer.h"
 #include "UIComponentArgs.h"
-#include "../DeviceResources.h"
+#include "../Graphics/DeviceResources.h"
 #include "../Extensions.h"
 #include "../Events/Event.h"
 #include "../Events/Observer.h"
-
-using namespace DirectX;
 
 class UIComponent : public Observer
 {

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <DirectXMath.h>
-
-using namespace DirectX;
+#include "../stdafx.h"
 
 struct ConstantBufferPerObject
 {

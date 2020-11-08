@@ -1,13 +1,9 @@
 #pragma once
 
-#include <d3d11.h>
-#include <wrl/client.h>
 #include "SpriteVertex.h"
 
 constexpr unsigned int SPRITE_STRIDE = sizeof(SpriteVertex);
 constexpr unsigned int SPRITE_OFFSET = 0;
-
-using namespace Microsoft::WRL;
 
 class Sprite
 {

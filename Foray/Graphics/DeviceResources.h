@@ -1,13 +1,5 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11_1.h>
-#include <dxgi1_6.h>
-#include <d2d1_3.h>
-#include <dwrite_3.h>
-
-using Microsoft::WRL::ComPtr;
-
 // Provides an interface for an application that owns DeviceResources to be notified of the device being lost or created.
 struct IDeviceNotify
 {

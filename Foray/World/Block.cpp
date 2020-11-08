@@ -1,7 +1,7 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "Block.h"
-#include "Events/EventHandler.h"
-#include "Physics/PhysicsEngine.h"
+#include "../Events/EventHandler.h"
+#include "../Physics/PhysicsEngine.h"
 
 extern unsigned int g_colliderId;
 extern std::unique_ptr<EventHandler> g_eventHandler;

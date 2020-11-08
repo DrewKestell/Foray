@@ -1,6 +1,4 @@
 #include "../stdafx.h"
-#include <Windows.h>
-#include <Xinput.h>
 #include "UIMenuItemGroup.h"
 #include "../Events/EventHandler.h"
 #include "../Events/ChangeActiveLayerEvent.h"

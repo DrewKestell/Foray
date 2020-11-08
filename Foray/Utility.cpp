@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include <Windows.h>
 #include "Utility.h"
 
 extern float g_clientWidth;

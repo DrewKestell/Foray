@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Events\EventHandler.cpp" />
     <ClCompile Include="Foray.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -13,19 +12,20 @@
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="UI\UIMenuItem.cpp" />
     <ClCompile Include="UI\UIMenuItemGroup.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="DDSTextureLoader.cpp" />
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />
     <ClCompile Include="Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="Sound\SoundEngine.cpp" />
     <ClCompile Include="Sound\AudioSource.cpp" />
+    <ClCompile Include="Sound\SoundEngine.cpp" />
+    <ClCompile Include="Graphics\RenderingEngine.cpp" />
+    <ClCompile Include="Graphics\Sprite.cpp" />
+    <ClCompile Include="Graphics\DDSTextureLoader.cpp" />
+    <ClCompile Include="World\Block.cpp" />
+    <ClCompile Include="Graphics\DeviceResources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventHandler.h" />
     <ClInclude Include="Events\EventType.h" />
@@ -46,14 +46,7 @@
     <ClInclude Include="UI\UIMenuItem.h" />
     <ClInclude Include="UI\UIMenuItemGroup.h" />
     <ClInclude Include="Events\GamepadInputEvent.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteVertex.h" />
-    <ClInclude Include="ConstantBufferPerObject.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Shaders\ShaderBuffer.h" />
-    <ClInclude Include="DDSTextureLoader.h" />
-    <ClInclude Include="PixelShaderConstantBufferPerObject.h" />
-    <ClInclude Include="Block.h" />
     <ClInclude Include="Physics\PhysicsEngine.h" />
     <ClInclude Include="Physics\Collider.h" />
     <ClInclude Include="GameObject.h" />
@@ -64,29 +57,39 @@
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Physics\ColliderType.h" />
-    <ClInclude Include="Sound\SoundEngine.h" />
     <ClInclude Include="Sound\AudioSource.h" />
+    <ClInclude Include="Sound\SoundEngine.h" />
+    <ClInclude Include="Graphics\RenderingEngine.h" />
+    <ClInclude Include="Graphics\Sprite.h" />
+    <ClInclude Include="Graphics\SpriteVertex.h" />
+    <ClInclude Include="Graphics\ConstantBufferPerObject.h" />
+    <ClInclude Include="Graphics\DDSTextureLoader.h" />
+    <ClInclude Include="Graphics\PixelShaderConstantBufferPerObject.h" />
+    <ClInclude Include="Graphics\Shaders\ShaderBuffer.h" />
+    <ClInclude Include="World\Block.h" />
+    <ClInclude Include="Graphics\DeviceResources.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />
     <EmbeddedResource Include="UI\ui-elements.json" />
     <EmbeddedResource Include="World\static-geometry.json" />
-    <EmbeddedResource Include="Sprites\megaman_moveTexture_frame1.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveTexture_frame2.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveTexture_frame3.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveTexture_frame4.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveTexture_frame5.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_jumpTexture.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_jumpShootTexture.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame1.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame3.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame4.DDS" />
-    <EmbeddedResource Include="Sprites\megaman_moveShootTexture_frame5.DDS" />
-    <EmbeddedResource Include="Sprites\bullet.DDS" />
-    <EmbeddedResource Include="Music\song.wav" />
+    <EmbeddedResource Include="Sound\SoundEffects\buster.wav" />
+    <EmbeddedResource Include="Sound\Music\song.wav" />
+    <EmbeddedResource Include="Graphics\Textures\bullet.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_jumpShootTexture.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_jumpTexture.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveShootTexture_frame1.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveShootTexture_frame3.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveShootTexture_frame4.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveShootTexture_frame5.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame1.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame2.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame3.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame4.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame5.DDS" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\SpritePixelShader.hlsl" />
-    <FxCompile Include="Shaders\SpriteVertexShader.hlsl" />
+    <FxCompile Include="Graphics\Shaders\SpritePixelShader.hlsl" />
+    <FxCompile Include="Graphics\Shaders\SpriteVertexShader.hlsl" />
   </ItemGroup>
 </Project>

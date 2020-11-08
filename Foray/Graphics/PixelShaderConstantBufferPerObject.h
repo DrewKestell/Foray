@@ -2,7 +2,7 @@
 
 struct PixelShaderConstantBufferPerObject
 {
-	BOOL gMirrorHorizontal;
+	bool gMirrorHorizontal;
 	int pack1;
 	int pack2;
 	int pack3;

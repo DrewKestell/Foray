@@ -1,12 +1,9 @@
 #include "stdafx.h"
 #include "Projectile.h"
-#include "DDSTextureLoader.h"
 #include "Physics/PhysicsEngine.h"
 #include "Events/EventHandler.h"
 #include "Events/ChangeActiveLayerEvent.h"
 #include "Utility.h"
-
-using namespace DirectX;
 
 extern XMMATRIX g_projectionTransform;
 extern float g_clientWidth;

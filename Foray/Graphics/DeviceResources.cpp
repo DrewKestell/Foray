@@ -1,11 +1,5 @@
-#include "stdafx.h"
-#include <vcruntime_exception.h>
+#include "../stdafx.h"
 #include "DeviceResources.h"
-#include <algorithm>
-
-#ifdef _DEBUG
-#include <dxgidebug.h>
-#endif
 
 DeviceResources::DeviceResources() noexcept
 {

@@ -1,11 +1,4 @@
 #include "stdafx.h"
-#include <Windows.h>
-#include <windowsx.h>
-#include <wrl/client.h>
-#include <DirectXMath.h>
-#include <memory>
-#include <io.h>
-#include <fcntl.h>
 #include "Game.h"
 #include "Constants.h"
 #include "Events/Event.h"
@@ -48,7 +41,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	fp = _fdopen(hConsole, "w");
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 
-	if (!DirectX::XMVerifyCPUSupport())
+	if (!XMVerifyCPUSupport())
 		return 1;
 
 	const HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);

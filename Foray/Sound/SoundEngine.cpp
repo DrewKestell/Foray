@@ -24,8 +24,8 @@ void SoundEngine::Initialize()
     XAudio2Create(xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
     xAudio2->CreateMasteringVoice(&masterVoice);
 
-    CreateAudioSource(1, L"./Music/song.wav");
-    CreateAudioSource(2, L"./SoundEffects/buster.wav");
+    CreateAudioSource(1, L"./Sound/Music/song.wav");
+    CreateAudioSource(2, L"./Sound/SoundEffects/buster.wav");
 }
 
 const void SoundEngine::HandleEvent(const Event* const event)
@@ -96,7 +96,6 @@ HRESULT SoundEngine::FindChunk(HANDLE hFile, DWORD fourcc, DWORD& dwChunkSize, D
         dwOffset += dwChunkDataSize;
 
         if (bytesRead >= dwRIFFDataSize) return S_FALSE;
-
     }
 
     return S_OK;

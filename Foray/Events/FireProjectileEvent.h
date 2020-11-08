@@ -1,9 +1,6 @@
 #pragma once
 
-#include <DirectXMath.h>
 #include "Event.h"
-
-using namespace DirectX;
 
 class FireProjectileEvent : public Event
 {

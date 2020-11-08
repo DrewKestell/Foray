@@ -1,20 +1,16 @@
 #pragma once
 
-#include <memory>
 #include "Gamepad.h"
 #include "GameTimer.h"
 #include "Player.h"
-#include "Block.h"
-#include "DeviceResources.h"
-#include "Shaders/ShaderBuffer.h"
+#include "World/Block.h"
+#include "Graphics/DeviceResources.h"
+#include "Graphics/Shaders/ShaderBuffer.h"
 #include "Events/Observer.h"
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
 #include "Physics/PhysicsEngine.h"
-#include "Include/nlohmann/json.hpp"
-
-using json = nlohmann::json;
 
 const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
 {

@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Player.h"
-#include <Windows.h>
-#include <Xinput.h>
 #include "Constants.h"
-#include "DDSTextureLoader.h"
 #include "../Events/EventHandler.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/FireProjectileEvent.h"
@@ -11,9 +8,6 @@
 #include "../Events/KeyDownEvent.h"
 #include "../Events/KeyUpEvent.h"
 #include "Physics/PhysicsEngine.h"
-#include <iostream>
-
-using namespace DirectX;
 
 extern XMMATRIX g_projectionTransform;
 extern float g_clientWidth;

@@ -1,6 +1,5 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "Sprite.h"
-#include <DirectXMath.h>
 #include "ConstantBufferPerObject.h"
 #include "PixelShaderConstantBufferPerObject.h"
 

@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Sprite.h"
-#include <memory>
+#include "Graphics/Sprite.h"
 #include "Physics/Collider.h"
 #include "Physics/CollisionResult.h"
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "GameObject.h"
 #include "Projectile.h"
-
-using namespace DirectX;
 
 class Player : public Observer, public GameObject
 {

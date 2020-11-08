@@ -13,11 +13,8 @@
 // http://go.microsoft.com/fwlink/?LinkId=248926
 // http://go.microsoft.com/fwlink/?LinkId=248929
 //--------------------------------------------------------------------------------------
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "DDSTextureLoader.h"
-#include <memory>
-#include <algorithm>
-#include <assert.h>
 
 #if !defined(NO_D3D11_DEBUG_NAME) && ( defined(_DEBUG) || defined(PROFILE) )
 #pragma comment(lib,"dxguid.lib")

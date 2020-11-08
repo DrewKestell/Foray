@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
 #include "UI/Layer.h"
 #include "Events/Observer.h"
 #include "GameObject.h"
-#include "Sprite.h"
+#include "Graphics/Sprite.h"
 #include "Physics/Collider.h"
 
 class Projectile : public Observer, public GameObject

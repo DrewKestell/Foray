@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Gamepad.h"
 
 Gamepad::Gamepad(const int controllerNumber)

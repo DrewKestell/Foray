@@ -1,11 +1,7 @@
 #pragma once
 
-#include <xaudio2.h>
-#include <vector>
-#include <unordered_map>
 #include "AudioSource.h"
 #include "../Events/Observer.h"
-#include "../DeviceResources.h"
 
 class SoundEngine : public Observer
 {

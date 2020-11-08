@@ -1,5 +1,4 @@
 #include "../stdafx.h"
-#include <cfloat>
 #include "UILabel.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Utility.h"

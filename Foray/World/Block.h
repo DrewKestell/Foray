@@ -1,13 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <d2d1_3.h>
-#include <wrl/client.h>
-#include "Physics/Collider.h"
-#include "Physics/CollisionResult.h"
-#include "Events/Observer.h"
+#include "../Physics/Collider.h"
+#include "../Physics/CollisionResult.h"
+#include "../Events/Observer.h"
 
-using namespace Microsoft::WRL;
 
 class Block : public Observer, public GameObject
 {

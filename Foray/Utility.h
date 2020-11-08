@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <d2d1_3.h>
-
 class Utility
 {
 public:

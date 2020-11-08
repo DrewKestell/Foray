@@ -1,8 +1,4 @@
 ﻿#include "stdafx.h"
-#include <queue>
-#include <DirectXColors.h>
-#include <fstream>
-#include <iostream>
 #include "Game.h"
 #include "Constants.h"
 #include "Utility.h"
@@ -89,7 +85,7 @@ void Game::Render()
 	auto renderTarget = deviceResources->GetOffscreenRenderTargetView();
 	auto depthStencil = deviceResources->GetDepthStencilView();
 
-	d3dContext->ClearRenderTargetView(renderTarget, DirectX::Colors::CornflowerBlue);
+	d3dContext->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
 	d3dContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	d3dContext->OMSetRenderTargets(1, &renderTarget, depthStencil);
 

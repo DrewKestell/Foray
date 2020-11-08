@@ -4,7 +4,7 @@
 #include "../Events/Observer.h"
 #include "Collider.h"
 #include "CollisionResult.h"
-#include "../DeviceResources.h"
+#include "../Graphics/DeviceResources.h"
 
 class PhysicsEngine : public Observer
 {

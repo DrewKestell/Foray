@@ -1,7 +1,4 @@
 #include "../stdafx.h"
-#include <Windows.h>
-#include <Xinput.h>
-#include <cfloat>
 #include "UIMenuItem.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
