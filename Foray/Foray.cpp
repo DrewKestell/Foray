@@ -8,6 +8,7 @@
 #include "Events/KeyUpEvent.h"
 #include "Events/GamepadInputEvent.h"
 #include "Sound/SoundEngine.h"
+#include "Physics/PhysicsEngine.h"
 
 // Global Variables:
 HINSTANCE hInst;

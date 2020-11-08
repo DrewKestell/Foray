@@ -10,7 +10,6 @@
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
-#include "Physics/PhysicsEngine.h"
 
 const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
 {
@@ -58,7 +57,6 @@ private:
 	ComPtr<ID3D11BlendState> blendState;
 
 	void PublishEvents();
-	void Render();
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
 	ShaderBuffer LoadShader(const std::wstring filename);
