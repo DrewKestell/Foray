@@ -36,17 +36,17 @@ void Player::Initialize(
 	this->vertexShaderSize = vertexShaderSize;
 	this->device = device;
 
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame1.DDS", nullptr, moveTexture_frame1.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame2.DDS", nullptr, moveTexture_frame2.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame3.DDS", nullptr, moveTexture_frame3.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame4.DDS", nullptr, moveTexture_frame4.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveTexture_frame5.DDS", nullptr, moveTexture_frame5.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame1.DDS", nullptr, moveShootTexture_frame1.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame3.DDS", nullptr, moveShootTexture_frame3.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame4.DDS", nullptr, moveShootTexture_frame4.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_moveShootTexture_frame5.DDS", nullptr, moveShootTexture_frame5.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpTexture.DDS", nullptr, jumpTexture.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"./Sprites/megaman_jumpShootTexture.DDS", nullptr, jumpShootTexture.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveTexture_frame1.DDS", nullptr, moveTexture_frame1.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveTexture_frame2.DDS", nullptr, moveTexture_frame2.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveTexture_frame3.DDS", nullptr, moveTexture_frame3.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveTexture_frame4.DDS", nullptr, moveTexture_frame4.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveTexture_frame5.DDS", nullptr, moveTexture_frame5.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveShootTexture_frame1.DDS", nullptr, moveShootTexture_frame1.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveShootTexture_frame3.DDS", nullptr, moveShootTexture_frame3.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveShootTexture_frame4.DDS", nullptr, moveShootTexture_frame4.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_moveShootTexture_frame5.DDS", nullptr, moveShootTexture_frame5.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_jumpTexture.DDS", nullptr, jumpTexture.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/megaman_jumpShootTexture.DDS", nullptr, jumpShootTexture.ReleaseAndGetAddressOf());
 }
 
 void Player::Translate(const XMFLOAT2 vector)
@@ -208,13 +208,8 @@ void Player::Update()
 		}
 		else
 			moveAnimationTimer = 0.0f;
-	}
-}
 
-void Player::Draw(ID3D11DeviceContext* d3dContext)
-{
-	if (activeLayer == Layer::Game)
-	{
+		// setup sprite
 		XMFLOAT3 pos{ position.x, position.y, 0.0f };
 		FXMVECTOR v = XMLoadFloat3(&pos);
 		CXMMATRIX view = XMMatrixIdentity();
@@ -269,9 +264,7 @@ void Player::Draw(ID3D11DeviceContext* d3dContext)
 		auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
 		XMFLOAT3 vec;
 		XMStoreFloat3(&vec, res);
-		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 95.0f, 80.0f, 3);
-
-		sprite->Draw(d3dContext, mirrorHorizontal);
+		sprite = std::make_unique<Sprite>(vertexShader, pixelShader, texture, vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 95.0f, 80.0f, 3, mirrorHorizontal);
 	}
 }
 

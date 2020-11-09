@@ -2,8 +2,10 @@
 #include "Sprite.h"
 #include "ConstantBufferPerObject.h"
 #include "PixelShaderConstantBufferPerObject.h"
+#include "RenderingEngine.h"
 
 extern XMMATRIX g_projectionTransform;
+extern std::unique_ptr<RenderingEngine> g_renderingEngine;
 
 Sprite::Sprite(
 	ID3D11VertexShader* vertexShader,
@@ -16,13 +18,15 @@ Sprite::Sprite(
 	const float originY,
 	const float width,
 	const float height,
-	const unsigned int zIndex)
+	const unsigned int zIndex,
+	const bool mirrorHorizontal)
 	: vertexShader{ vertexShader },
 	  pixelShader{ pixelShader },
 	  texture{ texture },
 	  zIndex{ zIndex },
 	  width{ width },
-	  height{ height }
+	  height{ height },
+	  mirrorHorizontal{ mirrorHorizontal }
 {
 	const unsigned int indices[6]{ 0, 1, 3, 1, 2, 3 };
 
@@ -82,6 +86,8 @@ Sprite::Sprite(
 	indexData.pSysMem = indices;
 
 	device->CreateBuffer(&bufferDesc, &indexData, indexBuffer.ReleaseAndGetAddressOf());
+
+	g_renderingEngine->AddSprite(this);
 }
 
 void Sprite::SetPosition(ID3D11Device* device, const float originX, const float originY)
@@ -133,7 +139,7 @@ void Sprite::SetPosition(ID3D11Device* device, const float originX, const float 
 	device->CreateBuffer(&bufferDesc, &vertexData, vertexBuffer.ReleaseAndGetAddressOf());
 }
 
-void Sprite::Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal)
+void Sprite::Draw(ID3D11DeviceContext* immediateContext)
 {
 	// set InputLayout
 	immediateContext->IASetInputLayout(inputLayout.Get());
@@ -167,4 +173,9 @@ void Sprite::Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizo
 	immediateContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	immediateContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	immediateContext->DrawIndexed(6, 0, 0);
+}
+
+Sprite::~Sprite()
+{
+	g_renderingEngine->RemoveSprite(this);
 }

@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Graphics\RenderComponenth.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Events\KeyDownEvent.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="UI\UILabel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\RenderComponent.cpp" />
     <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />

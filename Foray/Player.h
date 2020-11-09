@@ -67,7 +67,6 @@ public:
 		const int vertexShaderSize,
 		ID3D11Device* device);
 	void Update();
-	void Draw(ID3D11DeviceContext* d3dContext);
 	virtual const void HandleEvent(const Event* const event);
 	virtual const void OnCollision(CollisionResult collisionResult);
 	~Player();

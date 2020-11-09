@@ -1,9 +1,19 @@
 #include "../stdafx.h"
 #include "RenderingEngine.h"
+#include "../Events/ChangeActiveLayerEvent.h"
+#include "../Events/EventHandler.h"
 
-RenderingEngine::RenderingEngine(DeviceResources* deviceResources)
-	: deviceResources{ deviceResources }
+extern std::unique_ptr<EventHandler> g_eventHandler;
+
+RenderingEngine::RenderingEngine(
+	DeviceResources* deviceResources,
+	std::vector<UIComponent*>& uiComponents,
+	std::unordered_map<std::string, std::unique_ptr<Block>>& blocks)
+	: deviceResources{ deviceResources },
+	  uiComponents{ uiComponents },
+	  blocks{ blocks }
 {
+	g_eventHandler->Subscribe(*this);
 }
 
 void RenderingEngine::DrawScene()
@@ -37,7 +47,7 @@ void RenderingEngine::DrawScene()
 	}
 
 	// Debug
-	//g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
+		//g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
 
 	d2dContext->EndDraw();
 
@@ -54,18 +64,48 @@ void RenderingEngine::DrawScene()
 	blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
+	ComPtr<ID3D11BlendState> blendState;
 	d3dDevice->CreateBlendState(&blendStateDesc, blendState.ReleaseAndGetAddressOf());
 	d3dContext->OMSetBlendState(blendState.Get(), NULL, 0xFFFFFF);
 
 	// Draw Projectiles
-	for (auto& it : projectiles)
+	for (auto& it : sprites)
 		it->Draw(d3dContext);
-
-	// Draw Sprites
-	player.Draw(d3dContext);
 
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
 	// Show the new frame.
 	deviceResources->Present();
+}
+
+void RenderingEngine::AddSprite(Sprite* sprite)
+{
+	sprites.push_back(sprite);
+}
+
+void RenderingEngine::RemoveSprite(Sprite* sprite)
+{
+	auto it = std::find(sprites.begin(), sprites.end(), sprite);
+	sprites.erase(it);
+}
+
+const void RenderingEngine::HandleEvent(const Event* const event)
+{
+	const auto type = event->type;
+	switch (type)
+	{
+		case EventType::ChangeActiveLayer:
+		{
+			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
+
+			activeLayer = derivedEvent->layer;
+
+			break;
+		}
+	}
+}
+
+RenderingEngine::~RenderingEngine()
+{
+	g_eventHandler->Unsubscribe(*this);
 }

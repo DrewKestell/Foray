@@ -23,6 +23,7 @@
     <ClCompile Include="Graphics\DDSTextureLoader.cpp" />
     <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\DeviceResources.cpp" />
+    <ClCompile Include="Graphics\RenderComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="Graphics\Shaders\ShaderBuffer.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
+    <ClInclude Include="Graphics\RenderComponenth.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

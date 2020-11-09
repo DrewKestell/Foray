@@ -40,12 +40,12 @@ void Projectile::Initialize(
 	CXMMATRIX view = XMMatrixIdentity();
 	CXMMATRIX world = XMMatrixIdentity();
 
-	CreateDDSTextureFromFile(device, L"./Sprites/bullet.DDS", nullptr, bulletTexture.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"./Graphics/Textures/bullet.DDS", nullptr, bulletTexture.ReleaseAndGetAddressOf());
 
 	auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
 	XMFLOAT3 vec;
 	XMStoreFloat3(&vec, res);
-	sprite = std::make_unique<Sprite>(vertexShader, pixelShader, bulletTexture.Get(), vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 16.0f, 12.0f, 3);
+	sprite = std::make_unique<Sprite>(vertexShader, pixelShader, bulletTexture.Get(), vertexShaderBuffer, vertexShaderSize, device, vec.x, vec.y, 16.0f, 12.0f, 3, false);
 }
 
 void Projectile::Translate(const XMFLOAT2 vector)
@@ -67,14 +67,6 @@ void Projectile::Translate(const XMFLOAT2 vector)
 void Projectile::Update()
 {
 	Translate(XMFLOAT2{ velocity });
-}
-
-void Projectile::Draw(ID3D11DeviceContext* d3dContext)
-{
-	if (activeLayer == Layer::Game)
-	{
-		sprite->Draw(d3dContext, false);
-	}
 }
 
 const D2D1_RECT_F Projectile::GetBoundingBox() const

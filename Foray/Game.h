@@ -54,8 +54,6 @@ private:
 	Player player;
 	float updateTimer{ 0.0f };
 
-	ComPtr<ID3D11BlendState> blendState;
-
 	void PublishEvents();
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);

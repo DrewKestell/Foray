@@ -7,6 +7,7 @@ constexpr unsigned int SPRITE_OFFSET = 0;
 
 class Sprite
 {
+	const bool mirrorHorizontal;
 	const unsigned int zIndex;
 	const float width;
 	const float height;
@@ -33,7 +34,9 @@ public:
 		const float originY,
 		const float width,
 		const float height,
-		const unsigned int zIndex);
+		const unsigned int zIndex,
+		const bool mirrorHorizontal);
 	void SetPosition(ID3D11Device* device, const float originX, const float originY);
-	void Draw(ID3D11DeviceContext* immediateContext, const bool mirrorHorizontal);
+	void Draw(ID3D11DeviceContext* immediateContext);
+	~Sprite();
 };

@@ -26,7 +26,7 @@ Game::Game()
 	deviceResources = std::make_unique<DeviceResources>();
 	deviceResources->RegisterDeviceNotify(this);
 
-	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get());
+	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks);
 }
 
 void Game::Tick()
