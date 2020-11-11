@@ -88,7 +88,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Graphics\RenderComponenth.h" />
+    <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="Graphics\RenderComponent.h" />
+    <ClInclude Include="Physics\PhysicsComponent.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Events\KeyDownEvent.h" />
@@ -113,11 +115,9 @@
     <ClInclude Include="Graphics\PixelShaderConstantBufferPerObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Graphics\DDSTextureLoader.h" />
-    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Sound\AudioSource.h" />
     <ClInclude Include="Graphics\Shaders\ShaderBuffer.h" />
     <ClInclude Include="Sound\SoundEngine.h" />
-    <ClInclude Include="Graphics\Sprite.h" />
     <ClInclude Include="Graphics\SpriteVertex.h" />
     <ClInclude Include="UI\UIMenuItem.h" />
     <ClInclude Include="UI\UIMenuItemGroup.h" />
@@ -134,7 +134,10 @@
     <ClInclude Include="UI\UILabel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BehaviorComponent.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics\RenderComponent.cpp" />
+    <ClCompile Include="Physics\PhysicsComponent.cpp" />
     <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />
@@ -143,10 +146,8 @@
     <ClCompile Include="Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Graphics\DDSTextureLoader.cpp" />
-    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Sound\AudioSource.cpp" />
     <ClCompile Include="Sound\SoundEngine.cpp" />
-    <ClCompile Include="Graphics\Sprite.cpp" />
     <ClCompile Include="UI\UIMenuItem.cpp" />
     <ClCompile Include="UI\UIMenuItemGroup.cpp" />
     <ClCompile Include="Utility.cpp" />

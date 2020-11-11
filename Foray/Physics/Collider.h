@@ -1,26 +1,30 @@
 #pragma once
 
-#include <d2d1_3.h>
 #include "ColliderType.h"
 #include "../Events/Observer.h"
-#include "../GameObject.h"
+
+class GameObject;
 
 class Collider : public Observer
 {
 private:
 	// constructor params
-	const unsigned int id;
-	D2D1_RECT_F rect;
-	GameObject* gameObject;
-	ColliderType colliderType;
-
+	GameObject& gameObject;
+	
 public:
-	Collider(const unsigned int id, const D2D1_RECT_F rect, GameObject* gameObject, ColliderType colliderType);
-	virtual const void HandleEvent(const Event* const event);
-	const unsigned int GetId() const;
+	ColliderType Type;
+	const float Width;
+	const float Height;
+	XMFLOAT2 Position;
+
+	Collider(
+		GameObject& gameObject,
+		ColliderType type,
+		const float width,
+		const float height,
+		const XMFLOAT2 position);
+	GameObject& GetGameObject();
 	const D2D1_RECT_F GetRect() const;
-	const void SetRect(const D2D1_RECT_F rect);
-	GameObject* GetGameObject();
-	ColliderType GetColliderType();
+	virtual const void HandleEvent(const Event* const event);
 	~Collider();
 };

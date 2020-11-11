@@ -1,18 +1,26 @@
 #include "../stdafx.h"
 #include "Collider.h"
+#include "PhysicsEngine.h"
 #include "../Events/EventHandler.h"
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
+extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
-Collider::Collider(const unsigned int id, const D2D1_RECT_F rect, GameObject* gameObject, ColliderType colliderType)
-	: id{ id },
-	  rect{ rect },
-	  gameObject{ gameObject },
-	  colliderType{ colliderType }
+Collider::Collider(
+	GameObject& gameObject,
+	ColliderType type,
+	const float width,
+	const float height,
+	const XMFLOAT2 position)
+	: gameObject{ gameObject },
+	  Type{ type},
+	  Width{ width },
+	  Height{ height },
+	  Position{ position }
 {
 	g_eventHandler->Subscribe(*this);
+	g_physicsEngine->RegisterCollider(this);
 }
-
 
 const void Collider::HandleEvent(const Event* const event)
 {
@@ -23,32 +31,24 @@ const void Collider::HandleEvent(const Event* const event)
 	}
 }
 
-const unsigned int Collider::GetId() const
-{
-	return id;
-}
-
 const D2D1_RECT_F Collider::GetRect() const
 {
-	return rect;
+	return D2D1_RECT_F
+	{
+		Position.x - (Width / 2),
+		Position.y - (Height / 2),
+		Position.x + (Width / 2),
+		Position.y + (Height / 2)
+	};
 }
 
-const void Collider::SetRect(const D2D1_RECT_F rect)
-{
-	this->rect = rect;
-}
-
-GameObject* Collider::GetGameObject()
+GameObject& Collider::GetGameObject()
 {
 	return gameObject;
-}
-
-ColliderType Collider::GetColliderType()
-{
-	return colliderType;
 }
 
 Collider::~Collider()
 {
 	g_eventHandler->Unsubscribe(*this);
+	g_physicsEngine->UnregisterCollider(this);
 }

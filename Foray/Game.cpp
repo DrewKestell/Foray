@@ -14,7 +14,6 @@
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
-unsigned int g_colliderId{ 0 };
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 std::unique_ptr<RenderingEngine> g_renderingEngine;
@@ -25,8 +24,6 @@ Game::Game()
 
 	deviceResources = std::make_unique<DeviceResources>();
 	deviceResources->RegisterDeviceNotify(this);
-
-	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks);
 }
 
 void Game::Tick()
@@ -38,20 +35,15 @@ void Game::Tick()
 	{
 		PublishEvents();
 
-		g_physicsEngine->Update();
-		player.Update();
+		player->Update();
 
-		// TODO: find the right place to put this. can projectile remove itself?
-		auto i = std::begin(projectiles);
-		while (i != std::end(projectiles)) {
-			if (Utility::IsOffScreen(i->get()->GetBoundingBox()))
-				i = projectiles.erase(i);
-			else
+		/*for (auto gameObject : gameObjects)
+		{
+			for (auto behaviorComponent : gameObject.BehaviorComponents)
 			{
-				i->get()->Update();
-				++i;
-			}	
-		}
+				behaviorComponent.OnUpdate(&gameObject);
+			}
+		}*/
 		
 		updateTimer -= UPDATE_FREQUENCY;
 	}
@@ -59,6 +51,7 @@ void Game::Tick()
 	g_renderingEngine->DrawScene();
 }
 
+// TODO: can we move this to EventHandler?
 void Game::PublishEvents()
 {
 	std::queue<std::unique_ptr<const Event>>& eventQueue = g_eventHandler->GetEventQueue();
@@ -102,16 +95,31 @@ const void Game::HandleEvent(const Event* const event)
 		case EventType::FireProjectile:
 		{
 			const auto derivedEvent = (FireProjectileEvent*)event;
+			const auto position = derivedEvent->position;
 
-			auto projectile = std::make_unique<Projectile>(derivedEvent->ownerId, derivedEvent->position, derivedEvent->velocity);
-			projectile->Initialize(spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, deviceResources->GetD3DDevice());
-			projectiles.push_back(std::move(projectile));
+			GameObject gameObject{};
+			gameObject.Position = position;
+
+			RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 11, 3, position, 16.0f, 12.0f);
+			gameObject.RenderComponent = &renderComponent;
+
+			auto collider = new Collider(gameObject, ColliderType::Projectile, 16.0f, 12.0f, position);
+			gameObject.Collider = collider;
+
+			gameObjects.push_back(gameObject);
+
+			const auto projectileOnUpdate = [derivedEvent](GameObject* gameObject)
+			{
+				gameObject->Translate(derivedEvent->velocity);
+			};
+			gameObject.BehaviorComponents.push_back(BehaviorComponent{ projectileOnUpdate });
 
 			break;
 		}
 	}
 }
 
+// TODO: do we really need this?
 void Game::SetActiveLayer(const Layer layer)
 {
 	activeLayer = layer;
@@ -156,9 +164,9 @@ void Game::Initialize(const HWND window, const int width, const int height)
 	CreateStaticGeometry();
 
 	deviceResources->CreateDeviceResources();
-	CreateDeviceDependentResources();
-
 	deviceResources->CreateWindowSizeDependentResources();
+
+	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
 	timer.Reset();
@@ -282,7 +290,14 @@ void Game::CreateStaticGeometry()
 		const auto radiusX = block["radiusX"].get<float>();
 		const auto radiusY = block["radiusY"].get<float>();
 
-		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY));
+		auto gameObject = new GameObject();
+
+		const auto width = right - left;
+		const auto height = bottom - top;
+		const auto position = XMFLOAT2{ right - (width / 2), bottom - (height / 2) };
+		auto collider = new Collider(*gameObject, ColliderType::StaticGeometry, width, height, position);
+
+		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY), gameObject, collider);
 	}
 }
 
@@ -290,10 +305,13 @@ void Game::CreateDeviceDependentResources()
 {
 	// UI Elements
 	InitializeShaders();
+	InitializeTextures();
 	InitializeBrushes();
 	InitializeTextFormats();
 	InitializeLabels();
 	InitializeMenuItems();
+
+	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks, textures, spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size);
 
 	// Static Geometry
 	InitializeBlocks();
@@ -317,9 +335,50 @@ void Game::InitializeShaders()
 	d3dDevice->CreatePixelShader(spritePixelShaderBuffer.buffer, spritePixelShaderBuffer.size, nullptr, spritePixelShader.ReleaseAndGetAddressOf());
 }
 
+void Game::InitializeTextures()
+{
+	auto d3dDevice = deviceResources->GetD3DDevice();
+
+	const std::vector<const wchar_t*> paths
+	{
+		L"./Graphics/Textures/megaman_moveTexture_frame1.DDS",      // 0
+		L"./Graphics/Textures/megaman_moveTexture_frame2.DDS",      // 1
+		L"./Graphics/Textures/megaman_moveTexture_frame3.DDS",      // 2
+		L"./Graphics/Textures/megaman_moveTexture_frame4.DDS",      // 3
+		L"./Graphics/Textures/megaman_moveTexture_frame5.DDS",      // 4
+		L"./Graphics/Textures/megaman_moveShootTexture_frame1.DDS", // 5
+		L"./Graphics/Textures/megaman_moveShootTexture_frame3.DDS", // 6
+		L"./Graphics/Textures/megaman_moveShootTexture_frame4.DDS", // 7
+		L"./Graphics/Textures/megaman_moveShootTexture_frame5.DDS", // 8
+		L"./Graphics/Textures/megaman_jumpTexture.DDS",             // 9
+		L"./Graphics/Textures/megaman_jumpShootTexture.DDS",        // 10
+		L"./Graphics/Textures/bullet.DDS",                          // 11
+	};
+
+	// clear calls the destructor of its elements, and ComPtr's destructor handles calling Release()
+	textures.clear();
+
+	for (auto i = 0; i < paths.size(); i++)
+	{
+		ComPtr<ID3D11ShaderResourceView> ptr;
+		CreateDDSTextureFromFile(d3dDevice, paths.at(i), nullptr, ptr.ReleaseAndGetAddressOf());
+		textures.push_back(ptr);
+	}
+}
+
 void Game::InitializePlayer()
 {
-	player.Initialize(spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, deviceResources->GetD3DDevice());
+	gameObjects.push_back(GameObject{});
+	GameObject& gameObject = gameObjects.back();
+	gameObject.Position = XMFLOAT2{ 200.0f, 200.0f };
+
+	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 0, 3, gameObject.Position, 95.0f, 80.0f);
+	gameObject.RenderComponent = &renderComponent;
+
+	auto collider = new Collider(gameObject, ColliderType::Player, 60.0f, 80.0f, gameObject.Position);
+	gameObject.Collider = collider;
+
+	player = new Player(gameObject);
 }
 
 void Game::InitializeBrushes()

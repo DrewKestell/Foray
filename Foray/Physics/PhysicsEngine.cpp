@@ -56,6 +56,22 @@ void PhysicsEngine::UnregisterCollider(Collider* collider)
 	colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
 }
 
+PhysicsComponent& PhysicsEngine::CreatePhysicsComponent(
+	GameObject& gameObject,
+	const XMFLOAT2 position,
+	const XMFLOAT2 velocity)
+{
+	PhysicsComponent physicsComponent{ gameObject, position, velocity };
+	physicsComponents.insert({ gameObject.GameObjectId, physicsComponent });
+
+	return physicsComponent;
+}
+
+void PhysicsEngine::RemovePhysicsComponent(const unsigned int gameObjectId)
+{
+	physicsComponents.erase(gameObjectId);
+}
+
 void PhysicsEngine::Update()
 {
 	/*for (auto i = 0; i < colliders.size(); i++)
@@ -75,7 +91,7 @@ CollisionResult PhysicsEngine::CheckCollision(Collider* collider) const
 	for (auto i = 0; i < colliders.size(); i++)
 	{
 		auto otherCollider = colliders.at(i);
-		if (collider->GetId() != otherCollider->GetId())
+		if (collider->GetGameObject().GameObjectId != otherCollider->GetGameObject().GameObjectId)
 		{
 			auto collisionDirection = CheckRectangleOverlap(collider->GetRect(), otherCollider->GetRect());
 			if (collisionDirection)
@@ -83,6 +99,17 @@ CollisionResult PhysicsEngine::CheckCollision(Collider* collider) const
 		}
 	}
 	return CollisionResult{ COLLISION_DIRECTION_NONE, nullptr };
+}
+
+const CollisionResult PhysicsEngine::CheckCollisionForPosition(
+	GameObject& gameObject,
+	const float width,
+	const float height,
+	const XMFLOAT2 proposedPos) const
+{
+	const auto proposedCollider = std::make_unique<Collider>(gameObject, ColliderType::Player, width, height, proposedPos);
+
+	return CheckCollision(proposedCollider.get());
 }
 
 void PhysicsEngine::DrawColliders(DeviceResources* deviceResources, ID2D1SolidColorBrush* brush)

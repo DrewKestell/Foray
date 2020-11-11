@@ -7,12 +7,13 @@ extern unsigned int g_colliderId;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 
-Block::Block(const D2D1_ROUNDED_RECT rect)
+Block::Block(const D2D1_ROUNDED_RECT rect, GameObject* gameObject, Collider* collider)
 	: rect{ rect },
-	  collider{ std::make_unique<Collider>(g_colliderId++, rect.rect, this, ColliderType::StaticGeometry) }
+	  gameObject{ gameObject },
+	  collider{ collider }
 {
 	g_eventHandler->Subscribe(*this);
-	g_physicsEngine->RegisterCollider(collider.get());
+	g_physicsEngine->RegisterCollider(collider);
 }
 
 void Block::Initialize(ID2D1DeviceContext1* d2dContext, ID2D1Factory2* d2dFactory, ID2D1SolidColorBrush* fillBrush)
@@ -45,5 +46,6 @@ const void Block::OnCollision(CollisionResult collisionResult)
 Block::~Block()
 {
 	g_eventHandler->Unsubscribe(*this);
-	g_physicsEngine->UnregisterCollider(collider.get());
+	g_physicsEngine->UnregisterCollider(collider);
+	delete gameObject;
 }

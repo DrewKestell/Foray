@@ -1,15 +1,21 @@
 #pragma once
 
-#include "Physics/CollisionResult.h"
-
-// forward declare Collider to avoid circular reference between Collider and GameObject
-class Collider;
+#include "BehaviorComponent.h"
+#include "Physics/Collider.h"
+#include "Graphics/RenderComponent.h"
 
 static unsigned int IdCounter;
 
 class GameObject
 {
+private:
+
 public:
 	const unsigned int GameObjectId{ IdCounter++ };
-	virtual const void OnCollision(CollisionResult collisionResult) = 0;
+	XMFLOAT2 Position{ 0.0f, 0.0f };
+	std::vector<BehaviorComponent> BehaviorComponents;
+	RenderComponent* RenderComponent;
+	Collider* Collider;
+
+	void Translate(const XMFLOAT2 vector);
 };

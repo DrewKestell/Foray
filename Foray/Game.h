@@ -48,12 +48,12 @@ class Game : public IDeviceNotify, public Observer
 {
 private:
 	GameTimer timer;
+	float updateTimer{ 0.0f };
 	std::unique_ptr<DeviceResources> deviceResources;
 	std::vector<UIComponent*> uiComponents;
 	Layer activeLayer{ Layer::MainMenu };
-	Player player;
-	float updateTimer{ 0.0f };
-
+	Player* player;
+	
 	void PublishEvents();
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
@@ -64,6 +64,7 @@ private:
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
 	void InitializeShaders();
+	void InitializeTextures();
 	void InitializePlayer();
 	void InitializeBrushes();
 	void InitializeTextFormats();
@@ -97,9 +98,12 @@ private:
 
 	// Static Geometry
 	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
-	
+
 	// GameObjects
-	std::vector<std::unique_ptr<Projectile>> projectiles;
+	std::vector<GameObject> gameObjects;
+
+	// Textures
+	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;
 
 public:
 	Game();
