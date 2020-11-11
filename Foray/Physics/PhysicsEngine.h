@@ -4,7 +4,6 @@
 #include "../Events/Observer.h"
 #include "Collider.h"
 #include "CollisionResult.h"
-#include "PhysicsComponent.h"
 #include "../Graphics/DeviceResources.h"
 
 class PhysicsEngine : public Observer
@@ -12,7 +11,6 @@ class PhysicsEngine : public Observer
 private:
 	//locals
 	std::vector<Collider*> colliders;
-	std::unordered_map<unsigned int, PhysicsComponent> physicsComponents;
 
 	const unsigned char CheckRectangleOverlap(D2D1_RECT_F l, D2D1_RECT_F r) const;
 
@@ -21,11 +19,6 @@ public:
 	virtual const void HandleEvent(const Event* const event);
 	void RegisterCollider(Collider* collider);
 	void UnregisterCollider(Collider* collider);
-	PhysicsComponent& CreatePhysicsComponent(
-		GameObject& gameObject,
-		const XMFLOAT2 position,
-		const XMFLOAT2 velocity);
-	void RemovePhysicsComponent(const unsigned int gameObjectId);
 	void Update();
 	CollisionResult CheckCollision(Collider* collider) const;
 	const CollisionResult CheckCollisionForPosition(

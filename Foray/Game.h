@@ -100,7 +100,7 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
 
 	// GameObjects
-	std::vector<GameObject> gameObjects;
+	std::list<GameObject> gameObjects;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

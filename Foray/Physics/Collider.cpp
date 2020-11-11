@@ -11,15 +11,20 @@ Collider::Collider(
 	ColliderType type,
 	const float width,
 	const float height,
-	const XMFLOAT2 position)
+	const XMFLOAT2 position,
+	const bool registerCollider)
 	: gameObject{ gameObject },
 	  Type{ type},
 	  Width{ width },
 	  Height{ height },
-	  Position{ position }
+	  Position{ position },
+	  registerCollider{ registerCollider }
 {
-	g_eventHandler->Subscribe(*this);
-	g_physicsEngine->RegisterCollider(this);
+	if (registerCollider)
+	{
+		g_eventHandler->Subscribe(*this);
+		g_physicsEngine->RegisterCollider(this);
+	}
 }
 
 const void Collider::HandleEvent(const Event* const event)
@@ -49,6 +54,9 @@ GameObject& Collider::GetGameObject()
 
 Collider::~Collider()
 {
-	g_eventHandler->Unsubscribe(*this);
-	g_physicsEngine->UnregisterCollider(this);
+	if (registerCollider)
+	{
+		g_eventHandler->Unsubscribe(*this);
+		g_physicsEngine->UnregisterCollider(this);
+	}
 }

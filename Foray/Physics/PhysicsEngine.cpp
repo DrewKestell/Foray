@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "PhysicsEngine.h"
 #include "../Events/EventHandler.h"
+#include "../GameObject.h"
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
 
@@ -56,22 +57,6 @@ void PhysicsEngine::UnregisterCollider(Collider* collider)
 	colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
 }
 
-PhysicsComponent& PhysicsEngine::CreatePhysicsComponent(
-	GameObject& gameObject,
-	const XMFLOAT2 position,
-	const XMFLOAT2 velocity)
-{
-	PhysicsComponent physicsComponent{ gameObject, position, velocity };
-	physicsComponents.insert({ gameObject.GameObjectId, physicsComponent });
-
-	return physicsComponent;
-}
-
-void PhysicsEngine::RemovePhysicsComponent(const unsigned int gameObjectId)
-{
-	physicsComponents.erase(gameObjectId);
-}
-
 void PhysicsEngine::Update()
 {
 	/*for (auto i = 0; i < colliders.size(); i++)
@@ -107,7 +92,7 @@ const CollisionResult PhysicsEngine::CheckCollisionForPosition(
 	const float height,
 	const XMFLOAT2 proposedPos) const
 {
-	const auto proposedCollider = std::make_unique<Collider>(gameObject, ColliderType::Player, width, height, proposedPos);
+	const auto proposedCollider = std::make_unique<Collider>(gameObject, ColliderType::Player, width, height, proposedPos, false);
 
 	return CheckCollision(proposedCollider.get());
 }

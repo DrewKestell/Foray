@@ -90,7 +90,6 @@
   <ItemGroup>
     <ClInclude Include="BehaviorComponent.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
-    <ClInclude Include="Physics\PhysicsComponent.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Events\KeyDownEvent.h" />
@@ -137,7 +136,6 @@
     <ClCompile Include="BehaviorComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics\RenderComponent.cpp" />
-    <ClCompile Include="Physics\PhysicsComponent.cpp" />
     <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />

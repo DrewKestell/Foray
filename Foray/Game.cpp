@@ -37,13 +37,13 @@ void Game::Tick()
 
 		player->Update();
 
-		/*for (auto gameObject : gameObjects)
+		for (auto& gameObject : gameObjects)
 		{
 			for (auto behaviorComponent : gameObject.BehaviorComponents)
 			{
 				behaviorComponent.OnUpdate(&gameObject);
 			}
-		}*/
+		}
 		
 		updateTimer -= UPDATE_FREQUENCY;
 	}
@@ -96,21 +96,21 @@ const void Game::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (FireProjectileEvent*)event;
 			const auto position = derivedEvent->position;
-
-			GameObject gameObject{};
+			const auto velocity = derivedEvent->velocity;
+			
+			gameObjects.push_back(GameObject{});
+			GameObject& gameObject = gameObjects.back();
 			gameObject.Position = position;
 
 			RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 11, 3, position, 16.0f, 12.0f);
 			gameObject.RenderComponent = &renderComponent;
 
-			auto collider = new Collider(gameObject, ColliderType::Projectile, 16.0f, 12.0f, position);
+			auto collider = new Collider(gameObject, ColliderType::Projectile, 16.0f, 12.0f, position, true);
 			gameObject.Collider = collider;
 
-			gameObjects.push_back(gameObject);
-
-			const auto projectileOnUpdate = [derivedEvent](GameObject* gameObject)
+			const auto projectileOnUpdate = [velocity](GameObject* gameObject)
 			{
-				gameObject->Translate(derivedEvent->velocity);
+				gameObject->Translate(velocity);
 			};
 			gameObject.BehaviorComponents.push_back(BehaviorComponent{ projectileOnUpdate });
 
@@ -295,7 +295,7 @@ void Game::CreateStaticGeometry()
 		const auto width = right - left;
 		const auto height = bottom - top;
 		const auto position = XMFLOAT2{ right - (width / 2), bottom - (height / 2) };
-		auto collider = new Collider(*gameObject, ColliderType::StaticGeometry, width, height, position);
+		auto collider = new Collider(*gameObject, ColliderType::StaticGeometry, width, height, position, true);
 
 		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY), gameObject, collider);
 	}
@@ -375,7 +375,7 @@ void Game::InitializePlayer()
 	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 0, 3, gameObject.Position, 95.0f, 80.0f);
 	gameObject.RenderComponent = &renderComponent;
 
-	auto collider = new Collider(gameObject, ColliderType::Player, 60.0f, 80.0f, gameObject.Position);
+	auto collider = new Collider(gameObject, ColliderType::Player, 60.0f, 80.0f, gameObject.Position, true);
 	gameObject.Collider = collider;
 
 	player = new Player(gameObject);

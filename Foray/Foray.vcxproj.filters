@@ -24,7 +24,6 @@
     <ClCompile Include="Graphics\RenderComponent.cpp" />
     <ClCompile Include="BehaviorComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Physics\PhysicsComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -69,7 +68,6 @@
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
-    <ClInclude Include="Physics\PhysicsComponent.h" />
     <ClInclude Include="BehaviorComponent.h" />
   </ItemGroup>
   <ItemGroup>
