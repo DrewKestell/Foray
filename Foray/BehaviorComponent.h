@@ -5,7 +5,6 @@ class GameObject;
 class BehaviorComponent
 {
 private:
-	
 
 public:
 	const std::function<void(GameObject* gameObject)> OnUpdate;

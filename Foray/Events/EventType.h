@@ -14,5 +14,6 @@ enum class EventType
 	WindowResize,
 	ChangeActiveLayer,
 	GamepadInput,
-	FireProjectile
+	FireProjectile,
+	DestroyGameObject
 };

@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "World/Block.h"
 #include "Graphics/DeviceResources.h"
-
 #include "Events/Observer.h"
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"

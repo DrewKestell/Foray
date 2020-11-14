@@ -13,7 +13,6 @@ Block::Block(const D2D1_ROUNDED_RECT rect, GameObject* gameObject, Collider* col
 	  collider{ collider }
 {
 	g_eventHandler->Subscribe(*this);
-	g_physicsEngine->RegisterCollider(collider);
 }
 
 void Block::Initialize(ID2D1DeviceContext1* d2dContext, ID2D1Factory2* d2dFactory, ID2D1SolidColorBrush* fillBrush)
@@ -31,7 +30,7 @@ void Block::Draw()
 
 const void Block::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 
@@ -46,6 +45,5 @@ const void Block::OnCollision(CollisionResult collisionResult)
 Block::~Block()
 {
 	g_eventHandler->Unsubscribe(*this);
-	g_physicsEngine->UnregisterCollider(collider);
 	delete gameObject;
 }

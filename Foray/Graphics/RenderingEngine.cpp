@@ -244,14 +244,14 @@ void RenderingEngine::RemoveRenderComponent(const unsigned int gameObjectId)
 
 const void RenderingEngine::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::ChangeActiveLayer:
 		{
 			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
 
-			activeLayer = derivedEvent->layer;
+			activeLayer = derivedEvent->Layer;
 
 			break;
 		}

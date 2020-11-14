@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "Constants.h"
 #include "ObjectManager.h"
-#include "Events/Event.h"
 #include "Events/MouseEvent.h"
 #include "Events/EventHandler.h"
 #include "Events/KeyDownEvent.h"

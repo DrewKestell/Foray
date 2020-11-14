@@ -2,7 +2,6 @@
 #include "UIMenuItem.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
-#include "../Utility.h"
 #include "../Constants.h"
 
 UIMenuItem::UIMenuItem(
@@ -69,14 +68,14 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
 
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::ChangeActiveLayer:
 		{
 			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
 
-			if (derivedEvent->layer == uiLayer && GetParent() == nullptr)
+			if (derivedEvent->Layer == uiLayer && GetParent() == nullptr)
 				isVisible = true;
 			else
 				isVisible = false;
@@ -87,7 +86,7 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (isVisible && isActive && derivedEvent->inputValue == XINPUT_GAMEPAD_A && derivedEvent->pressed)
+			if (isVisible && isActive && derivedEvent->InputValue == XINPUT_GAMEPAD_A && derivedEvent->Pressed)
 				onActivate();
 
 			break;

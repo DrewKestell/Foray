@@ -5,17 +5,17 @@
 class FireProjectileEvent : public Event
 {
 public:
-	FireProjectileEvent(const unsigned short ownerId, const XMFLOAT2 position, const XMFLOAT2 velocity)
+	FireProjectileEvent(const unsigned int ownerId, const XMFLOAT2 position, const XMFLOAT2 velocity)
 		: Event(EventType::FireProjectile),
-		  ownerId{ ownerId },
-		  position{ position },
-		  velocity{ velocity }
+		  OwnerId{ ownerId },
+		  Position{ position },
+		  Velocity{ velocity }
 	{
 	}
 
-	const unsigned short ownerId;
+	const unsigned int OwnerId;
 
-	const XMFLOAT2 position;
+	const XMFLOAT2 Position;
 
-	const XMFLOAT2 velocity;
+	const XMFLOAT2 Velocity;
 };

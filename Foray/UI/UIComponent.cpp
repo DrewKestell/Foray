@@ -57,7 +57,7 @@ void UIComponent::SendEventToChildren(const Event& e, UIComponent* uiComponent)
 
 const void UIComponent::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::WindowResize:

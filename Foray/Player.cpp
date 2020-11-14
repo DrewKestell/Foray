@@ -2,7 +2,6 @@
 #include "Player.h"
 #include "Constants.h"
 #include "../Events/EventHandler.h"
-#include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/FireProjectileEvent.h"
 #include "../Events/GamepadInputEvent.h"
 #include "../Events/KeyDownEvent.h"
@@ -216,27 +215,27 @@ void Player::Update()
 
 const void Player::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::KeyDown:
 		{
 			const auto derivedEvent = (KeyDownEvent*)event;
 
-			if (derivedEvent->charCode == VK_SPACE)
+			if (derivedEvent->CharCode == VK_SPACE)
 			{
 				jumpPressed = true;
 				jumpReleased = false;
 			}
-			else if (derivedEvent->charCode == VK_RIGHT)
+			else if (derivedEvent->CharCode == VK_RIGHT)
 			{
 				rightPressed = true;
 			}
-			else if (derivedEvent->charCode == VK_LEFT)
+			else if (derivedEvent->CharCode == VK_LEFT)
 			{
 				leftPressed = true;
 			}
-			else if (derivedEvent->charCode == VK_LCONTROL)
+			else if (derivedEvent->CharCode == VK_LCONTROL)
 			{
 				shootPressed = true;
 			}
@@ -247,22 +246,22 @@ const void Player::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (KeyUpEvent*)event;
 
-			if (derivedEvent->charCode == VK_SPACE)
+			if (derivedEvent->CharCode == VK_SPACE)
 			{
 				jumpPressed = false;
 				jumpReleased = true;
 				if (landed)
 					canJump = true;
 			}
-			else if (derivedEvent->charCode == VK_RIGHT)
+			else if (derivedEvent->CharCode == VK_RIGHT)
 			{
 				rightPressed = false;
 			}
-			else if (derivedEvent->charCode == VK_LEFT)
+			else if (derivedEvent->CharCode == VK_LEFT)
 			{
 				leftPressed = false;
 			}
-			else if (derivedEvent->charCode == VK_LCONTROL)
+			else if (derivedEvent->CharCode == VK_LCONTROL)
 			{
 				canShoot = true;
 				shootPressed = false;
@@ -274,17 +273,17 @@ const void Player::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_LEFT)
+			if (derivedEvent->InputValue == XINPUT_GAMEPAD_DPAD_LEFT)
 			{
-				leftPressed = derivedEvent->pressed;
+				leftPressed = derivedEvent->Pressed;
 			}
-			else if (derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_RIGHT)
+			else if (derivedEvent->InputValue == XINPUT_GAMEPAD_DPAD_RIGHT)
 			{
-				rightPressed = derivedEvent->pressed;
+				rightPressed = derivedEvent->Pressed;
 			}
-			else if (derivedEvent->inputValue == XINPUT_GAMEPAD_A)
+			else if (derivedEvent->InputValue == XINPUT_GAMEPAD_A)
 			{
-				if (derivedEvent->pressed)
+				if (derivedEvent->Pressed)
 				{
 					jumpPressed = true;
 					jumpReleased = false;
@@ -297,9 +296,9 @@ const void Player::HandleEvent(const Event* const event)
 						canJump = true;
 				}
 			}
-			else if (derivedEvent->inputValue == VK_PAD_RTRIGGER)
+			else if (derivedEvent->InputValue == VK_PAD_RTRIGGER)
 			{
-				if (derivedEvent->pressed)
+				if (derivedEvent->Pressed)
 				{
 					shootPressed = true;
 				}

@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="Events\DestroyGameObjectEvent.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
     <ClInclude Include="World\Block.h" />

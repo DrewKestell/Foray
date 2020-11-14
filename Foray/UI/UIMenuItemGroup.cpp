@@ -14,14 +14,14 @@ UIMenuItemGroup::UIMenuItemGroup(const Layer uiLayer)
 
 const void UIMenuItemGroup::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::ChangeActiveLayer:
 		{
 			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
 
-			if (derivedEvent->layer == uiLayer)
+			if (derivedEvent->Layer == uiLayer)
 				active = true;
 			else
 				active = false;
@@ -32,7 +32,7 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_DOWN && derivedEvent->pressed)
+			if (active && derivedEvent->InputValue == XINPUT_GAMEPAD_DPAD_DOWN && derivedEvent->Pressed)
 			{
 				for (auto it = inputs.begin(); it != inputs.end(); it++)
 				{
@@ -50,7 +50,7 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					}
 				}
 			}
-			else if (active && derivedEvent->inputValue == XINPUT_GAMEPAD_DPAD_UP && derivedEvent->pressed)
+			else if (active && derivedEvent->InputValue == XINPUT_GAMEPAD_DPAD_UP && derivedEvent->Pressed)
 			{
 				for (auto it = inputs.begin(); it != inputs.end(); it++)
 				{

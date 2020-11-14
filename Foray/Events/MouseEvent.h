@@ -7,11 +7,11 @@ class MouseEvent : public Event
 public:
 	MouseEvent(const EventType eventType, const float mousePosX, const float mousePosY)
 		: Event(eventType),
-		mousePosX{ mousePosX },
-		mousePosY{ mousePosY }
+		MousePosX{ mousePosX },
+		MousePosY{ mousePosY }
 	{
 	}
 
-	const float mousePosX;
-	const float mousePosY;
+	const float MousePosX;
+	const float MousePosY;
 };

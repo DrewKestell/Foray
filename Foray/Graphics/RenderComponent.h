@@ -1,14 +1,9 @@
 #pragma once
 
-extern float g_clientWidth;
-extern float g_clientHeight;
-extern XMMATRIX g_projectionTransform;
-
 class RenderComponent
 {
 private:
 	
-
 public:
 	const float Width;
 	const float Height;

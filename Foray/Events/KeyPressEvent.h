@@ -7,8 +7,8 @@ class KeyPressEvent : public Event
 public:
 	KeyPressEvent(const EventType eventType, const WPARAM charCode)
 		: Event(eventType),
-		  charCode{ charCode }
+		  CharCode{ charCode }
 	{
 	}
-	const WPARAM charCode;
+	const WPARAM CharCode;
 };

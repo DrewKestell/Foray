@@ -3,6 +3,7 @@
 #include "ColliderType.h"
 #include "../Events/Observer.h"
 
+// forward declare GameObject to avoid circular reference between GameObject and Collider
 class GameObject;
 
 class Collider : public Observer

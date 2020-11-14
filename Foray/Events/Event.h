@@ -6,9 +6,9 @@ class Event
 {
 public:
 	Event(const EventType type)
-		: type{ type }
+		: Type{ type }
 	{
 	}
-	const EventType type;
+	const EventType Type;
 	virtual ~Event() {}
 };

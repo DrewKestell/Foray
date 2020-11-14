@@ -1,6 +1,10 @@
 #include "../stdafx.h"
 #include "RenderComponent.h"
 
+extern float g_clientWidth;
+extern float g_clientHeight;
+extern XMMATRIX g_projectionTransform;
+
 RenderComponent::RenderComponent(
 	const unsigned int textureId,
 	const unsigned int zIndex,

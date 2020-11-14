@@ -1,14 +1,12 @@
 ﻿#include "stdafx.h"
 #include "Game.h"
 #include "Constants.h"
-#include "Utility.h"
 #include "ObjectManager.h"
-#include "Events/Event.h"
 #include "Events/EventHandler.h"
-#include "Events/Observer.h"
 #include "Events/ChangeActiveLayerEvent.h"
 #include "Events/GamepadInputEvent.h"
 #include "Events/FireProjectileEvent.h"
+#include "Events/DestroyGameObjectEvent.h"
 #include "Physics/PhysicsEngine.h"
 #include "Graphics/RenderingEngine.h"
 
@@ -33,7 +31,7 @@ void Game::Tick()
 	timer.Tick();
 
 	updateTimer += timer.DeltaTime();
-	if (updateTimer >= UPDATE_FREQUENCY)
+	while (updateTimer >= UPDATE_FREQUENCY)
 	{
 		g_eventHandler->PublishEvents(uiComponents);
 
@@ -49,14 +47,14 @@ void Game::Tick()
 
 const void Game::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::GamepadInput:
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
-			if (derivedEvent->inputValue == XINPUT_GAMEPAD_B)
+			if (derivedEvent->InputValue == XINPUT_GAMEPAD_B)
 			{
 				if (activeLayer == Layer::MainOptions)
 					SetActiveLayer(Layer::MainMenu);
@@ -67,8 +65,8 @@ const void Game::HandleEvent(const Event* const event)
 		case EventType::FireProjectile:
 		{
 			const auto derivedEvent = (FireProjectileEvent*)event;
-			const auto position = derivedEvent->position;
-			const auto velocity = derivedEvent->velocity;
+			const auto position = derivedEvent->Position;
+			const auto velocity = derivedEvent->Velocity;
 			
 			GameObject& gameObject = g_objectManager->CreateGameObject();
 			gameObject.Position = position;
@@ -83,15 +81,24 @@ const void Game::HandleEvent(const Event* const event)
 			{
 				gameObject->Translate(velocity);
 			};
-			/*const auto destroySelf = [this](GameObject* gameObject)
+			const auto destroySelf = [this](GameObject* gameObject)
 			{
 				if (Utility::IsOffScreen(gameObject->Collider->GetRect()))
 				{
-					g_objectManager->DeleteGameObject(gameObject->GameObjectId);
+					std::unique_ptr<Event> e = std::make_unique<DestroyGameObjectEvent>(gameObject->GameObjectId);
+					g_eventHandler->QueueEvent(e);
 				}
-			};*/
+			};
 			gameObject.BehaviorComponents.push_back(BehaviorComponent{ projectileOnUpdate });
-			//gameObject.BehaviorComponents.push_back(BehaviorComponent{ destroySelf });
+			gameObject.BehaviorComponents.push_back(BehaviorComponent{ destroySelf });
+
+			break;
+		}
+		case EventType::DestroyGameObject:
+		{
+			const auto derivedEvent = (DestroyGameObjectEvent*)event;
+
+			g_objectManager->DeleteGameObject(derivedEvent->GameObjectId);
 
 			break;
 		}

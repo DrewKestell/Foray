@@ -71,6 +71,7 @@
     <ClInclude Include="BehaviorComponent.h" />
     <ClInclude Include="Graphics\ShaderBuffer.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Events\DestroyGameObjectEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

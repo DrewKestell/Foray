@@ -22,14 +22,13 @@ Collider::Collider(
 {
 	if (registerCollider)
 	{
-		g_eventHandler->Subscribe(*this);
 		g_physicsEngine->RegisterCollider(this);
 	}
 }
 
 const void Collider::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
 	
@@ -56,7 +55,6 @@ Collider::~Collider()
 {
 	if (registerCollider)
 	{
-		g_eventHandler->Unsubscribe(*this);
 		g_physicsEngine->UnregisterCollider(this);
 	}
 }

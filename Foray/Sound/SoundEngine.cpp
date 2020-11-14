@@ -1,7 +1,6 @@
 #include "../stdafx.h"
 #include "SoundEngine.h"
 #include "../Events/EventHandler.h"
-#include "../Events/FireProjectileEvent.h"
 
 #ifndef _XBOX //Little-Endian
 #define fourccRIFF 'FFIR'
@@ -30,13 +29,11 @@ void SoundEngine::Initialize()
 
 const void SoundEngine::HandleEvent(const Event* const event)
 {
-	const auto type = event->type;
+	const auto type = event->Type;
 	switch (type)
 	{
         case EventType::FireProjectile:
         {
-            // TODO: figure out which projectile sound to play.
-
             PlayAudio(2, 1.0f);
 
             break;
