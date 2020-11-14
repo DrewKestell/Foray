@@ -1,4 +1,4 @@
-	#pragma once
+#pragma once
 
 #include "DeviceResources.h"
 #include "RenderComponent.h"
@@ -18,8 +18,6 @@ private:
 	std::vector<UIComponent*>& uiComponents;
 	std::unordered_map<std::string, std::unique_ptr<Block>>& blocks;
 	std::vector<ComPtr<ID3D11ShaderResourceView>>& textures;
-	ID3D11VertexShader* vertexShader;
-	ID3D11PixelShader* pixelShader;
 
 	// locals
 	Layer activeLayer{ Layer::MainMenu };
@@ -36,11 +34,7 @@ public:
 		DeviceResources* deviceResources,
 		std::vector<UIComponent*>& uiComponents,
 		std::unordered_map<std::string, std::unique_ptr<Block>>& blocks,
-		std::vector<ComPtr<ID3D11ShaderResourceView>>& textures,
-		ID3D11VertexShader* vertexShader,
-		ID3D11PixelShader* pixelShader,
-		const BYTE* vertexShaderBuffer,
-		const int vertexShaderSize);
+		std::vector<ComPtr<ID3D11ShaderResourceView>>& textures);
 	void DrawScene();
 	RenderComponent& CreateRenderComponent(
 		const unsigned int gameObjectId,

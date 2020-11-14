@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ShaderBuffer.h"
+
 // Provides an interface for an application that owns DeviceResources to be notified of the device being lost or created.
 struct IDeviceNotify
 {
@@ -14,6 +16,7 @@ public:
 
 	void CreateDeviceResources();
 	void CreateWindowSizeDependentResources();
+	
 	HWND GetWindow() { return window; }
 	void SetWindow(HWND window, int width, int height);
 	bool WindowSizeChanged(int width, int height);
@@ -36,8 +39,14 @@ public:
 	ID3D11RenderTargetView* GetOffscreenRenderTargetView() const { return offscreenRenderTargetView.Get(); }
 	ID3D11DepthStencilView* GetDepthStencilView() const { return depthStencilView.Get(); }
 	D3D11_VIEWPORT GetScreenViewport() const { return screenViewport; }
+	ShaderBuffer GetSpriteVertexShaderBuffer() { return spriteVertexShaderBuffer; }
+	ID3D11VertexShader* GetSpriteVertexShader() { return spriteVertexShader.Get(); }
+	ShaderBuffer GetSpritePixelShaderBuffer() { return spritePixelShaderBuffer; }
+	ID3D11PixelShader* GetSpritePixelShader() { return spritePixelShader.Get(); }
+
 private:
 	void CreateFactory();
+	ShaderBuffer LoadShader(const std::wstring filename);
 
 	// Direct2D objects.
 	ComPtr<IDWriteFactory2> writeFactory;
@@ -75,4 +84,10 @@ private:
 
 	// The IDeviceNotify can be held directly as it owns the DeviceResources.
 	IDeviceNotify* deviceNotify{ nullptr };
+
+	// Shaders
+	ShaderBuffer spriteVertexShaderBuffer{};
+	ComPtr<ID3D11VertexShader> spriteVertexShader;
+	ShaderBuffer spritePixelShaderBuffer{};
+	ComPtr<ID3D11PixelShader> spritePixelShader;
 };

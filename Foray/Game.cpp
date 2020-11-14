@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Constants.h"
 #include "Utility.h"
+#include "ObjectManager.h"
 #include "Events/Event.h"
 #include "Events/EventHandler.h"
 #include "Events/Observer.h"
@@ -14,6 +15,7 @@
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
+extern std::unique_ptr<ObjectManager> g_objectManager;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 std::unique_ptr<RenderingEngine> g_renderingEngine;
@@ -33,46 +35,16 @@ void Game::Tick()
 	updateTimer += timer.DeltaTime();
 	if (updateTimer >= UPDATE_FREQUENCY)
 	{
-		PublishEvents();
+		g_eventHandler->PublishEvents(uiComponents);
 
 		player->Update();
 
-		for (auto& gameObject : gameObjects)
-		{
-			for (auto behaviorComponent : gameObject.BehaviorComponents)
-			{
-				behaviorComponent.OnUpdate(&gameObject);
-			}
-		}
+		g_objectManager->UpdateGameObjects();
 		
 		updateTimer -= UPDATE_FREQUENCY;
 	}
 	
 	g_renderingEngine->DrawScene();
-}
-
-// TODO: can we move this to EventHandler?
-void Game::PublishEvents()
-{
-	std::queue<std::unique_ptr<const Event>>& eventQueue = g_eventHandler->GetEventQueue();
-	while (!eventQueue.empty())
-	{
-		auto event = std::move(eventQueue.front());
-		eventQueue.pop();
-
-		// first let the ui elements handle the event
-		for (auto i = (int)uiComponents.size() - 1; i >= 0; i--)
-		{
-			uiComponents.at(i)->HandleEvent(event.get());
-		}
-
-		// next let game objects handle the event
-		std::list<Observer*>& observers = g_eventHandler->GetObservers();
-		for (auto observer : observers)
-		{
-			observer->HandleEvent(event.get());
-		}
-	}
 }
 
 const void Game::HandleEvent(const Event* const event)
@@ -98,8 +70,7 @@ const void Game::HandleEvent(const Event* const event)
 			const auto position = derivedEvent->position;
 			const auto velocity = derivedEvent->velocity;
 			
-			gameObjects.push_back(GameObject{});
-			GameObject& gameObject = gameObjects.back();
+			GameObject& gameObject = g_objectManager->CreateGameObject();
 			gameObject.Position = position;
 
 			RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 11, 3, position, 16.0f, 12.0f);
@@ -112,48 +83,27 @@ const void Game::HandleEvent(const Event* const event)
 			{
 				gameObject->Translate(velocity);
 			};
+			/*const auto destroySelf = [this](GameObject* gameObject)
+			{
+				if (Utility::IsOffScreen(gameObject->Collider->GetRect()))
+				{
+					g_objectManager->DeleteGameObject(gameObject->GameObjectId);
+				}
+			};*/
 			gameObject.BehaviorComponents.push_back(BehaviorComponent{ projectileOnUpdate });
+			//gameObject.BehaviorComponents.push_back(BehaviorComponent{ destroySelf });
 
 			break;
 		}
 	}
 }
 
-// TODO: do we really need this?
 void Game::SetActiveLayer(const Layer layer)
 {
 	activeLayer = layer;
 
 	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(layer);
 	g_eventHandler->QueueEvent(e);
-}
-
-// TODO: put this inside some new "Shader" class
-ShaderBuffer Game::LoadShader(const std::wstring filename)
-{
-	// load precompiled shaders from .cso objects
-	ShaderBuffer sb{ nullptr, 0 };
-	byte* fileData{ nullptr };
-
-	// open the file
-	std::ifstream csoFile(filename, std::ios::in | std::ios::binary | std::ios::ate);
-
-	if (csoFile.is_open())
-	{
-		// get shader size
-		sb.size = (unsigned int)csoFile.tellg();
-
-		// collect shader data
-		fileData = new byte[sb.size];
-		csoFile.seekg(0, std::ios::beg);
-		csoFile.read(reinterpret_cast<char*>(fileData), sb.size);
-		csoFile.close();
-		sb.buffer = fileData;
-	}
-	else
-		throw std::exception("Critical error: Unable to open the compiled shader object!");
-
-	return sb;
 }
 
 void Game::Initialize(const HWND window, const int width, const int height)
@@ -168,6 +118,8 @@ void Game::Initialize(const HWND window, const int width, const int height)
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+
+	CreatePlayer();
 
 	timer.Reset();
 	SetActiveLayer(Layer::Game);
@@ -290,28 +242,27 @@ void Game::CreateStaticGeometry()
 		const auto radiusX = block["radiusX"].get<float>();
 		const auto radiusY = block["radiusY"].get<float>();
 
-		auto gameObject = new GameObject();
+		GameObject& gameObject = g_objectManager->CreateGameObject();
 
 		const auto width = right - left;
 		const auto height = bottom - top;
 		const auto position = XMFLOAT2{ right - (width / 2), bottom - (height / 2) };
-		auto collider = new Collider(*gameObject, ColliderType::StaticGeometry, width, height, position, true);
+		auto collider = new Collider(gameObject, ColliderType::StaticGeometry, width, height, position, true);
 
-		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY), gameObject, collider);
+		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY), &gameObject, collider);
 	}
 }
 
 void Game::CreateDeviceDependentResources()
 {
 	// UI Elements
-	InitializeShaders();
 	InitializeTextures();
 	InitializeBrushes();
 	InitializeTextFormats();
 	InitializeLabels();
 	InitializeMenuItems();
 
-	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks, textures, spriteVertexShader.Get(), spritePixelShader.Get(), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size);
+	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks, textures);
 
 	// Static Geometry
 	InitializeBlocks();
@@ -320,19 +271,6 @@ void Game::CreateDeviceDependentResources()
 void Game::CreateWindowSizeDependentResources()
 {
 	g_projectionTransform = XMMatrixOrthographicLH(g_clientWidth, g_clientHeight, 0.0f, 5000.0f);
-
-	InitializePlayer();
-}
-
-void Game::InitializeShaders()
-{
-	auto d3dDevice = deviceResources->GetD3DDevice();
-
-	spriteVertexShaderBuffer = LoadShader(L"SpriteVertexShader.cso");
-	d3dDevice->CreateVertexShader(spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, nullptr, spriteVertexShader.ReleaseAndGetAddressOf());
-
-	spritePixelShaderBuffer = LoadShader(L"SpritePixelShader.cso");
-	d3dDevice->CreatePixelShader(spritePixelShaderBuffer.buffer, spritePixelShaderBuffer.size, nullptr, spritePixelShader.ReleaseAndGetAddressOf());
 }
 
 void Game::InitializeTextures()
@@ -366,10 +304,9 @@ void Game::InitializeTextures()
 	}
 }
 
-void Game::InitializePlayer()
+void Game::CreatePlayer()
 {
-	gameObjects.push_back(GameObject{});
-	GameObject& gameObject = gameObjects.back();
+	GameObject& gameObject = g_objectManager->CreateGameObject();
 	gameObject.Position = XMFLOAT2{ 200.0f, 200.0f };
 
 	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 0, 3, gameObject.Position, 95.0f, 80.0f);

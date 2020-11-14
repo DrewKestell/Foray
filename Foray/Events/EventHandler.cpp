@@ -16,12 +16,23 @@ void EventHandler::QueueEvent(std::unique_ptr<Event>& event)
 	eventQueue.push(std::move(event));
 }
 
-std::queue<std::unique_ptr<const Event>>& EventHandler::GetEventQueue()
+void EventHandler::PublishEvents(std::vector<UIComponent*>& uiComponents)
 {
-	return eventQueue;
-}
+	while (!eventQueue.empty())
+	{
+		auto event = std::move(eventQueue.front());
+		eventQueue.pop();
 
-std::list<Observer*>& EventHandler::GetObservers()
-{
-	return observers;
+		// first let the ui elements handle the event
+		for (auto i = (int)uiComponents.size() - 1; i >= 0; i--)
+		{
+			uiComponents.at(i)->HandleEvent(event.get());
+		}
+
+		// next let game objects handle the event
+		for (auto observer : observers)
+		{
+			observer->HandleEvent(event.get());
+		}
+	}
 }

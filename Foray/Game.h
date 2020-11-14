@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "World/Block.h"
 #include "Graphics/DeviceResources.h"
-#include "Graphics/Shaders/ShaderBuffer.h"
+
 #include "Events/Observer.h"
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
@@ -54,29 +54,20 @@ private:
 	Layer activeLayer{ Layer::MainMenu };
 	Player* player;
 	
-	void PublishEvents();
 	virtual const void HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
-	ShaderBuffer LoadShader(const std::wstring filename);
 
 	void CreateUIElements();
 	void CreateStaticGeometry();
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
-	void InitializeShaders();
+	void CreatePlayer();
 	void InitializeTextures();
-	void InitializePlayer();
 	void InitializeBrushes();
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
 	void InitializeBlocks();
-
-	// Shaders
-	ShaderBuffer spriteVertexShaderBuffer{};
-	ComPtr<ID3D11VertexShader> spriteVertexShader;
-	ShaderBuffer spritePixelShaderBuffer{};
-	ComPtr<ID3D11PixelShader> spritePixelShader;
 
 	// UI Json
 	json brushesJson;
@@ -98,9 +89,6 @@ private:
 
 	// Static Geometry
 	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
-
-	// GameObjects
-	std::list<GameObject> gameObjects;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

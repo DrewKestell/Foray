@@ -11,6 +11,9 @@ class GameObject
 private:
 
 public:
+	bool operator == (const GameObject& go) const { return GameObjectId == go.GameObjectId; }
+	bool operator != (const GameObject& go) const { return !operator==(go); }
+
 	const unsigned int GameObjectId{ IdCounter++ };
 	XMFLOAT2 Position{ 0.0f, 0.0f };
 	std::vector<BehaviorComponent> BehaviorComponents;

@@ -24,6 +24,7 @@
     <ClCompile Include="Graphics\RenderComponent.cpp" />
     <ClCompile Include="BehaviorComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -64,11 +65,12 @@
     <ClInclude Include="Graphics\ConstantBufferPerObject.h" />
     <ClInclude Include="Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Graphics\PixelShaderConstantBufferPerObject.h" />
-    <ClInclude Include="Graphics\Shaders\ShaderBuffer.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
     <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="Graphics\ShaderBuffer.h" />
+    <ClInclude Include="ObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

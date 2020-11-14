@@ -12,17 +12,11 @@ RenderingEngine::RenderingEngine(
 	DeviceResources* deviceResources,
 	std::vector<UIComponent*>& uiComponents,
 	std::unordered_map<std::string, std::unique_ptr<Block>>& blocks,
-	std::vector<ComPtr<ID3D11ShaderResourceView>>& textures,
-	ID3D11VertexShader* vertexShader,
-	ID3D11PixelShader* pixelShader,
-	const BYTE* vertexShaderBuffer,
-	const int vertexShaderSize)
+	std::vector<ComPtr<ID3D11ShaderResourceView>>& textures)
 	: deviceResources{ deviceResources },
 	  uiComponents{ uiComponents },
 	  blocks{ blocks },
-	  textures{ textures },
-	  vertexShader{ vertexShader },
-	  pixelShader{ pixelShader }
+	  textures{ textures }
 {
 	g_eventHandler->Subscribe(*this);
 
@@ -71,7 +65,8 @@ RenderingEngine::RenderingEngine(
 		{ "TEXCOORDS", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	device->CreateInputLayout(ied, ARRAYSIZE(ied), vertexShaderBuffer, vertexShaderSize, inputLayout.ReleaseAndGetAddressOf());
+	auto spriteVertexShaderBuffer = deviceResources->GetSpriteVertexShaderBuffer();
+	device->CreateInputLayout(ied, ARRAYSIZE(ied), spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, inputLayout.ReleaseAndGetAddressOf());
 
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.ByteWidth = UINT{ sizeof(unsigned int) * 6 };
@@ -150,7 +145,7 @@ void RenderingEngine::DrawScene()
 		d3dContext->Unmap(vertexShaderConstantBuffer.Get(), 0);
 
 		// setup VertexShader
-		d3dContext->VSSetShader(vertexShader, nullptr, 0);
+		d3dContext->VSSetShader(deviceResources->GetSpriteVertexShader(), nullptr, 0);
 		d3dContext->VSSetConstantBuffers(0, 1, vertexShaderConstantBuffer.GetAddressOf());
 
 		// map ConstantBuffer
@@ -161,7 +156,7 @@ void RenderingEngine::DrawScene()
 		d3dContext->Unmap(pixelShaderConstantBuffer.Get(), 0);
 
 		// setup PixelShader
-		d3dContext->PSSetShader(pixelShader, nullptr, 0);
+		d3dContext->PSSetShader(deviceResources->GetSpritePixelShader(), nullptr, 0);
 		d3dContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
 		d3dContext->PSSetShaderResources(0, 1, textures[it.second.TextureId].GetAddressOf());
 		d3dContext->PSSetConstantBuffers(0, 1, pixelShaderConstantBuffer.GetAddressOf());

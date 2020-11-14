@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "Constants.h"
+#include "ObjectManager.h"
 #include "Events/Event.h"
 #include "Events/MouseEvent.h"
 #include "Events/EventHandler.h"
@@ -19,6 +20,7 @@ static auto gamepad = std::make_unique<Gamepad>(0);
 auto g_eventHandler = std::make_unique<EventHandler>();
 auto g_physicsEngine = std::make_unique<PhysicsEngine>();
 auto g_soundEngine = std::make_unique<SoundEngine>();
+auto g_objectManager = std::make_unique<ObjectManager>();
 
 static bool upPressed = false;
 static bool downPressed = false;

@@ -14,9 +14,9 @@
 			{
 				"id": "2",
 				"left": 140.0,
-				"top": 600.0,
+				"top": 660.0,
 				"right": 400.0,
-				"bottom": 640.0,
+				"bottom": 700.0,
 				"radiusX": 5.0,
 				"radiusY": 5.0,
 				"fillBrushId": "white"

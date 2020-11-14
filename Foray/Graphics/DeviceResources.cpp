@@ -128,6 +128,13 @@ void DeviceResources::CreateDeviceResources()
 	hr = device->CheckMultisampleQualityLevels(DXGI_FORMAT_B8G8R8A8_UNORM, msaaCount, &msaaQuality);
 	if (FAILED(hr))
 		throw std::exception("Failed to get MSAA settings.");
+
+	// create Shaders
+	spriteVertexShaderBuffer = LoadShader(L"SpriteVertexShader.cso");
+	device->CreateVertexShader(spriteVertexShaderBuffer.buffer, spriteVertexShaderBuffer.size, nullptr, spriteVertexShader.ReleaseAndGetAddressOf());
+
+	spritePixelShaderBuffer = LoadShader(L"SpritePixelShader.cso");
+	device->CreatePixelShader(spritePixelShaderBuffer.buffer, spritePixelShaderBuffer.size, nullptr, spritePixelShader.ReleaseAndGetAddressOf());
 }
 
 void DeviceResources::CreateFactory()
@@ -165,6 +172,33 @@ void DeviceResources::CreateFactory()
 		if (FAILED(hr))
 			throw std::exception("Failed to create DXGIFactory.");
 	}
+}
+
+ShaderBuffer DeviceResources::LoadShader(const std::wstring filename)
+{
+	// load precompiled shaders from .cso objects
+	ShaderBuffer sb{ nullptr, 0 };
+	byte* fileData{ nullptr };
+
+	// open the file
+	std::ifstream csoFile(filename, std::ios::in | std::ios::binary | std::ios::ate);
+
+	if (csoFile.is_open())
+	{
+		// get shader size
+		sb.size = (unsigned int)csoFile.tellg();
+
+		// collect shader data
+		fileData = new byte[sb.size];
+		csoFile.seekg(0, std::ios::beg);
+		csoFile.read(reinterpret_cast<char*>(fileData), sb.size);
+		csoFile.close();
+		sb.buffer = fileData;
+	}
+	else
+		throw std::exception("Critical error: Unable to open the compiled shader object!");
+
+	return sb;
 }
 
 // These resources need to be recreated every time the window size is changed.

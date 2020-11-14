@@ -236,6 +236,10 @@ const void Player::HandleEvent(const Event* const event)
 			{
 				leftPressed = true;
 			}
+			else if (derivedEvent->charCode == VK_LCONTROL)
+			{
+				shootPressed = true;
+			}
 
 			break;
 		}
@@ -257,6 +261,11 @@ const void Player::HandleEvent(const Event* const event)
 			else if (derivedEvent->charCode == VK_LEFT)
 			{
 				leftPressed = false;
+			}
+			else if (derivedEvent->charCode == VK_LCONTROL)
+			{
+				canShoot = true;
+				shootPressed = false;
 			}
 
 			break;

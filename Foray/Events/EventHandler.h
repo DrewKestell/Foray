@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "../UI/UIComponent.h"
 
 class Observer;
 
@@ -13,6 +14,5 @@ public:
 	void Subscribe(Observer& observer);
 	void Unsubscribe(Observer& observer);
 	void QueueEvent(std::unique_ptr<Event>& event);
-	std::queue<std::unique_ptr<const Event>>& GetEventQueue();
-	std::list<Observer*>& GetObservers();
+	void PublishEvents(std::vector<UIComponent*>& uiComponents);
 };
