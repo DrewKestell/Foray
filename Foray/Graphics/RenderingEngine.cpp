@@ -123,101 +123,104 @@ void RenderingEngine::DrawScene()
 	d3dDevice->CreateBlendState(&blendStateDesc, blendState.ReleaseAndGetAddressOf());
 	d3dContext->OMSetBlendState(blendState.Get(), NULL, 0xFFFFFF);
 
-	// Draw Projectiles
-	for (auto& it : renderComponents)
+	if (activeLayer == Layer::Game || activeLayer == Layer::Editor)
 	{
-		// set InputLayout
-		d3dContext->IASetInputLayout(inputLayout.Get());
+		// Draw Projectiles
+		for (auto& it : renderComponents)
+		{
+			// set InputLayout
+			d3dContext->IASetInputLayout(inputLayout.Get());
 
-		// map ConstantBuffer
-		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		d3dContext->Map(vertexShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		auto pCB = reinterpret_cast<ConstantBufferPerObject*>(mappedResource.pData);
+			// map ConstantBuffer
+			D3D11_MAPPED_SUBRESOURCE mappedResource;
+			d3dContext->Map(vertexShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			auto pCB = reinterpret_cast<ConstantBufferPerObject*>(mappedResource.pData);
 
-		const XMVECTORF32 s_Eye{ g_cameraPosX, 0.0f, -1.0f, 0.0f };
-		const XMVECTORF32 s_At{ g_cameraPosX, 0.0f, 0.0f, 0.0f };
-		const XMVECTORF32 s_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
-		const auto viewTransform = XMMatrixLookAtLH(s_Eye, s_At, s_Up);
+			const XMVECTORF32 s_Eye{ g_cameraPosX, 0.0f, -1.0f, 0.0f };
+			const XMVECTORF32 s_At{ g_cameraPosX, 0.0f, 0.0f, 0.0f };
+			const XMVECTORF32 s_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
+			const auto viewTransform = XMMatrixLookAtLH(s_Eye, s_At, s_Up);
 
-		auto worldViewProj = viewTransform * g_projectionTransform;
-		XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(worldViewProj));
-		d3dContext->Unmap(vertexShaderConstantBuffer.Get(), 0);
+			auto worldViewProj = viewTransform * g_projectionTransform;
+			XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(worldViewProj));
+			d3dContext->Unmap(vertexShaderConstantBuffer.Get(), 0);
 
-		// setup VertexShader
-		d3dContext->VSSetShader(deviceResources->GetSpriteVertexShader(), nullptr, 0);
-		d3dContext->VSSetConstantBuffers(0, 1, vertexShaderConstantBuffer.GetAddressOf());
+			// setup VertexShader
+			d3dContext->VSSetShader(deviceResources->GetSpriteVertexShader(), nullptr, 0);
+			d3dContext->VSSetConstantBuffers(0, 1, vertexShaderConstantBuffer.GetAddressOf());
 
-		// map ConstantBuffer
-		D3D11_MAPPED_SUBRESOURCE pixelShaderMappedResource;
-		d3dContext->Map(pixelShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pixelShaderMappedResource);
-		auto pspCB = reinterpret_cast<PixelShaderConstantBufferPerObject*>(pixelShaderMappedResource.pData);
-		pspCB->gMirrorHorizontal = it.second.MirrorHorizontal;
-		d3dContext->Unmap(pixelShaderConstantBuffer.Get(), 0);
+			// map ConstantBuffer
+			D3D11_MAPPED_SUBRESOURCE pixelShaderMappedResource;
+			d3dContext->Map(pixelShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pixelShaderMappedResource);
+			auto pspCB = reinterpret_cast<PixelShaderConstantBufferPerObject*>(pixelShaderMappedResource.pData);
+			pspCB->gMirrorHorizontal = it.second.MirrorHorizontal;
+			d3dContext->Unmap(pixelShaderConstantBuffer.Get(), 0);
 
-		// setup PixelShader
-		d3dContext->PSSetShader(deviceResources->GetSpritePixelShader(), nullptr, 0);
-		d3dContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
-		d3dContext->PSSetShaderResources(0, 1, textures[it.second.TextureId].GetAddressOf());
-		d3dContext->PSSetConstantBuffers(0, 1, pixelShaderConstantBuffer.GetAddressOf());
+			// setup PixelShader
+			d3dContext->PSSetShader(deviceResources->GetSpritePixelShader(), nullptr, 0);
+			d3dContext->PSSetSamplers(0, 1, samplerState.GetAddressOf());
+			d3dContext->PSSetShaderResources(0, 1, textures[it.second.TextureId].GetAddressOf());
+			d3dContext->PSSetConstantBuffers(0, 1, pixelShaderConstantBuffer.GetAddressOf());
 
-		// TODO: optimize this
-		SpriteVertex vertices[4];
+			// TODO: optimize this
+			SpriteVertex vertices[4];
 
-		// We use 1 / zIndex here to make sure sprites are correctly drawn in front of each other depending on their zIndex.
-		//   zIndex of 4 should be drawn in front of zIndex of 3. vertices with lower z are drawn in front.
-		//   1 / 3 = 0.3333
-		//   1 / 4 = 0.25
-		const auto z = 1 / static_cast<float>(it.second.ZIndex);
+			// We use 1 / zIndex here to make sure sprites are correctly drawn in front of each other depending on their zIndex.
+			//   zIndex of 4 should be drawn in front of zIndex of 3. vertices with lower z are drawn in front.
+			//   1 / 3 = 0.3333
+			//   1 / 4 = 0.25
+			const auto z = 1 / static_cast<float>(it.second.ZIndex);
 
-		const auto pos = it.second.Position;
-		const auto width = it.second.Width;
-		const auto height = it.second.Height;
+			const auto pos = it.second.Position;
+			const auto width = it.second.Width;
+			const auto height = it.second.Height;
 
-		// top left
-		SpriteVertex topLeftVertex;
-		topLeftVertex.Position = XMFLOAT3{ pos.x - (width / 2), pos.y + (height / 2),  z };
-		topLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 0.0f };
-		vertices[0] = topLeftVertex;
+			// top left
+			SpriteVertex topLeftVertex;
+			topLeftVertex.Position = XMFLOAT3{ pos.x - (width / 2), pos.y + (height / 2),  z };
+			topLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 0.0f };
+			vertices[0] = topLeftVertex;
 
-		// top right
-		SpriteVertex topRightVertex;
-		topRightVertex.Position = XMFLOAT3{ pos.x + (width / 2), pos.y + (height / 2), z };
-		topRightVertex.TexCoords = XMFLOAT2{ 1.0f, 0.0f };
-		vertices[1] = topRightVertex;
+			// top right
+			SpriteVertex topRightVertex;
+			topRightVertex.Position = XMFLOAT3{ pos.x + (width / 2), pos.y + (height / 2), z };
+			topRightVertex.TexCoords = XMFLOAT2{ 1.0f, 0.0f };
+			vertices[1] = topRightVertex;
 
-		// bottom right
-		SpriteVertex bottomRightVertex;
-		bottomRightVertex.Position = XMFLOAT3{ pos.x + (width / 2), pos.y - (height / 2), z };
-		bottomRightVertex.TexCoords = XMFLOAT2{ 1.0f, 1.0f };
-		vertices[2] = bottomRightVertex;
+			// bottom right
+			SpriteVertex bottomRightVertex;
+			bottomRightVertex.Position = XMFLOAT3{ pos.x + (width / 2), pos.y - (height / 2), z };
+			bottomRightVertex.TexCoords = XMFLOAT2{ 1.0f, 1.0f };
+			vertices[2] = bottomRightVertex;
 
-		// bottom left
-		SpriteVertex bottomLeftVertex;
-		bottomLeftVertex.Position = XMFLOAT3{ pos.x - (width / 2), pos.y - (height / 2), z };
-		bottomLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 1.0f };
-		vertices[3] = bottomLeftVertex;
+			// bottom left
+			SpriteVertex bottomLeftVertex;
+			bottomLeftVertex.Position = XMFLOAT3{ pos.x - (width / 2), pos.y - (height / 2), z };
+			bottomLeftVertex.TexCoords = XMFLOAT2{ 0.0f, 1.0f };
+			vertices[3] = bottomLeftVertex;
 
-		D3D11_SUBRESOURCE_DATA vertexData;
-		vertexData.pSysMem = vertices;
+			D3D11_SUBRESOURCE_DATA vertexData;
+			vertexData.pSysMem = vertices;
 
-		// create vertex buffer using existing bufferDesc
-		D3D11_BUFFER_DESC bufferDesc;
-		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bufferDesc.ByteWidth = UINT{ sizeof(SpriteVertex) * 4 };
-		bufferDesc.CPUAccessFlags = 0;
-		bufferDesc.MiscFlags = 0;
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+			// create vertex buffer using existing bufferDesc
+			D3D11_BUFFER_DESC bufferDesc;
+			ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+			bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bufferDesc.ByteWidth = UINT{ sizeof(SpriteVertex) * 4 };
+			bufferDesc.CPUAccessFlags = 0;
+			bufferDesc.MiscFlags = 0;
+			bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-		d3dDevice->CreateBuffer(&bufferDesc, &vertexData, vertexBuffer.ReleaseAndGetAddressOf());
+			d3dDevice->CreateBuffer(&bufferDesc, &vertexData, vertexBuffer.ReleaseAndGetAddressOf());
 
-		// set VertexBuffer and IndexBuffer then Draw
-		d3dContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &SPRITE_STRIDE, &SPRITE_OFFSET);
-		d3dContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		d3dContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		d3dContext->DrawIndexed(6, 0, 0);
+			// set VertexBuffer and IndexBuffer then Draw
+			d3dContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &SPRITE_STRIDE, &SPRITE_OFFSET);
+			d3dContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+			d3dContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			d3dContext->DrawIndexed(6, 0, 0);
+		}
 	}
-
+	
 	d3dContext->ResolveSubresource(deviceResources->GetBackBufferRenderTarget(), 0, deviceResources->GetOffscreenRenderTarget(), 0, DXGI_FORMAT_B8G8R8A8_UNORM);
 
 	// Show the new frame.

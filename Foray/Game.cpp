@@ -132,7 +132,7 @@ void Game::Initialize(const HWND window, const int width, const int height)
 	CreatePlayer();
 
 	timer.Reset();
-	SetActiveLayer(Layer::Game);
+	SetActiveLayer(Layer::MainMenu);
 }
 
 void Game::CreateUIElements()
@@ -210,6 +210,13 @@ void Game::CreateUIElements()
 				onActivate = [this]()
 				{
 					SetActiveLayer(Layer::MainOptions);
+				};
+			}
+			else if (menuItemId == "menuScreen_editor")
+			{
+				onActivate = [this]()
+				{
+					SetActiveLayer(Layer::Editor);
 				};
 			}
 			else if (menuItemId == "menuScreen_mainOptionsBack")

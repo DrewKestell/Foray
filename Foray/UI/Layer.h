@@ -3,6 +3,7 @@
 enum class Layer
 {
     MainMenu,
+    MainOptions,
     Game,
-    MainOptions
+    Editor
 };

@@ -90,10 +90,22 @@
 					{
 						"id": "menuScreen_options",
 						"x": 42.0,
-						"y": 120.0,
+						"y": 125.0,
 						"layer": "MainMenu",
 						"zIndex": 0,
 						"text": "Options",
+						"isActive": false,
+						"brushId": "white",
+						"bodyTextFormatId": "default",
+						"bulletTextFormatId": "bullet"
+					},
+					{
+						"id": "menuScreen_editor",
+						"x": 42.0,
+						"y": 150.0,
+						"layer": "MainMenu",
+						"zIndex": 0,
+						"text": "Editor",
 						"isActive": false,
 						"brushId": "white",
 						"bodyTextFormatId": "default",
