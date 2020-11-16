@@ -10,6 +10,7 @@
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
+extern float g_cameraPosX;
 
 Player::Player(GameObject& gameObject)
 	: gameObject{ gameObject }
@@ -90,15 +91,21 @@ void Player::Update()
 		{
 			auto deltaX = horizontalCollisionResult.GetCollider()->GetRect().left - gameObject.Collider->GetRect().right;
 			gameObject.Translate(XMFLOAT2{ deltaX, 0.0f });
+
+			g_cameraPosX += deltaX;
 		}
 		else if (movingLeft && (horizontalCollisionResult.GetCollisionDirection() & COLLISION_DIRECTION_LEFT) > 0 && horizontalCollisionResult.GetCollider()->Type == ColliderType::StaticGeometry)
 		{
 			auto deltaX = gameObject.Collider->GetRect().left - horizontalCollisionResult.GetCollider()->GetRect().right;
 			gameObject.Translate(XMFLOAT2{ -deltaX, 0.0f });
+
+			g_cameraPosX += -deltaX;
 		}
 		else if (horizontalCollisionResult.GetCollisionDirection() == COLLISION_DIRECTION_NONE || horizontalCollisionResult.GetCollider()->Type != ColliderType::StaticGeometry)
 		{
 			gameObject.Translate(XMFLOAT2{ horizontalVelocity, 0.0f });
+
+			g_cameraPosX += horizontalVelocity;
 		}
 	}
 
@@ -129,7 +136,7 @@ void Player::Update()
 	{
 		moveAnimationTimer += UPDATE_FREQUENCY;
 
-		if ((moveFrame == 1 && moveAnimationTimer >= UPDATE_FREQUENCY * 4) || (moveFrame == 2 && moveAnimationTimer >= UPDATE_FREQUENCY * 8) || moveAnimationTimer >= UPDATE_FREQUENCY * 14)
+		if ((moveFrame == 1 && moveAnimationTimer >= UPDATE_FREQUENCY * 6) || (moveFrame == 2 && moveAnimationTimer >= UPDATE_FREQUENCY * 12) || moveAnimationTimer >= UPDATE_FREQUENCY * 20)
 		{
 			lastMoveFrame = moveFrame;
 
@@ -308,6 +315,11 @@ const void Player::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+}
+
+const XMFLOAT2 Player::GetPosition() const
+{
+	return gameObject.Position;
 }
 
 Player::~Player()

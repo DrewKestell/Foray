@@ -268,16 +268,16 @@
 				"textureId": 12
 			},
 			{
-				"left": 1850.0,
+				"left": 1800.0,
 				"top": 850.0,
-				"right": 1900.0,
+				"right": 1850.0,
 				"bottom": 900.0,
 				"textureId": 12
 			},
 			{
-				"left": 1900.0,
+				"left": 1850.0,
 				"top": 850.0,
-				"right": 1950.0,
+				"right": 1900.0,
 				"bottom": 900.0,
 				"textureId": 12
 			}

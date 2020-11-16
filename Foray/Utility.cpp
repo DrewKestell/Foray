@@ -15,10 +15,10 @@ std::wstring Utility::s2ws(const std::string& str)
 	return wstrTo;
 }
 
-const bool Utility::IsOffScreen(const D2D1_RECT_F rect)
+const bool Utility::IsOffScreen(const XMFLOAT2 playerPos, const D2D1_RECT_F rect)
 {
-	return rect.right < 0.0f
-		|| rect.bottom < 0.0f
-		|| rect.left > g_clientWidth
-		|| rect.top > g_clientHeight;
+	return rect.right < playerPos.x - (g_clientWidth / 2)
+		|| rect.bottom < playerPos.y - (g_clientHeight / 2)
+		|| rect.left > playerPos.x + (g_clientWidth / 2)
+		|| rect.top > playerPos.y + (g_clientHeight / 2);
 }

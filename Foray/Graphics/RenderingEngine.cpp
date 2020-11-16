@@ -7,7 +7,7 @@
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern XMMATRIX g_projectionTransform;
-extern XMMATRIX g_viewTransform;
+extern float g_cameraPosX;
 
 RenderingEngine::RenderingEngine(
 	DeviceResources* deviceResources,
@@ -134,7 +134,12 @@ void RenderingEngine::DrawScene()
 		d3dContext->Map(vertexShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		auto pCB = reinterpret_cast<ConstantBufferPerObject*>(mappedResource.pData);
 
-		auto worldViewProj = g_viewTransform * g_projectionTransform;
+		const XMVECTORF32 s_Eye{ g_cameraPosX, 0.0f, -1.0f, 0.0f };
+		const XMVECTORF32 s_At{ g_cameraPosX, 0.0f, 0.0f, 0.0f };
+		const XMVECTORF32 s_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
+		const auto viewTransform = XMMatrixLookAtLH(s_Eye, s_At, s_Up);
+
+		auto worldViewProj = viewTransform * g_projectionTransform;
 		XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(worldViewProj));
 		d3dContext->Unmap(vertexShaderConstantBuffer.Get(), 0);
 

@@ -35,5 +35,6 @@ public:
 	Player(GameObject& gameObject);
 	void Update();
 	virtual const void HandleEvent(const Event* const event);
+	const XMFLOAT2 GetPosition() const;
 	~Player();
 };

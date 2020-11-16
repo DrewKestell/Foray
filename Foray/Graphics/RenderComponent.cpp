@@ -22,7 +22,7 @@ RenderComponent::RenderComponent(
 
 void RenderComponent::SetPosition(const XMFLOAT2 newPos)
 {
-	XMFLOAT3 pos{ 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 pos{ newPos.x, newPos.y, 0.0f };
 	FXMVECTOR v = XMLoadFloat3(&pos);
 	CXMMATRIX view = XMMatrixIdentity();
 	CXMMATRIX world = XMMatrixIdentity();

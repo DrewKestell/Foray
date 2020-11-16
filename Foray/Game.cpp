@@ -13,11 +13,11 @@
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
-XMMATRIX g_viewTransform{ XMMatrixIdentity() };
 extern std::unique_ptr<ObjectManager> g_objectManager;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 std::unique_ptr<RenderingEngine> g_renderingEngine;
+float g_cameraPosX{ 0.0f };
 
 Game::Game()
 {
@@ -82,9 +82,11 @@ const void Game::HandleEvent(const Event* const event)
 			{
 				gameObject->Translate(velocity);
 			};
-			const auto destroySelf = [this](GameObject* gameObject)
+
+			const auto playerParam = player;
+			const auto destroySelf = [playerParam](GameObject* gameObject)
 			{
-				if (Utility::IsOffScreen(gameObject->Collider->GetRect()))
+				if (Utility::IsOffScreen(playerParam->GetPosition(), gameObject->Collider->GetRect()))
 				{
 					std::unique_ptr<Event> e = std::make_unique<DestroyGameObjectEvent>(gameObject->GameObjectId);
 					g_eventHandler->QueueEvent(e);
@@ -278,14 +280,6 @@ void Game::CreateDeviceDependentResources()
 void Game::CreateWindowSizeDependentResources()
 {
 	g_projectionTransform = XMMatrixOrthographicLH(g_clientWidth, g_clientHeight, 0.0f, 5000.0f);
-
-	const XMVECTORF32 s_Eye{ 100.0f, 100.0f, -1.0f, 0.0f };
-	const XMVECTORF32 s_At{ 100.0f, 100.0f, 0.0f, 0.0f };
-
-	//const XMVECTORF32 s_Eye{ 0.0f, 0.0f, -1.0f, 0.0f };
-	//const XMVECTORF32 s_At{ 0.0f, 0.0f, 0.0f, 0.0f };
-	const XMVECTORF32 s_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
-	g_viewTransform = XMMatrixLookAtLH(s_Eye, s_At, s_Up);
 }
 
 void Game::InitializeTextures()
@@ -324,7 +318,7 @@ void Game::InitializeTextures()
 void Game::CreatePlayer()
 {
 	GameObject& gameObject = g_objectManager->CreateGameObject();
-	gameObject.Position = XMFLOAT2{ 200.0f, 200.0f };
+	gameObject.Position = XMFLOAT2{ 700.0f, 200.0f };
 
 	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, 0, 3, gameObject.Position, 95.0f, 80.0f);
 	gameObject.RenderComponent = &renderComponent;
