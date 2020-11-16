@@ -51,3 +51,11 @@ void ObjectManager::UpdateGameObjects()
 		}
 	}
 }
+
+void ObjectManager::Clear()
+{
+	for (const auto& gameObject : gameObjects)
+	{
+		DeleteGameObject(gameObject.GameObjectId);
+	}
+}

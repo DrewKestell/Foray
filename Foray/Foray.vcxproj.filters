@@ -25,6 +25,8 @@
     <ClCompile Include="BehaviorComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Editor\Editor.cpp" />
+    <ClCompile Include="ForayClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -72,6 +74,8 @@
     <ClInclude Include="Graphics\ShaderBuffer.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Events\DestroyGameObjectEvent.h" />
+    <ClInclude Include="Editor\Editor.h" />
+    <ClInclude Include="ForayClient.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />
@@ -91,6 +95,8 @@
     <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame3.DDS" />
     <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame4.DDS" />
     <EmbeddedResource Include="Graphics\Textures\megaman_moveTexture_frame5.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\tile_1.DDS" />
+    <EmbeddedResource Include="Graphics\Textures\tile_2.DDS" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Graphics\Shaders\SpritePixelShader.hlsl" />

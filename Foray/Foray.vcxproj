@@ -89,7 +89,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="Editor\Editor.h" />
     <ClInclude Include="Events\DestroyGameObjectEvent.h" />
+    <ClInclude Include="ForayClient.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
     <ClInclude Include="World\Block.h" />
@@ -136,6 +138,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BehaviorComponent.cpp" />
+    <ClCompile Include="Editor\Editor.cpp" />
+    <ClCompile Include="ForayClient.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Graphics\RenderComponent.cpp" />

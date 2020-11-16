@@ -16,10 +16,7 @@ extern std::unique_ptr<EventHandler> g_eventHandler;
 SoundEngine::SoundEngine()
 {
 	g_eventHandler->Subscribe(*this);
-}
 
-void SoundEngine::Initialize()
-{
     XAudio2Create(xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
     xAudio2->CreateMasteringVoice(&masterVoice);
 

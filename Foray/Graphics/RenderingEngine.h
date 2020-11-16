@@ -33,6 +33,7 @@ public:
 		DeviceResources* deviceResources,
 		std::vector<UIComponent*>& uiComponents,
 		std::vector<ComPtr<ID3D11ShaderResourceView>>& textures);
+	void Initialize();
 	void DrawScene();
 	RenderComponent& CreateRenderComponent(
 		const unsigned int gameObjectId,

@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "Game.h"
+#include "Gamepad.h"
+#include "ForayClient.h"
 #include "Constants.h"
 #include "ObjectManager.h"
 #include "Events/MouseEvent.h"
@@ -7,20 +8,18 @@
 #include "Events/KeyDownEvent.h"
 #include "Events/KeyUpEvent.h"
 #include "Events/GamepadInputEvent.h"
-#include "Sound/SoundEngine.h"
-#include "Physics/PhysicsEngine.h"
+#include "Events/ChangeActiveLayerEvent.h"
 
-// Global Variables:
-HINSTANCE hInst;
-wchar_t szWindowClass[] = L"win32app";
-wchar_t szTitle[] = L"Foray Client";
+// outgoing globals
+std::unique_ptr<EventHandler> g_eventHandler;
 
-static auto gamepad = std::make_unique<Gamepad>(0);
-auto g_eventHandler = std::make_unique<EventHandler>();
-auto g_physicsEngine = std::make_unique<PhysicsEngine>();
-auto g_soundEngine = std::make_unique<SoundEngine>();
-auto g_objectManager = std::make_unique<ObjectManager>();
+// local variables
+static HINSTANCE hInst;
+static wchar_t windowClass[] = L"win32app";
+static std::unique_ptr<Gamepad> gamepad;
+static std::unique_ptr<ForayClient> forayClient;
 
+// TODO: move this into its own class
 static bool upPressed = false;
 static bool downPressed = false;
 static bool leftPressed = false;
@@ -31,29 +30,19 @@ static bool rTriggerPressed = false;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void HandleGamepadInput();
+void AllocateConsole();
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	AllocConsole();
-	HANDLE stdHandle;
-	int hConsole;
-	FILE* fp;
-	stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	hConsole = _open_osfhandle((long)stdHandle, _O_TEXT);
-	fp = _fdopen(hConsole, "w");
-	freopen_s(&fp, "CONOUT$", "w", stdout);
+	AllocateConsole();
 
+	// Ensure CPU supports DirecXMath constructs
 	if (!XMVerifyCPUSupport())
 		return 1;
 
-	const HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-	if (FAILED(hr))
+	// Initialize COM multithreaded support
+	if (FAILED(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED)))
 		return 1;
-
-	g_soundEngine->Initialize();
-	//g_soundEngine->PlayAudio(1, 0.3f);
-
-	static auto game = std::make_unique<Game>();
 
 	// Register class
 	WNDCLASSEX wcex = {};
@@ -73,7 +62,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	);
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszClassName = szWindowClass;
+	wcex.lpszClassName = windowClass;
 	wcex.hIconSm = NULL;  // will automatically use the value of hIcon when we set this to null
 	if (!RegisterClassEx(&wcex))
 		return 1;
@@ -86,8 +75,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// to default to fullscreen.
 	HWND hWnd = CreateWindowExW(
 		0,
-		szWindowClass,
-		szTitle,
+		windowClass,
+		L"Foray Client",
 		WS_OVERLAPPEDWINDOW,
 		0,
 		0,
@@ -104,11 +93,17 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// TODO: Change nCmdShow to SW_SHOWMAXIMIZED to default to fullscreen.
 	ShowWindow(hWnd, nCmdShow);
 
-	// Wrap the WindowPtr in our Game
-	SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(game.get()));
+	// TODO: why is this necessary? everything works fine without it.
+	SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(forayClient.get()));
 
+	// initialize all dependencies
+	g_eventHandler = std::make_unique<EventHandler>();
+	gamepad = std::make_unique<Gamepad>(0);
 	GetClientRect(hWnd, &rc);
-	game->Initialize(hWnd, rc.right - rc.left, rc.bottom - rc.top);
+	forayClient = std::make_unique<ForayClient>(hWnd, rc.right - rc.left, rc.bottom - rc.top);
+
+	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(Layer::MainMenu);
+	g_eventHandler->QueueEvent(e);
 
 	// Main message loop
 	MSG msg{ nullptr };
@@ -122,12 +117,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		else
 		{
 			HandleGamepadInput();
-			game->Tick();
+			forayClient->Tick();
 		}
 	}
-
-	game.reset();
-	gamepad.reset();
 
 	CoUninitialize();
 
@@ -172,7 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static bool inSizemove = false;
 	static bool inFullscreen = false;
 
-	auto game = reinterpret_cast<Game*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+	auto game = reinterpret_cast<ForayClient*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
 	WPARAM keyCode{ 0 };
 	std::unique_ptr<Event> e;
@@ -583,4 +575,16 @@ void HandleGamepadInput()
 		const auto rightThumbstickY = gamepadState.sThumbRY;
 		// TODO
 	}
+}
+
+void AllocateConsole()
+{
+	AllocConsole();
+	HANDLE stdHandle;
+	int hConsole;
+	FILE* fp;
+	stdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	hConsole = _open_osfhandle((long)stdHandle, _O_TEXT);
+	fp = _fdopen(hConsole, "w");
+	freopen_s(&fp, "CONOUT$", "w", stdout);
 }

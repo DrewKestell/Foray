@@ -11,4 +11,5 @@ public:
 	GameObject& CreateGameObject();
 	void DeleteGameObject(const unsigned int gameObjectId);
 	void UpdateGameObjects();
+	void Clear();
 };
