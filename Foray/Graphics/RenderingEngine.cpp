@@ -7,15 +7,14 @@
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern XMMATRIX g_projectionTransform;
+extern XMMATRIX g_viewTransform;
 
 RenderingEngine::RenderingEngine(
 	DeviceResources* deviceResources,
 	std::vector<UIComponent*>& uiComponents,
-	std::unordered_map<std::string, std::unique_ptr<Block>>& blocks,
 	std::vector<ComPtr<ID3D11ShaderResourceView>>& textures)
 	: deviceResources{ deviceResources },
 	  uiComponents{ uiComponents },
-	  blocks{ blocks },
 	  textures{ textures }
 {
 	g_eventHandler->Subscribe(*this);
@@ -102,13 +101,6 @@ void RenderingEngine::DrawScene()
 	for (auto i = 0; i < uiComponents.size(); i++)
 		uiComponents.at(i)->Draw();
 
-	// Draw Static Geometry
-	if (activeLayer == Layer::Game)
-	{
-		for (auto& it : blocks)
-			it.second->Draw();
-	}
-
 	// Debug
 		//g_physicsEngine->DrawColliders(deviceResources.get(), brushes["pink"].Get());
 
@@ -141,7 +133,9 @@ void RenderingEngine::DrawScene()
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		d3dContext->Map(vertexShaderConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		auto pCB = reinterpret_cast<ConstantBufferPerObject*>(mappedResource.pData);
-		XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(g_projectionTransform));
+
+		auto worldViewProj = g_viewTransform * g_projectionTransform;
+		XMStoreFloat4x4(&pCB->gWorldViewProj, XMMatrixTranspose(worldViewProj));
 		d3dContext->Unmap(vertexShaderConstantBuffer.Get(), 0);
 
 		// setup VertexShader

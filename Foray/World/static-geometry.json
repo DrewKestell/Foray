@@ -2,44 +2,284 @@
 	"staticGeometry": {
 		"blocks": [
 			{
-				"id": "1",
-				"left": 40.0,
+				"left": 50.0,
 				"top": 800.0,
-				"right": 540.0,
-				"bottom": 840.0,
-				"radiusX": 5.0,
-				"radiusY": 5.0,
-				"fillBrushId": "white"
+				"right": 100.0,
+				"bottom": 850.0,
+				"textureId": 12
 			},
 			{
-				"id": "2",
-				"left": 140.0,
-				"top": 660.0,
+				"left": 100.0,
+				"top": 800.0,
+				"right": 150.0,
+				"bottom": 850.0,
+				"textureId": 12
+			},
+			{
+				"left": 150.0,
+				"top": 800.0,
+				"right": 200.0,
+				"bottom": 850.0,
+				"textureId": 12
+			},
+			{
+				"left": 200.0,
+				"top": 800.0,
+				"right": 250.0,
+				"bottom": 850.0,
+				"textureId": 12
+			},
+			{
+				"left": 50.0,
+				"top": 850.0,
+				"right": 100.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 100.0,
+				"top": 850.0,
+				"right": 150.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 150.0,
+				"top": 850.0,
+				"right": 200.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 200.0,
+				"top": 850.0,
+				"right": 250.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 350.0,
+				"top": 800.0,
 				"right": 400.0,
-				"bottom": 700.0,
-				"radiusX": 5.0,
-				"radiusY": 5.0,
-				"fillBrushId": "white"
+				"bottom": 850.0,
+				"textureId": 12
 			},
 			{
-				"id": "3",
-				"left": 640.0,
+				"left": 400.0,
 				"top": 800.0,
-				"right": 1000.0,
-				"bottom": 840.0,
-				"radiusX": 5.0,
-				"radiusY": 5.0,
-				"fillBrushId": "white"
+				"right": 450.0,
+				"bottom": 850.0,
+				"textureId": 12
 			},
 			{
-				"id": "4",
-				"left": 960.0,
-				"top": 300.0,
+				"left": 450.0,
+				"top": 800.0,
+				"right": 500.0,
+				"bottom": 850.0,
+				"textureId": 12
+			},
+			{
+				"left": 500.0,
+				"top": 800.0,
+				"right": 550.0,
+				"bottom": 850.0,
+				"textureId": 12
+			},
+			{
+				"left": 350.0,
+				"top": 850.0,
+				"right": 400.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 400.0,
+				"top": 850.0,
+				"right": 450.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 450.0,
+				"top": 850.0,
+				"right": 500.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 500.0,
+				"top": 850.0,
+				"right": 550.0,
+				"bottom": 900.0,
+				"textureId": 13
+			},
+			{
+				"left": 700.0,
+				"top": 850.0,
+				"right": 750.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 750.0,
+				"top": 850.0,
+				"right": 800.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 800.0,
+				"top": 850.0,
+				"right": 850.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 850.0,
+				"top": 850.0,
+				"right": 900.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 900.0,
+				"top": 850.0,
+				"right": 950.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 950.0,
+				"top": 850.0,
 				"right": 1000.0,
-				"bottom": 760.0,
-				"radiusX": 5.0,
-				"radiusY": 5.0,
-				"fillBrushId": "white"
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1000.0,
+				"top": 850.0,
+				"right": 1050.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1050.0,
+				"top": 850.0,
+				"right": 1100.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1100.0,
+				"top": 850.0,
+				"right": 1150.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1150.0,
+				"top": 850.0,
+				"right": 1200.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1200.0,
+				"top": 850.0,
+				"right": 1250.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1250.0,
+				"top": 850.0,
+				"right": 1300.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1300.0,
+				"top": 850.0,
+				"right": 1350.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1350.0,
+				"top": 850.0,
+				"right": 1400.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1400.0,
+				"top": 850.0,
+				"right": 1450.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1450.0,
+				"top": 850.0,
+				"right": 1500.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1500.0,
+				"top": 850.0,
+				"right": 1550.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1550.0,
+				"top": 850.0,
+				"right": 1600.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1600.0,
+				"top": 850.0,
+				"right": 1650.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1650.0,
+				"top": 850.0,
+				"right": 1700.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1700.0,
+				"top": 850.0,
+				"right": 1750.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1750.0,
+				"top": 850.0,
+				"right": 1800.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1850.0,
+				"top": 850.0,
+				"right": 1900.0,
+				"bottom": 900.0,
+				"textureId": 12
+			},
+			{
+				"left": 1900.0,
+				"top": 850.0,
+				"right": 1950.0,
+				"bottom": 900.0,
+				"textureId": 12
 			}
 		]
 	}

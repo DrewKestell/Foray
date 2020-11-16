@@ -13,6 +13,7 @@
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
+XMMATRIX g_viewTransform{ XMMatrixIdentity() };
 extern std::unique_ptr<ObjectManager> g_objectManager;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
@@ -118,7 +119,6 @@ void Game::Initialize(const HWND window, const int width, const int height)
 	deviceResources->SetWindow(window, width, height);
 
 	CreateUIElements();
-	CreateStaticGeometry();
 
 	deviceResources->CreateDeviceResources();
 	deviceResources->CreateWindowSizeDependentResources();
@@ -126,6 +126,7 @@ void Game::Initialize(const HWND window, const int width, const int height)
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
+	CreateStaticGeometry();
 	CreatePlayer();
 
 	timer.Reset();
@@ -241,22 +242,24 @@ void Game::CreateStaticGeometry()
 	{
 		const auto block = blocksJson[i];
 
-		const auto id = block["id"].get<std::string>();
 		const auto left = block["left"].get<float>();
 		const auto top = block["top"].get<float>();
 		const auto right = block["right"].get<float>();
 		const auto bottom = block["bottom"].get<float>();
-		const auto radiusX = block["radiusX"].get<float>();
-		const auto radiusY = block["radiusY"].get<float>();
+		const auto textureId = block["textureId"].get<int>();
+
+		const auto width = 50.0f;
+		const auto height = 50.0f;
+		const auto position = XMFLOAT2{ right - (width / 2), bottom - (height / 2) };
 
 		GameObject& gameObject = g_objectManager->CreateGameObject();
+		gameObject.Position = position;
 
-		const auto width = right - left;
-		const auto height = bottom - top;
-		const auto position = XMFLOAT2{ right - (width / 2), bottom - (height / 2) };
+		RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, textureId, 3, position, width, height);
+		gameObject.RenderComponent = &renderComponent;
+
 		auto collider = new Collider(gameObject, ColliderType::StaticGeometry, width, height, position, true);
-
-		blocks[id] = std::make_unique<Block>(D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), radiusX, radiusY), &gameObject, collider);
+		gameObject.Collider = collider;
 	}
 }
 
@@ -269,15 +272,20 @@ void Game::CreateDeviceDependentResources()
 	InitializeLabels();
 	InitializeMenuItems();
 
-	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, blocks, textures);
-
-	// Static Geometry
-	InitializeBlocks();
+	g_renderingEngine = std::make_unique<RenderingEngine>(deviceResources.get(), uiComponents, textures);
 }
 
 void Game::CreateWindowSizeDependentResources()
 {
 	g_projectionTransform = XMMatrixOrthographicLH(g_clientWidth, g_clientHeight, 0.0f, 5000.0f);
+
+	const XMVECTORF32 s_Eye{ 100.0f, 100.0f, -1.0f, 0.0f };
+	const XMVECTORF32 s_At{ 100.0f, 100.0f, 0.0f, 0.0f };
+
+	//const XMVECTORF32 s_Eye{ 0.0f, 0.0f, -1.0f, 0.0f };
+	//const XMVECTORF32 s_At{ 0.0f, 0.0f, 0.0f, 0.0f };
+	const XMVECTORF32 s_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
+	g_viewTransform = XMMatrixLookAtLH(s_Eye, s_At, s_Up);
 }
 
 void Game::InitializeTextures()
@@ -298,6 +306,8 @@ void Game::InitializeTextures()
 		L"./Graphics/Textures/megaman_jumpTexture.DDS",             // 9
 		L"./Graphics/Textures/megaman_jumpShootTexture.DDS",        // 10
 		L"./Graphics/Textures/bullet.DDS",                          // 11
+		L"./Graphics/Textures/tile_1.DDS",                          // 12
+		L"./Graphics/Textures/tile_2.DDS",                          // 13
 	};
 
 	// clear calls the destructor of its elements, and ComPtr's destructor handles calling Release()
@@ -395,23 +405,6 @@ void Game::InitializeMenuItems()
 
 			menuItems.at(id)->Initialize(brushes.at(brushId).Get(), textFormats.at(bodyTextFormatId).Get(), textFormats.at(bulletTextFormatId).Get());
 		}
-	}
-}
-
-void Game::InitializeBlocks()
-{
-	auto d2dContext = deviceResources->GetD2DDeviceContext();
-	auto d2dFactory = deviceResources->GetD2DFactory();
-
-	for (auto i = 0; i < blocksJson.size(); i++)
-	{
-		const auto blockJson = blocksJson[i];
-
-		const auto id = blockJson["id"].get<std::string>();
-		const auto block = blocks.at(id).get();
-		const auto fillBrushId = blockJson["fillBrushId"].get<std::string>();
-		
-		block->Initialize(d2dContext, d2dFactory, brushes.at(fillBrushId).Get());
 	}
 }
 

@@ -66,7 +66,6 @@ private:
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
-	void InitializeBlocks();
 
 	// UI Json
 	json brushesJson;
@@ -85,9 +84,6 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<UILabel>> labels;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItemGroup>> menuItemGroups;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItem>> menuItems;
-
-	// Static Geometry
-	std::unordered_map<std::string, std::unique_ptr<Block>> blocks;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

@@ -4,6 +4,7 @@
 extern float g_clientWidth;
 extern float g_clientHeight;
 extern XMMATRIX g_projectionTransform;
+extern XMMATRIX g_viewTransform;
 
 RenderComponent::RenderComponent(
 	const unsigned int textureId,
@@ -21,7 +22,7 @@ RenderComponent::RenderComponent(
 
 void RenderComponent::SetPosition(const XMFLOAT2 newPos)
 {
-	XMFLOAT3 pos{ newPos.x, newPos.y, 0.0f };
+	XMFLOAT3 pos{ 0.0f, 0.0f, 0.0f };
 	FXMVECTOR v = XMLoadFloat3(&pos);
 	CXMMATRIX view = XMMatrixIdentity();
 	CXMMATRIX world = XMMatrixIdentity();

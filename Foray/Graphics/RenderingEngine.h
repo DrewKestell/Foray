@@ -16,7 +16,6 @@ private:
 	// constructor parameters
 	DeviceResources* deviceResources;
 	std::vector<UIComponent*>& uiComponents;
-	std::unordered_map<std::string, std::unique_ptr<Block>>& blocks;
 	std::vector<ComPtr<ID3D11ShaderResourceView>>& textures;
 
 	// locals
@@ -33,7 +32,6 @@ public:
 	RenderingEngine(
 		DeviceResources* deviceResources,
 		std::vector<UIComponent*>& uiComponents,
-		std::unordered_map<std::string, std::unique_ptr<Block>>& blocks,
 		std::vector<ComPtr<ID3D11ShaderResourceView>>& textures);
 	void DrawScene();
 	RenderComponent& CreateRenderComponent(

@@ -8,9 +8,6 @@
 #include "../Events/KeyUpEvent.h"
 #include "Physics/PhysicsEngine.h"
 
-extern XMMATRIX g_projectionTransform;
-extern float g_clientWidth;
-extern float g_clientHeight;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 extern std::unique_ptr<PhysicsEngine> g_physicsEngine;
 

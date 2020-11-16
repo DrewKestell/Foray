@@ -1,1 +1,1 @@
-..\Utilities\Texconv\texconv -r ..\Foray\Sprites\*.png -o ..\Foray\Sprites -y
+..\Utilities\Texconv\texconv -r ..\Foray\Graphics\Textures\*.png -o ..\Foray\Graphics\Textures -y
