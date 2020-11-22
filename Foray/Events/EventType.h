@@ -15,5 +15,6 @@ enum class EventType
 	ChangeActiveLayer,
 	GamepadInput,
 	FireProjectile,
-	DestroyGameObject
+	DestroyGameObject,
+	ReorderUIComponents
 };

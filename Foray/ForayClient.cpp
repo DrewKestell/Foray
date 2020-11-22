@@ -16,6 +16,7 @@
 extern std::unique_ptr<EventHandler> g_eventHandler;
 
 // outgoing globals
+unsigned int g_zIndex{ 0 };
 float g_clientWidth{ CLIENT_WIDTH };
 float g_clientHeight{ CLIENT_HEIGHT };
 XMMATRIX g_projectionTransform{ XMMatrixIdentity() };
@@ -78,6 +79,25 @@ const void ForayClient::HandleEvent(const Event* const event)
 	const auto type = event->Type;
 	switch (type)
 	{
+		case EventType::ChangeActiveLayer:
+		{
+			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
+
+			activeLayer = derivedEvent->Layer;
+
+			g_objectManager->Clear();
+
+			if (activeLayer == Layer::Game)
+			{
+				game->Initialize();
+			}
+			else if (activeLayer == Layer::Editor)
+			{
+				editor->Initialize();
+			}
+
+			break;
+		}
 		case EventType::GamepadInput:
 		{
 			const auto derivedEvent = (GamepadInputEvent*)event;
@@ -119,18 +139,9 @@ const void ForayClient::HandleEvent(const Event* const event)
 
 void ForayClient::SetActiveLayer(const Layer layer)
 {
-	if (layer == Layer::Game)
-	{
-		g_objectManager->Clear();
-		game->Initialize();
-	}	
-	else if (layer == Layer::Editor)
-	{
-		g_objectManager->Clear();
-		editor->Initialize();
-	}
-
 	activeLayer = layer;
+
+	g_objectManager->Clear();
 
 	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(layer);
 	g_eventHandler->QueueEvent(e);
@@ -232,6 +243,60 @@ void ForayClient::CreateUIElements()
 			menuItemGroups[menuItemGroupId]->AddInput(menuItems[menuItemId].get());
 		}
 	}
+
+	panelsJson = uiElements["panels"];
+	for (auto i = 0; i < panelsJson.size(); i++)
+	{
+		const auto panel = panelsJson[i];
+
+		const auto id = panel["id"].get<std::string>();
+		const auto layer = LAYER_MAP.at(panel["layer"].get<std::string>());
+		const auto isDraggable = panel["isDraggable"].get<bool>();
+		const auto width = panel["width"].get<float>();
+		const auto height = panel["height"].get<float>();
+		const auto x = panel["x"].get<float>() - (width / 2);
+		const auto y = panel["y"].get<float>() - (height / 2);
+		const auto showKey = panel["showKey"].get<int>();
+		
+		panels[id] = std::make_unique<UIPanel>(UIComponentArgs{ deviceResources.get(), uiComponents, [x, y](const float, const float) { return XMFLOAT2{ x, y }; }, layer, 0 }, isDraggable, width, height, showKey);
+	
+		const auto buttonsJson = panel["buttons"];
+
+		for (auto j = 0; j < buttonsJson.size(); j++)
+		{
+			const auto button = buttonsJson[j];
+
+			const auto buttonId = button["id"].get<std::string>();
+			const auto buttonLayer = LAYER_MAP.at(button["layer"].get<std::string>());
+			const auto buttonWidth = button["width"].get<float>();
+			const auto buttonHeight = button["height"].get<float>();
+			const auto buttonX = button["x"].get<float>();
+			const auto buttonY = button["y"].get<float>();
+			const auto buttonText = Utility::s2ws(button["buttonText"].get<std::string>());
+
+			std::function<void()> onClick;
+			if (buttonId == "inGameOptions_leaveGame")
+			{
+				onClick = [this]()
+				{
+					// clean up game and return to title screen
+					SetActiveLayer(Layer::MainMenu);
+				};
+			}
+			if (buttonId == "editorOptions_leaveGame")
+			{
+				onClick = [this]()
+				{
+					// clean up game and return to title screen
+					SetActiveLayer(Layer::MainMenu);
+				};
+			}
+
+			buttons[buttonId] = std::make_unique<UIButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [buttonX, buttonY](const float, const float) { return XMFLOAT2{ buttonX, buttonY }; }, buttonLayer, 1 }, buttonWidth, buttonHeight, buttonText.c_str(), onClick);
+		
+			panels[id]->AddChildComponent(*buttons[buttonId]);
+		}
+	}
 }
 
 void ForayClient::CreateDeviceDependentResources()
@@ -241,6 +306,7 @@ void ForayClient::CreateDeviceDependentResources()
 	InitializeTextFormats();
 	InitializeLabels();
 	InitializeMenuItems();
+	InitializePanels();
 	g_renderingEngine->Initialize();
 }
 
@@ -352,6 +418,37 @@ void ForayClient::InitializeMenuItems()
 			const auto bulletTextFormatId = menuItem["bulletTextFormatId"].get<std::string>();
 
 			menuItems.at(id)->Initialize(brushes.at(brushId).Get(), textFormats.at(bodyTextFormatId).Get(), textFormats.at(bulletTextFormatId).Get());
+		}
+	}
+}
+
+void ForayClient::InitializePanels()
+{
+	for (auto i = 0; i < panelsJson.size(); i++)
+	{
+		const auto panel = panelsJson[i];
+
+		const auto id = panel["id"].get<std::string>();
+		const auto headerBrushId = panel["headerBrushId"].get<std::string>();
+		const auto bodyBrushId = panel["bodyBrushId"].get<std::string>();
+		const auto borderBrushId = panel["borderBrushId"].get<std::string>();
+
+		panels.at(id)->Initialize(brushes.at(headerBrushId).Get(), brushes.at(bodyBrushId).Get(), brushes.at(borderBrushId).Get());
+	
+		const auto buttonsJson = panelsJson[i]["buttons"];
+
+		for (auto j = 0; j < buttonsJson.size(); j++)
+		{
+			const auto button = buttonsJson[j];
+
+			const auto buttonId = button["id"].get<std::string>();
+			const auto buttonBrushId = button["brushId"].get<std::string>();
+			const auto pressedButtonBrushId = button["pressedBrushId"].get<std::string>();
+			const auto buttonBorderBrushId = button["borderBrushId"].get<std::string>();
+			const auto buttonTextBrushId = button["textBrushId"].get<std::string>();
+			const auto buttonTextFormatId = button["textFormatId"].get<std::string>();
+
+			buttons.at(buttonId)->Initialize(brushes.at(buttonBrushId).Get(), brushes.at(pressedButtonBrushId).Get(), brushes.at(buttonBorderBrushId).Get(), brushes.at(buttonTextBrushId).Get(), textFormats.at(buttonTextFormatId).Get());
 		}
 	}
 }

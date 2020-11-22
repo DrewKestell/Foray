@@ -22,3 +22,8 @@ const bool Utility::IsOffScreen(const XMFLOAT2 playerPos, const D2D1_RECT_F rect
 		|| rect.left > playerPos.x + (g_clientWidth / 2)
 		|| rect.top > playerPos.y + (g_clientHeight / 2);
 }
+
+const bool Utility::DetectClick(const float topLeftX, const float topLeftY, const float bottomRightX, const float bottomRightY, const float mousePosX, const float mousePosY)
+{
+	return mousePosX >= topLeftX && mousePosX <= bottomRightX && mousePosY >= topLeftY && mousePosY <= bottomRightY;
+}

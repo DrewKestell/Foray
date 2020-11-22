@@ -102,7 +102,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	GetClientRect(hWnd, &rc);
 	forayClient = std::make_unique<ForayClient>(hWnd, rc.right - rc.left, rc.bottom - rc.top);
 
-	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(Layer::MainMenu);
+	std::unique_ptr<Event> e = std::make_unique<ChangeActiveLayerEvent>(Layer::Game);
 	g_eventHandler->QueueEvent(e);
 
 	// Main message loop

@@ -3,6 +3,7 @@
 #include "../Events/EventHandler.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
+#include "../Events/KeyDownEvent.h"
 
 extern std::unique_ptr<EventHandler> g_eventHandler;
 
@@ -68,6 +69,51 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					}
 				}
 			}
+
+			break;
+		}
+		case EventType::KeyDown:
+		{
+			const auto derivedEvent = (KeyDownEvent*)event;
+
+			if (active && derivedEvent->CharCode == VK_DOWN)
+			{
+				for (auto it = inputs.begin(); it != inputs.end(); it++)
+				{
+					if ((it + 1) != inputs.end() && (*it)->IsActive())
+					{
+						(*it)->SetActive(false);
+						(*(it + 1))->SetActive(true);
+						return;
+					}
+					if ((it + 1) == inputs.end())
+					{
+						(*it)->SetActive(false);
+						(*inputs.begin())->SetActive(true);
+						return;
+					}
+				}
+			}
+			else if (active && derivedEvent->CharCode == VK_UP)
+			{
+				for (auto it = inputs.begin(); it != inputs.end(); it++)
+				{
+					if (it == inputs.begin() && (*it)->IsActive())
+					{
+						(*it)->SetActive(false);
+						(*(inputs.end() - 1))->SetActive(true);
+						return;
+					}
+					else if ((*(it + 1))->IsActive())
+					{
+						(*it)->SetActive(true);
+						(*(it + 1))->SetActive(false);
+						return;
+					}
+				}
+			}
+
+			break;
 		}
 	}
 }

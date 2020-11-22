@@ -14,6 +14,41 @@
 				"g": 0.08,
 				"b": 0.58,
 				"a": 1.0
+			},
+			{
+				"id": "blue",
+				"r": 0.619,
+				"g": 0.854,
+				"b": 1.0,
+				"a": 1.0
+			},
+			{
+				"id": "darkBlue",
+				"r": 0.301,
+				"g": 0.729,
+				"b": 1.0,
+				"a": 1.0
+			},
+			{
+				"id": "lightGray",
+				"r": 0.9,
+				"g": 0.9,
+				"b": 0.9,
+				"a": 1.0
+			},
+			{
+				"id": "gray",
+				"r": 0.35,
+				"g": 0.35,
+				"b": 0.35,
+				"a": 1.0
+			},
+			{
+				"id": "black",
+				"r": 0.1,
+				"g": 0.1,
+				"b": 0.1,
+				"a": 1.0
 			}
 		],
 		"textFormats": [
@@ -46,6 +81,16 @@
 				"size": 15.0,
 				"textAlignment": "Leading",
 				"paragraphAlignment": "Near"
+			},
+			{
+				"id": "button",
+				"fontFamily": "Arial",
+				"weight": "Bold",
+				"style": "Normal",
+				"stretch": "Normal",
+				"size": 14.0,
+				"textAlignment": "Center",
+				"paragraphAlignment": "Center"
 			}
 		],
 		"labels": [
@@ -115,7 +160,7 @@
 			},
 			{
 				"id": "mainOptions",
-				"layer": "mainOptions",
+				"layer": "MainOptions",
 				"menuItems": [
 					{
 						"id": "menuScreen_mainOptionsBack",
@@ -128,6 +173,66 @@
 						"brushId": "white",
 						"bodyTextFormatId": "default",
 						"bulletTextFormatId": "bullet"
+					}
+				]
+			}
+		],
+		"panels": [
+			{
+				"id": "inGameOptions",
+				"layer": "Game",
+				"isDraggable": false,
+				"x": 700,
+				"y": 450,
+				"width": 500.0,
+				"height": 300.0,
+				"showKey": 27,
+				"headerBrushId": "darkBlue",
+				"bodyBrushId": "lightGray",
+				"borderBrushId": "gray",
+				"buttons": [
+					{
+						"id": "inGameOptions_leaveGame",
+						"layer": "Game",
+						"x": 10.0,
+						"y": 10.0,
+						"width": 200.0,
+						"height": 30.0,
+						"buttonText": "Back to Main Menu",
+						"brushId": "blue",
+						"pressedBrushId": "darkBlue",
+						"borderBrushId": "gray",
+						"textBrushId": "black",
+						"textFormatId": "button"
+					}
+				]
+			},
+			{
+				"id": "editorOptions",
+				"layer": "Editor",
+				"isDraggable": false,
+				"x": 700,
+				"y": 450,
+				"width": 500.0,
+				"height": 300.0,
+				"showKey": 27,
+				"headerBrushId": "darkBlue",
+				"bodyBrushId": "lightGray",
+				"borderBrushId": "gray",
+				"buttons": [
+					{
+						"id": "editorOptions_leaveGame",
+						"layer": "Editor",
+						"x": 10.0,
+						"y": 10.0,
+						"width": 200.0,
+						"height": 30.0,
+						"buttonText": "Back to Main Menu",
+						"brushId": "blue",
+						"pressedBrushId": "darkBlue",
+						"borderBrushId": "gray",
+						"textBrushId": "black",
+						"textFormatId": "button"
 					}
 				]
 			}

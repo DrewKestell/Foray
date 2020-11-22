@@ -94,6 +94,8 @@
     <ClInclude Include="ForayClient.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
+    <ClInclude Include="UI\UIButton.h" />
+    <ClInclude Include="UI\UIPanel.h" />
     <ClInclude Include="World\Block.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Events\KeyDownEvent.h" />
@@ -143,6 +145,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Graphics\RenderComponent.cpp" />
+    <ClCompile Include="UI\UIButton.cpp" />
+    <ClCompile Include="UI\UIPanel.cpp" />
     <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />

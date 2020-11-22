@@ -27,6 +27,8 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Editor\Editor.cpp" />
     <ClCompile Include="ForayClient.cpp" />
+    <ClCompile Include="UI\UIPanel.cpp" />
+    <ClCompile Include="UI\UIButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -76,6 +78,8 @@
     <ClInclude Include="Events\DestroyGameObjectEvent.h" />
     <ClInclude Include="Editor\Editor.h" />
     <ClInclude Include="ForayClient.h" />
+    <ClInclude Include="UI\UIPanel.h" />
+    <ClInclude Include="UI\UIButton.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

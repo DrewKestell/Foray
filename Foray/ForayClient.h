@@ -9,6 +9,8 @@
 #include "UI/UILabel.h"
 #include "UI/UIMenuItem.h"
 #include "UI/UIMenuItemGroup.h"
+#include "UI/UIPanel.h"
+#include "UI/UIButton.h"
 
 const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
 {
@@ -28,12 +30,14 @@ const std::unordered_map<std::string, const DWRITE_FONT_STRETCH> FONT_STRETCH_MA
 
 const std::unordered_map<std::string, const DWRITE_TEXT_ALIGNMENT> TEXT_ALIGNMENT_MAP
 {
-	{ "Leading", DWRITE_TEXT_ALIGNMENT_LEADING }
+	{ "Leading", DWRITE_TEXT_ALIGNMENT_LEADING },
+	{ "Center", DWRITE_TEXT_ALIGNMENT_CENTER }
 };
 
 const std::unordered_map<std::string, const DWRITE_PARAGRAPH_ALIGNMENT> PARAGRAPH_ALIGNMENT_MAP
 {
-	{ "Near", DWRITE_PARAGRAPH_ALIGNMENT_NEAR }
+	{ "Near", DWRITE_PARAGRAPH_ALIGNMENT_NEAR },
+	{ "Center", DWRITE_PARAGRAPH_ALIGNMENT_CENTER }
 };
 
 const std::unordered_map<std::string, Layer> LAYER_MAP
@@ -63,12 +67,14 @@ private:
 	void InitializeTextFormats();
 	void InitializeLabels();
 	void InitializeMenuItems();
+	void InitializePanels();
 
 	// UI Json
 	json brushesJson;
 	json textFormatsJson;
 	json labelsJson;
 	json menuItemGroupsJson;
+	json panelsJson;
 
 	// Static Geometry Json
 	json blocksJson;
@@ -81,6 +87,8 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<UILabel>> labels;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItemGroup>> menuItemGroups;
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItem>> menuItems;
+	std::unordered_map<std::string, std::unique_ptr<UIPanel>> panels;
+	std::unordered_map<std::string, std::unique_ptr<UIButton>> buttons;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

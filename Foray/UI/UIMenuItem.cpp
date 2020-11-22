@@ -2,6 +2,7 @@
 #include "UIMenuItem.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 #include "../Events/GamepadInputEvent.h"
+#include "../Events/KeyDownEvent.h"
 #include "../Constants.h"
 
 UIMenuItem::UIMenuItem(
@@ -87,6 +88,15 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 			const auto derivedEvent = (GamepadInputEvent*)event;
 
 			if (isVisible && isActive && derivedEvent->InputValue == XINPUT_GAMEPAD_A && derivedEvent->Pressed)
+				onActivate();
+
+			break;
+		}
+		case EventType::KeyDown:
+		{
+			const auto derivedEvent = (KeyDownEvent*)event;
+
+			if (isVisible && isActive && derivedEvent->CharCode == VK_RETURN)
 				onActivate();
 
 			break;

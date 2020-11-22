@@ -34,8 +34,6 @@ void ObjectManager::DeleteGameObject(const unsigned int gameObjectId)
 				g_renderingEngine->RemoveRenderComponent(gameObject.GameObjectId);
 			}
 
-			gameObjects.remove(gameObject);
-
 			return;
 		}
 	}
@@ -58,4 +56,6 @@ void ObjectManager::Clear()
 	{
 		DeleteGameObject(gameObject.GameObjectId);
 	}
+
+	gameObjects.clear();
 }
