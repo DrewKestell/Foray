@@ -16,7 +16,7 @@ private:
 
 public:
 	PhysicsEngine();
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 	void RegisterCollider(Collider* collider);
 	void UnregisterCollider(Collider* collider);
 	void Update();

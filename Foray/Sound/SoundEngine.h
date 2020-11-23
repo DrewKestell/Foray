@@ -13,7 +13,7 @@ private:
 
 public:
 	SoundEngine();
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 	void Update();
 	HRESULT FindChunk(HANDLE hFile, DWORD fourcc, DWORD& dwChunkSize, DWORD& dwChunkDataPosition);
 	HRESULT ReadChunkData(HANDLE hFile, void* buffer, DWORD buffersize, DWORD bufferoffset);

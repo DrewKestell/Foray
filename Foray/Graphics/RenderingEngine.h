@@ -40,8 +40,9 @@ public:
 		const unsigned int zIndex,
 		const XMFLOAT2 position,
 		const float width,
-		const float height);
+		const float height,
+		const bool convertToWorldPosition = true);
 	void RemoveRenderComponent(const unsigned int gameObjectId);
 	~RenderingEngine();
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 };

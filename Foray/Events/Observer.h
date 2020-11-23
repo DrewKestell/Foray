@@ -5,5 +5,5 @@
 class Observer
 {
 public:
-	virtual const void HandleEvent(const Event* const event) = 0;
+	virtual const bool HandleEvent(const Event* const event) = 0;
 };

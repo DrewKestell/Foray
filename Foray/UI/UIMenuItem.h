@@ -23,7 +23,7 @@ public:
 		const bool isActive = false);
 	void Initialize(ID2D1SolidColorBrush* textBrush, IDWriteTextFormat* textFormat, IDWriteTextFormat* bulletTextFormat);
 	void Draw() override;
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	void CreateTextLayouts();
 	const bool IsActive();
 	void SetActive(const bool isActive);

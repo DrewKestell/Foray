@@ -24,7 +24,7 @@ SoundEngine::SoundEngine()
     CreateAudioSource(2, L"./Sound/SoundEffects/buster.wav");
 }
 
-const void SoundEngine::HandleEvent(const Event* const event)
+const bool SoundEngine::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -36,6 +36,8 @@ const void SoundEngine::HandleEvent(const Event* const event)
             break;
         }
 	}
+
+    return false;
 }
 
 void SoundEngine::Update()

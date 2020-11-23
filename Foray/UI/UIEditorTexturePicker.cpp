@@ -25,7 +25,7 @@ void UIEditorTexturePicker::Draw()
 	d2dDeviceContext->DrawGeometry(borderGeometry.Get(), borderBrush, 2.0f);
 }
 
-const void UIEditorTexturePicker::HandleEvent(const Event* const event)
+const bool UIEditorTexturePicker::HandleEvent(const Event* const event)
 {
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
@@ -37,7 +37,15 @@ const void UIEditorTexturePicker::HandleEvent(const Event* const event)
 		{
 			const auto mouseDownEvent = (MouseEvent*)event;
 
-
+			if (isVisible)
+			{
+				const auto position = GetWorldPosition();
+				if (Utility::DetectClick(position.x, position.y, position.x + 52.0f, position.y + 52.0f, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
+				{
+					// TODO
+					return true;
+				}
+			}
 
 			break;
 		}
@@ -69,4 +77,6 @@ const void UIEditorTexturePicker::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }

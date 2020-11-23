@@ -26,7 +26,8 @@ void EventHandler::PublishEvents(std::vector<UIComponent*>& uiComponents)
 		// first let the ui elements handle the event
 		for (auto i = (int)uiComponents.size() - 1; i >= 0; i--)
 		{
-			uiComponents.at(i)->HandleEvent(event.get());
+			if (uiComponents.at(i)->HandleEvent(event.get()))
+				return;
 		}
 
 		// next let game objects handle the event

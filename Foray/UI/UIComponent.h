@@ -42,7 +42,7 @@ public:
 	void ClearChildren();
 	void SetLocalPosition(const XMFLOAT2 pos) { this->localPosition = pos; }
 	void SendEventToChildren(const Event& e, UIComponent* uiComponent);
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	virtual void Draw() = 0;
 	~UIComponent();
 };

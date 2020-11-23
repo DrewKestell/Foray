@@ -5,14 +5,20 @@
 #include "../Events/KeyDownEvent.h"
 #include "../Events/KeyUpEvent.h"
 #include "../Events/MouseEvent.h"
+#include "../Events/ChangeActiveLayerEvent.h"
+#include "../Graphics/RenderingEngine.h"
 
 // incoming globals
 extern std::unique_ptr<ObjectManager> g_objectManager;
+extern std::unique_ptr<RenderingEngine> g_renderingEngine;
 extern std::unique_ptr<EventHandler> g_eventHandler;
 
-Editor::Editor()
+Editor::Editor(UIEditorToolButtonGroup* toolButtonGroup, UIEditorTexturePicker* texturePicker)
+	: toolButtonGroup{ toolButtonGroup },
+	  texturePicker{ texturePicker }
 {
 	g_eventHandler->Subscribe(*this);
+	ClearTiles();
 }
 
 void Editor::Initialize()
@@ -25,18 +31,33 @@ void Editor::Tick()
 
 }
 
-const void Editor::HandleEvent(const Event* const event)
+const bool Editor::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
 	{
 		case EventType::LeftMouseDown:
 		{
-			const auto mouseDownEvent = (MouseEvent*)event;
+			if (activeLayer == Layer::Editor)
+			{
+				const auto mouseDownEvent = (MouseEvent*)event;
 
-			std::cout << "X: " << mouseDownEvent->MousePosX << std::endl;
-			std::cout << "Y: " << mouseDownEvent->MousePosY << std::endl;
+				const auto worldPos = Utility::ConvertToWorldSpace(XMFLOAT2{ mouseDownEvent->MousePosX, mouseDownEvent->MousePosY });
+				auto tileX = floor(worldPos.x / 50.0f);
+				auto tileY = floor(worldPos.y / 50.0f);
 
+				std::cout << "X: " << worldPos.x << std::endl;
+				std::cout << "Y: " << worldPos.y << std::endl;
+				std::cout << "TileX: " << tileX << std::endl;
+				std::cout << "TileY: " << tileY << std::endl;
+
+				const auto activeTool = toolButtonGroup->GetActiveTool();
+				if (activeTool == L"+")
+					CreateTile(tileX, tileY);
+				else if (activeTool == L"-")
+					RemoveTile(tileX, tileY);
+			}
+			
 			break;
 		}
 		case EventType::KeyDown:
@@ -55,10 +76,52 @@ const void Editor::HandleEvent(const Event* const event)
 
 			break;
 		}
+		case EventType::ChangeActiveLayer:
+		{
+			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
+
+			activeLayer = derivedEvent->Layer;
+
+			break;
+		}
 	}
+
+	return false;
 }
 
 void Editor::Initialize(const HWND window, const int width, const int height)
+{
+
+}
+
+void Editor::ClearTiles()
+{
+	for (auto i = 0; i < 1000; i++)
+	{
+		for (auto j = 0; j < 1000; j++)
+		{
+			mapTiles[i][j] = -1;
+		}
+	}
+}	
+
+void Editor::CreateTile(const int x, const int y)
+{
+	const auto textureId = texturePicker->GetActiveTextureId();
+	mapTiles[x][y] = textureId;
+
+	const auto position = XMFLOAT2{ (x * 50.0f) + 25.0f, (y * 50.0f) + 25.0f };
+	GameObject& gameObject = g_objectManager->CreateGameObject();
+	gameObject.Position = position;
+
+	std::cout << "Final PosX: " << position.x << std::endl;
+	std::cout << "Final PosY: " << position.y << std::endl;
+
+	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, textureId, 1, position, 50.0f, 50.0f, false);
+	gameObject.RenderComponent = &renderComponent;
+}
+
+void Editor::RemoveTile(const int x, const int y)
 {
 
 }

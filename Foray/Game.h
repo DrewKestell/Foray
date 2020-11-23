@@ -13,7 +13,7 @@ private:
 	// Static Geometry Json
 	json blocksJson;
 	
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 	void CreateStaticGeometry();
 	void CreatePlayer();
 

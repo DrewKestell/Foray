@@ -26,13 +26,15 @@ Collider::Collider(
 	}
 }
 
-const void Collider::HandleEvent(const Event* const event)
+const bool Collider::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
 	{
 	
 	}
+
+	return false;
 }
 
 const D2D1_RECT_F Collider::GetRect() const

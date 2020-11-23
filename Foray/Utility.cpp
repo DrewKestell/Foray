@@ -3,6 +3,7 @@
 
 extern float g_clientWidth;
 extern float g_clientHeight;
+extern XMMATRIX g_projectionTransform;
 
 std::wstring Utility::s2ws(const std::string& str)
 {
@@ -26,4 +27,18 @@ const bool Utility::IsOffScreen(const XMFLOAT2 playerPos, const D2D1_RECT_F rect
 const bool Utility::DetectClick(const float topLeftX, const float topLeftY, const float bottomRightX, const float bottomRightY, const float mousePosX, const float mousePosY)
 {
 	return mousePosX >= topLeftX && mousePosX <= bottomRightX && mousePosY >= topLeftY && mousePosY <= bottomRightY;
+}
+
+const XMFLOAT2 Utility::ConvertToWorldSpace(const XMFLOAT2 pos)
+{
+	XMFLOAT3 position{ pos.x, pos.y, 0.0f };
+	FXMVECTOR v = XMLoadFloat3(&position);
+	CXMMATRIX view = XMMatrixIdentity();
+	CXMMATRIX world = XMMatrixIdentity();
+
+	auto res = XMVector3Unproject(v, 0.0f, 0.0f, g_clientWidth, g_clientHeight, 0.0f, 1000.0f, g_projectionTransform, view, world);
+	XMFLOAT3 vec;
+	XMStoreFloat3(&vec, res);
+
+	return XMFLOAT2{ vec.x, vec.y };
 }

@@ -68,7 +68,7 @@ void UIPanel::Draw()
 	d2dDeviceContext->DrawLine(D2D1::Point2F(startingX + 12.0f, startingY), D2D1::Point2F(startingX, startingY + 12.0f), borderBrush, 2.0f);
 }
 
-const void UIPanel::HandleEvent(const Event* const event)
+const bool UIPanel::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -81,7 +81,7 @@ const void UIPanel::HandleEvent(const Event* const event)
 			{
 				const auto position = GetWorldPosition();
 				if (Utility::DetectClick(position.x, position.y, position.x + width, position.y + HEADER_HEIGHT + height, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
-					return;
+					return true;
 			}
 
 			break;
@@ -93,6 +93,7 @@ const void UIPanel::HandleEvent(const Event* const event)
 			if (isVisible)
 			{
 				const auto position = GetWorldPosition();
+				bool stopEvent{ false };
 				if (isDraggable && Utility::DetectClick(position.x, position.y, position.x + width, position.y + HEADER_HEIGHT, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
 				{
 					lastDragX = mouseDownEvent->MousePosX;
@@ -107,6 +108,8 @@ const void UIPanel::HandleEvent(const Event* const event)
 
 					std::unique_ptr<Event> e = std::make_unique<Event>(EventType::ReorderUIComponents);
 					g_eventHandler->QueueEvent(e);
+
+					stopEvent = true;
 				}
 
 				const auto closeButtonStartingX = position.x + width - 17.0f;
@@ -114,9 +117,11 @@ const void UIPanel::HandleEvent(const Event* const event)
 				if (Utility::DetectClick(closeButtonStartingX, closeButtonStartingY, closeButtonStartingX + 12.0f, closeButtonStartingY + 12.0f, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
 				{
 					ToggleVisibility();
+
+					stopEvent = true;
 				}
 
-				return;
+				return stopEvent;
 			}
 
 			break;
@@ -196,6 +201,8 @@ const void UIPanel::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 void UIPanel::SetChildrenAsVisible(UIComponent* uiComponent)

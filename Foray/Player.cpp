@@ -217,7 +217,7 @@ void Player::Update()
 	gameObject.RenderComponent->TextureId = textureId;
 }
 
-const void Player::HandleEvent(const Event* const event)
+const bool Player::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -315,6 +315,8 @@ const void Player::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 const XMFLOAT2 Player::GetPosition() const

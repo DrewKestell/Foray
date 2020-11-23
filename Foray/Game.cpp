@@ -32,7 +32,7 @@ void Game::Tick()
 	player->Update();
 }
 
-const void Game::HandleEvent(const Event* const event)
+const bool Game::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -72,6 +72,8 @@ const void Game::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 void Game::CreateStaticGeometry()

@@ -66,7 +66,7 @@ void UIButton::Draw()
 	d2dDeviceContext->DrawTextLayout(D2D1::Point2F(position.x, position.y), buttonTextLayout.Get(), buttonTextBrush);
 }
 
-const void UIButton::HandleEvent(const Event* const event)
+const bool UIButton::HandleEvent(const Event* const event)
 {
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
@@ -85,6 +85,7 @@ const void UIButton::HandleEvent(const Event* const event)
 				{
 					pressed = true;
 					onClick();
+					return true;
 				}
 			}
 
@@ -117,4 +118,6 @@ const void UIButton::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }

@@ -11,12 +11,14 @@ UIEditorToolButtonGroup::UIEditorToolButtonGroup(const Layer uiLayer)
 	g_eventHandler->Subscribe(*this);
 }
 
-const void UIEditorToolButtonGroup::HandleEvent(const Event* const event)
+const bool UIEditorToolButtonGroup::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
 	{
 	}
+
+	return false;
 }
 
 void UIEditorToolButtonGroup::DeselectAllButtons()
@@ -24,6 +26,15 @@ void UIEditorToolButtonGroup::DeselectAllButtons()
 	for (auto button : buttons)
 	{
 		button->IsSelected = false;
+	}
+}
+
+const std::wstring UIEditorToolButtonGroup::GetActiveTool()
+{
+	for (auto button : buttons)
+	{
+		if (button->IsSelected)
+			return button->GetText();
 	}
 }
 

@@ -48,7 +48,7 @@ ForayClient::ForayClient(const HWND window, const int width, const int height)
 	CreateWindowSizeDependentResources();
 
 	game = std::make_unique<Game>();
-	editor = std::make_unique<Editor>();
+	editor = std::make_unique<Editor>(editorToolButtonGroups["editorTileTools"].get(), editorTexturePicker.get());
 
 	timer.Reset();
 }
@@ -74,7 +74,7 @@ void ForayClient::Tick()
 	g_renderingEngine->DrawScene();
 }
 
-const void ForayClient::HandleEvent(const Event* const event)
+const bool ForayClient::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -153,6 +153,8 @@ const void ForayClient::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 void ForayClient::SetActiveLayer(const Layer layer)
@@ -319,7 +321,8 @@ void ForayClient::CreateUIElements()
 
 		if (id == "editorToolbox")
 		{
-			editorToolButtonGroups[id] = std::make_unique<UIEditorToolButtonGroup>(Layer::Editor);
+			const auto editorTileTools = "editorTileTools";
+			editorToolButtonGroups[editorTileTools] = std::make_unique<UIEditorToolButtonGroup>(Layer::Editor);
 
 			const auto labelX = 5.0f;
 			const auto labelY = 4.0f;
@@ -330,17 +333,17 @@ void ForayClient::CreateUIElements()
 			const auto tool1ButtonX = 5.0f;
 			const auto tool1ButtonY = 25.0f;
 			const std::string tool1Name = "addTile";
-			editorToolButtons[tool1Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool1ButtonX, tool1ButtonY](const float, const float) { return XMFLOAT2{ tool1ButtonX, tool1ButtonY }; }, Layer::Editor, 1 }, L"+", editorToolButtonGroups[id].get());
+			editorToolButtons[tool1Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool1ButtonX, tool1ButtonY](const float, const float) { return XMFLOAT2{ tool1ButtonX, tool1ButtonY }; }, Layer::Editor, 1 }, L"+", editorToolButtonGroups[editorTileTools].get());
 
-			editorToolButtonGroups[id]->AddButton(editorToolButtons[tool1Name].get());
+			editorToolButtonGroups[editorTileTools]->AddButton(editorToolButtons[tool1Name].get());
 			panels[id]->AddChildComponent(*editorToolButtons[tool1Name]);
 
 			const auto tool2ButtonX = 30.0f;
 			const auto tool2ButtonY = 25.0f;
 			const std::string tool2Name = "removeTile";
-			editorToolButtons[tool2Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool2ButtonX, tool2ButtonY](const float, const float) { return XMFLOAT2{ tool2ButtonX, tool2ButtonY }; }, Layer::Editor, 1 }, L"-", editorToolButtonGroups[id].get());
+			editorToolButtons[tool2Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool2ButtonX, tool2ButtonY](const float, const float) { return XMFLOAT2{ tool2ButtonX, tool2ButtonY }; }, Layer::Editor, 1 }, L"-", editorToolButtonGroups[editorTileTools].get());
 
-			editorToolButtonGroups[id]->AddButton(editorToolButtons[tool2Name].get());
+			editorToolButtonGroups[editorTileTools]->AddButton(editorToolButtons[tool2Name].get());
 			panels[id]->AddChildComponent(*editorToolButtons[tool2Name]);
 
 			const auto texturePickerX = 5.0f;

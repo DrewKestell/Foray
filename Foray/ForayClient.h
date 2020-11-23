@@ -100,7 +100,7 @@ private:
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;
 
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 	void SetActiveLayer(const Layer layer);
 
 public:

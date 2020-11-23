@@ -235,9 +235,10 @@ RenderComponent& RenderingEngine::CreateRenderComponent(
 	const unsigned int zIndex,
 	const XMFLOAT2 position,
 	const float width,
-	const float height)
+	const float height,
+	const bool convertToWorldPosition)
 {
-	renderComponents.insert({ gameObjectId, RenderComponent{ textureId, zIndex, position, width, height } });
+	renderComponents.insert({ gameObjectId, RenderComponent{ textureId, zIndex, position, width, height, convertToWorldPosition } });
 	return renderComponents.at(gameObjectId);
 }
 
@@ -246,7 +247,7 @@ void RenderingEngine::RemoveRenderComponent(const unsigned int gameObjectId)
 	renderComponents.erase(gameObjectId);
 }
 
-const void RenderingEngine::HandleEvent(const Event* const event)
+const bool RenderingEngine::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -260,6 +261,8 @@ const void RenderingEngine::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 RenderingEngine::~RenderingEngine()

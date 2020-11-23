@@ -55,7 +55,7 @@ void UIComponent::SendEventToChildren(const Event& e, UIComponent* uiComponent)
 	}
 }
 
-const void UIComponent::HandleEvent(const Event* const event)
+const bool UIComponent::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -67,4 +67,6 @@ const void UIComponent::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }

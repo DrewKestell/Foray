@@ -15,7 +15,7 @@ public:
 	UILabel(UIComponentArgs uiComponentArgs);
 	void Initialize(ID2D1SolidColorBrush* textBrush, IDWriteTextFormat* textFormat);
 	void Draw() override;
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	void SetText(const wchar_t* arr);
 	void CreateTextLayout();
 };

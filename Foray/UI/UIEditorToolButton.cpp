@@ -61,7 +61,7 @@ void UIEditorToolButton::Draw()
 	d2dDeviceContext->DrawTextLayout(D2D1::Point2F(position.x, position.y), buttonTextLayout.Get(), buttonTextBrush); // (location + 1) looks better
 }
 
-const void UIEditorToolButton::HandleEvent(const Event* const event)
+const bool UIEditorToolButton::HandleEvent(const Event* const event)
 {
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
@@ -80,7 +80,7 @@ const void UIEditorToolButton::HandleEvent(const Event* const event)
 				{
 					parent->DeselectAllButtons();
 					IsSelected = true;
-					//onClick();
+					return true;
 				}
 			}
 
@@ -105,4 +105,6 @@ const void UIEditorToolButton::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }

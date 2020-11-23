@@ -13,7 +13,7 @@ UIMenuItemGroup::UIMenuItemGroup(const Layer uiLayer)
 	g_eventHandler->Subscribe(*this);
 }
 
-const void UIMenuItemGroup::HandleEvent(const Event* const event)
+const bool UIMenuItemGroup::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
@@ -27,7 +27,7 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 			else
 				active = false;
 
-			return;
+			break;
 		}
 		case EventType::GamepadInput:
 		{
@@ -41,13 +41,13 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					{
 						(*it)->SetActive(false);
 						(*(it + 1))->SetActive(true);
-						return;
+						break;
 					}
 					if ((it + 1) == inputs.end())
 					{
 						(*it)->SetActive(false);
 						(*inputs.begin())->SetActive(true);
-						return;
+						break;
 					}
 				}
 			}
@@ -59,13 +59,13 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					{
 						(*it)->SetActive(false);
 						(*(inputs.end() - 1))->SetActive(true);
-						return;
+						break;
 					}
 					else if ((*(it + 1))->IsActive())
 					{
 						(*it)->SetActive(true);
 						(*(it + 1))->SetActive(false);
-						return;
+						break;
 					}
 				}
 			}
@@ -84,13 +84,13 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					{
 						(*it)->SetActive(false);
 						(*(it + 1))->SetActive(true);
-						return;
+						break;
 					}
 					if ((it + 1) == inputs.end())
 					{
 						(*it)->SetActive(false);
 						(*inputs.begin())->SetActive(true);
-						return;
+						break;
 					}
 				}
 			}
@@ -102,13 +102,13 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 					{
 						(*it)->SetActive(false);
 						(*(inputs.end() - 1))->SetActive(true);
-						return;
+						break;
 					}
 					else if ((*(it + 1))->IsActive())
 					{
 						(*it)->SetActive(true);
 						(*(it + 1))->SetActive(false);
-						return;
+						break;
 					}
 				}
 			}
@@ -116,6 +116,8 @@ const void UIMenuItemGroup::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 UIMenuItemGroup::~UIMenuItemGroup()

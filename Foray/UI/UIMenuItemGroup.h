@@ -10,7 +10,7 @@ class UIMenuItemGroup : public Observer
 	std::vector<UIMenuItem*> inputs;
 public:
 	UIMenuItemGroup(const Layer uiLayer);
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	void AddInput(UIMenuItem* input) { inputs.push_back(input); }
 	~UIMenuItemGroup();
 };

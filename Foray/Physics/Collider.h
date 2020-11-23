@@ -28,6 +28,6 @@ public:
 		const bool registerCollider);
 	GameObject& GetGameObject();
 	const D2D1_RECT_F GetRect() const;
-	virtual const void HandleEvent(const Event* const event);
+	virtual const bool HandleEvent(const Event* const event);
 	~Collider();
 };

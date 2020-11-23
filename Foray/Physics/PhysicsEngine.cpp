@@ -38,13 +38,15 @@ const unsigned char PhysicsEngine::CheckRectangleOverlap(D2D1_RECT_F l, D2D1_REC
 	return collisionDirection;
 }
 
-const void PhysicsEngine::HandleEvent(const Event* const event)
+const bool PhysicsEngine::HandleEvent(const Event* const event)
 {
 	const auto type = event->Type;
 	switch (type)
 	{
 		
 	}
+
+	return false;
 }
 
 void PhysicsEngine::RegisterCollider(Collider* collider)

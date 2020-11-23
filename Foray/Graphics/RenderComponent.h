@@ -18,6 +18,7 @@ public:
 		const unsigned int zIndex,
 		const XMFLOAT2 position,
 		const float width,
-		const float height);
+		const float height,
+		const bool convertToWorldPos);
 	void SetPosition(const XMFLOAT2 pos);
 };

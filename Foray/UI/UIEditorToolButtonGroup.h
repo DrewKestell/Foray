@@ -10,8 +10,9 @@ private:
 	std::vector<UIEditorToolButton*> buttons;
 public:
 	UIEditorToolButtonGroup(const Layer uiLayer);
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	void AddButton(UIEditorToolButton* input) { buttons.push_back(input); }
 	void DeselectAllButtons();
+	const std::wstring GetActiveTool();
 	~UIEditorToolButtonGroup();
 };

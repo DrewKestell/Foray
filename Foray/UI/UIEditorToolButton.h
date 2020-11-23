@@ -28,6 +28,7 @@ public:
 		ID2D1SolidColorBrush* buttonTextBrush,
 		IDWriteTextFormat* buttonTextFormat);
 	void Draw() override;
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
+	const std::wstring GetText() { return text; }
 };
 

@@ -64,7 +64,7 @@ void UIMenuItem::CreateTextLayouts()
 		throw new std::exception("Failed to create text layout.");
 }
 
-const void UIMenuItem::HandleEvent(const Event* const event)
+const bool UIMenuItem::HandleEvent(const Event* const event)
 {
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
@@ -102,6 +102,8 @@ const void UIMenuItem::HandleEvent(const Event* const event)
 			break;
 		}
 	}
+
+	return false;
 }
 
 const bool UIMenuItem::IsActive()

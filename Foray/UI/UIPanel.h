@@ -38,7 +38,7 @@ public:
 		ID2D1SolidColorBrush* bodyBrush,
 		ID2D1SolidColorBrush* borderBrush);
 	void Draw() override;
-	const void HandleEvent(const Event* const event) override;
+	const bool HandleEvent(const Event* const event) override;
 	void ToggleVisibility();
 	const bool GetIsDragging() const;
 };
