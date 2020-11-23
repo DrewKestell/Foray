@@ -93,6 +93,23 @@ const void ForayClient::HandleEvent(const Event* const event)
 			}
 			else if (activeLayer == Layer::Editor)
 			{
+				// TODO: move this into editor->Initialize?
+				const auto texturePickerX = 5.0f;
+				const auto texturePickerY = 50.0f;
+				const auto position = XMFLOAT2{ 20.0f + texturePickerX + 26.0f, 20.0f + texturePickerY + 26.0f };
+
+				GameObject& texturePickerGameObject = g_objectManager->CreateGameObject();
+				texturePickerGameObject.Position = position;
+
+				RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(texturePickerGameObject.GameObjectId, 12, 2, position, 50.0f, 50.0f);
+				renderComponent.Visible = false;
+				texturePickerGameObject.RenderComponent = &renderComponent;
+
+				const std::string labelName = "editorToolsPanelTitle";
+				labels[labelName]->Initialize(brushes.at("white").Get(), textFormats.at("panelTitle").Get());
+				labels[labelName]->SetText(L"Editor Tools");
+				editorTexturePicker->Initialize(&texturePickerGameObject, brushes.at("gray").Get());
+
 				editor->Initialize();
 			}
 
@@ -130,6 +147,7 @@ const void ForayClient::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (DestroyGameObjectEvent*)event;
 
+			g_objectManager->DeleteGameObjectComponents(derivedEvent->GameObjectId);
 			g_objectManager->DeleteGameObject(derivedEvent->GameObjectId);
 
 			break;
@@ -296,6 +314,40 @@ void ForayClient::CreateUIElements()
 		
 			panels[id]->AddChildComponent(*buttons[buttonId]);
 		}
+
+		// hard code certain elements for the Editor panel. TODO: is there a better way to do this?
+
+		if (id == "editorToolbox")
+		{
+			editorToolButtonGroups[id] = std::make_unique<UIEditorToolButtonGroup>(Layer::Editor);
+
+			const auto labelX = 5.0f;
+			const auto labelY = 4.0f;
+			const std::string labelName = "editorToolsPanelTitle";
+			labels[labelName] = std::make_unique<UILabel>(UIComponentArgs{ deviceResources.get(), uiComponents, [labelX, labelY](const float, const float) { return XMFLOAT2{ labelX, labelY }; }, layer, 1 });
+			panels[id]->AddChildComponent(*labels[labelName]);
+
+			const auto tool1ButtonX = 5.0f;
+			const auto tool1ButtonY = 25.0f;
+			const std::string tool1Name = "addTile";
+			editorToolButtons[tool1Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool1ButtonX, tool1ButtonY](const float, const float) { return XMFLOAT2{ tool1ButtonX, tool1ButtonY }; }, Layer::Editor, 1 }, L"+", editorToolButtonGroups[id].get());
+
+			editorToolButtonGroups[id]->AddButton(editorToolButtons[tool1Name].get());
+			panels[id]->AddChildComponent(*editorToolButtons[tool1Name]);
+
+			const auto tool2ButtonX = 30.0f;
+			const auto tool2ButtonY = 25.0f;
+			const std::string tool2Name = "removeTile";
+			editorToolButtons[tool2Name] = std::make_unique<UIEditorToolButton>(UIComponentArgs{ deviceResources.get(), uiComponents, [tool2ButtonX, tool2ButtonY](const float, const float) { return XMFLOAT2{ tool2ButtonX, tool2ButtonY }; }, Layer::Editor, 1 }, L"-", editorToolButtonGroups[id].get());
+
+			editorToolButtonGroups[id]->AddButton(editorToolButtons[tool2Name].get());
+			panels[id]->AddChildComponent(*editorToolButtons[tool2Name]);
+
+			const auto texturePickerX = 5.0f;
+			const auto texturePickerY = 50.0f;
+			editorTexturePicker = std::make_unique<UIEditorTexturePicker>(UIComponentArgs{ deviceResources.get(), uiComponents, [texturePickerX, texturePickerY](const float, const float) { return XMFLOAT2{ texturePickerX, texturePickerY }; }, Layer::Editor, 1 });
+			panels[id]->AddChildComponent(*editorTexturePicker);
+		}
 	}
 }
 
@@ -307,6 +359,7 @@ void ForayClient::CreateDeviceDependentResources()
 	InitializeLabels();
 	InitializeMenuItems();
 	InitializePanels();
+	InitializeEditorToolButtons();
 	g_renderingEngine->Initialize();
 }
 
@@ -451,6 +504,12 @@ void ForayClient::InitializePanels()
 			buttons.at(buttonId)->Initialize(brushes.at(buttonBrushId).Get(), brushes.at(pressedButtonBrushId).Get(), brushes.at(buttonBorderBrushId).Get(), brushes.at(buttonTextBrushId).Get(), textFormats.at(buttonTextFormatId).Get());
 		}
 	}
+}
+
+void ForayClient::InitializeEditorToolButtons()
+{
+	editorToolButtons.at("addTile")->Initialize(brushes.at("blue").Get(), brushes.at("darkBlue").Get(), brushes.at("gray").Get(), brushes.at("black").Get(), textFormats.at("button").Get());
+	editorToolButtons.at("removeTile")->Initialize(brushes.at("blue").Get(), brushes.at("darkBlue").Get(), brushes.at("gray").Get(), brushes.at("black").Get(), textFormats.at("button").Get());
 }
 
 void ForayClient::OnWindowSizeChanged(const int width, const int height)

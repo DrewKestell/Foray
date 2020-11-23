@@ -11,6 +11,7 @@ public:
 	const unsigned int ZIndex;
 	XMFLOAT2 Position;
 	bool MirrorHorizontal{ false };
+	bool Visible{ true };
 
 	RenderComponent(
 		const unsigned int textureId,

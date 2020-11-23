@@ -11,6 +11,9 @@
 #include "UI/UIMenuItemGroup.h"
 #include "UI/UIPanel.h"
 #include "UI/UIButton.h"
+#include "UI/UIEditorToolButtonGroup.h"
+#include "UI/UIEditorToolButton.h"
+#include "UI/UIEditorTexturePicker.h"
 
 const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
 {
@@ -68,6 +71,7 @@ private:
 	void InitializeLabels();
 	void InitializeMenuItems();
 	void InitializePanels();
+	void InitializeEditorToolButtons();
 
 	// UI Json
 	json brushesJson;
@@ -89,6 +93,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<UIMenuItem>> menuItems;
 	std::unordered_map<std::string, std::unique_ptr<UIPanel>> panels;
 	std::unordered_map<std::string, std::unique_ptr<UIButton>> buttons;
+	std::unordered_map<std::string, std::unique_ptr<UIEditorToolButtonGroup>> editorToolButtonGroups;
+	std::unordered_map<std::string, std::unique_ptr<UIEditorToolButton>> editorToolButtons;
+	std::unique_ptr<UIEditorTexturePicker> editorTexturePicker;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

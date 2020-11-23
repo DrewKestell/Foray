@@ -89,6 +89,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="UI\UIEditorTexturePicker.h" />
+    <ClInclude Include="UI\UIEditorToolButtonGroup.h" />
+    <ClInclude Include="UI\UIEditorToolButton.h" />
     <ClInclude Include="Editor\Editor.h" />
     <ClInclude Include="Events\DestroyGameObjectEvent.h" />
     <ClInclude Include="ForayClient.h" />
@@ -96,7 +99,6 @@
     <ClInclude Include="Graphics\RenderComponent.h" />
     <ClInclude Include="UI\UIButton.h" />
     <ClInclude Include="UI\UIPanel.h" />
-    <ClInclude Include="World\Block.h" />
     <ClInclude Include="Events\FireProjectileEvent.h" />
     <ClInclude Include="Events\KeyDownEvent.h" />
     <ClInclude Include="Events\KeyPressEvent.h" />
@@ -140,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BehaviorComponent.cpp" />
+    <ClCompile Include="UI\UIEditorTexturePicker.cpp" />
+    <ClCompile Include="UI\UIEditorToolButtonGroup.cpp" />
+    <ClCompile Include="UI\UIEditorToolButton.cpp" />
     <ClCompile Include="Editor\Editor.cpp" />
     <ClCompile Include="ForayClient.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -147,7 +152,6 @@
     <ClCompile Include="Graphics\RenderComponent.cpp" />
     <ClCompile Include="UI\UIButton.cpp" />
     <ClCompile Include="UI\UIPanel.cpp" />
-    <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Physics\Collider.cpp" />
     <ClCompile Include="Graphics\DeviceResources.cpp" />

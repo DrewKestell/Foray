@@ -91,6 +91,16 @@
 				"size": 14.0,
 				"textAlignment": "Center",
 				"paragraphAlignment": "Center"
+			},
+			{
+				"id": "panelTitle",
+				"fontFamily": "Arial",
+				"weight": "Bold",
+				"style": "Normal",
+				"stretch": "Normal",
+				"size": 12.0,
+				"textAlignment": "Leading",
+				"paragraphAlignment": "Near"
 			}
 		],
 		"labels": [
@@ -196,7 +206,7 @@
 						"layer": "Game",
 						"x": 10.0,
 						"y": 10.0,
-						"width": 200.0,
+						"width": 160.0,
 						"height": 30.0,
 						"buttonText": "Back to Main Menu",
 						"brushId": "blue",
@@ -211,8 +221,8 @@
 				"id": "editorOptions",
 				"layer": "Editor",
 				"isDraggable": false,
-				"x": 700,
-				"y": 450,
+				"x": 700.0,
+				"y": 450.0,
 				"width": 500.0,
 				"height": 300.0,
 				"showKey": 27,
@@ -225,7 +235,7 @@
 						"layer": "Editor",
 						"x": 10.0,
 						"y": 10.0,
-						"width": 200.0,
+						"width": 160.0,
 						"height": 30.0,
 						"buttonText": "Back to Main Menu",
 						"brushId": "blue",
@@ -235,6 +245,20 @@
 						"textFormatId": "button"
 					}
 				]
+			},
+			{
+				"id": "editorToolbox",
+				"layer": "Editor",
+				"isDraggable": true,
+				"x": 170.0,
+				"y": 170.0,
+				"width": 300.0,
+				"height": 300.0,
+				"showKey": 45,
+				"headerBrushId": "darkBlue",
+				"bodyBrushId": "lightGray",
+				"borderBrushId": "gray",
+				"buttons": []
 			}
 		]
 	}

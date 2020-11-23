@@ -129,6 +129,8 @@ void RenderingEngine::DrawScene()
 	// Draw Projectiles
 	for (auto& it : renderComponents)
 	{
+		if (!it.second.Visible) continue;
+			
 		// set InputLayout
 		d3dContext->IASetInputLayout(inputLayout.Get());
 

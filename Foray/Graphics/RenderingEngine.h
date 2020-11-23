@@ -5,7 +5,6 @@
 #include "SpriteVertex.h"
 #include "../UI/UIComponent.h"
 #include "../Events/Observer.h"
-#include "../World/Block.h"
 
 static constexpr unsigned int SPRITE_STRIDE = sizeof(SpriteVertex);
 static constexpr unsigned int SPRITE_OFFSET = 0;

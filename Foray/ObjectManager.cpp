@@ -18,7 +18,7 @@ bool GameObjectsEqual(GameObject& gameObject, const unsigned int gameObjectId)
 	return gameObject.GameObjectId == gameObjectId;
 }
 
-void ObjectManager::DeleteGameObject(const unsigned int gameObjectId)
+void ObjectManager::DeleteGameObjectComponents(const unsigned int gameObjectId)
 {
 	for (const auto& gameObject : gameObjects)
 	{
@@ -33,6 +33,19 @@ void ObjectManager::DeleteGameObject(const unsigned int gameObjectId)
 			{
 				g_renderingEngine->RemoveRenderComponent(gameObject.GameObjectId);
 			}
+
+			return;
+		}
+	}
+}
+
+void ObjectManager::DeleteGameObject(const unsigned int gameObjectId)
+{
+	for (const auto& gameObject : gameObjects)
+	{
+		if (gameObject.GameObjectId == gameObjectId)
+		{
+			gameObjects.remove(gameObject);
 
 			return;
 		}
@@ -54,7 +67,7 @@ void ObjectManager::Clear()
 {
 	for (const auto& gameObject : gameObjects)
 	{
-		DeleteGameObject(gameObject.GameObjectId);
+		DeleteGameObjectComponents(gameObject.GameObjectId);
 	}
 
 	gameObjects.clear();

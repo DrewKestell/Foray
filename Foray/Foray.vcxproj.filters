@@ -19,7 +19,6 @@
     <ClCompile Include="Sound\SoundEngine.cpp" />
     <ClCompile Include="Graphics\RenderingEngine.cpp" />
     <ClCompile Include="Graphics\DDSTextureLoader.cpp" />
-    <ClCompile Include="World\Block.cpp" />
     <ClCompile Include="Graphics\DeviceResources.cpp" />
     <ClCompile Include="Graphics\RenderComponent.cpp" />
     <ClCompile Include="BehaviorComponent.cpp" />
@@ -29,6 +28,9 @@
     <ClCompile Include="ForayClient.cpp" />
     <ClCompile Include="UI\UIPanel.cpp" />
     <ClCompile Include="UI\UIButton.cpp" />
+    <ClCompile Include="UI\UIEditorToolButton.cpp" />
+    <ClCompile Include="UI\UIEditorTexturePicker.cpp" />
+    <ClCompile Include="UI\UIEditorToolButtonGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -69,7 +71,6 @@
     <ClInclude Include="Graphics\ConstantBufferPerObject.h" />
     <ClInclude Include="Graphics\DDSTextureLoader.h" />
     <ClInclude Include="Graphics\PixelShaderConstantBufferPerObject.h" />
-    <ClInclude Include="World\Block.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="Graphics\RenderComponent.h" />
     <ClInclude Include="BehaviorComponent.h" />
@@ -80,6 +81,9 @@
     <ClInclude Include="ForayClient.h" />
     <ClInclude Include="UI\UIPanel.h" />
     <ClInclude Include="UI\UIButton.h" />
+    <ClInclude Include="UI\UIEditorToolButton.h" />
+    <ClInclude Include="UI\UIEditorToolButtonGroup.h" />
+    <ClInclude Include="UI\UIEditorTexturePicker.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

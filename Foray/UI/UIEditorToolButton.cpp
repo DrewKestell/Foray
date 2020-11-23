@@ -1,23 +1,17 @@
 #include "../stdafx.h"
-#include "UIButton.h"
+#include "UIEditorToolButton.h"
+#include "UIEditorToolButtonGroup.h"
 #include "../Events/MouseEvent.h"
 #include "../Events/ChangeActiveLayerEvent.h"
 
-UIButton::UIButton(
-	UIComponentArgs uiComponentArgs,
-	const float width,
-	const float height,
-	const wchar_t* buttonText,
-	const std::function<void()> onClick)
+UIEditorToolButton::UIEditorToolButton(UIComponentArgs uiComponentArgs, const wchar_t* text, UIEditorToolButtonGroup* parent)
 	: UIComponent(uiComponentArgs),
-	width{ width },
-	height{ height },
-	buttonText{ buttonText },
-	onClick{ onClick }
+	  text{ text },
+	  parent{ parent }
 {
 }
 
-void UIButton::Initialize(
+void UIEditorToolButton::Initialize(
 	ID2D1SolidColorBrush* buttonBrush,
 	ID2D1SolidColorBrush* pressedButtonBrush,
 	ID2D1SolidColorBrush* buttonBorderBrush,
@@ -29,9 +23,12 @@ void UIButton::Initialize(
 	this->buttonBorderBrush = buttonBorderBrush;
 	this->buttonTextBrush = buttonTextBrush;
 
+	const auto width = 20.0f;
+	const auto height = 20.0f;
+
 	deviceResources->GetWriteFactory()->CreateTextLayout(
-		buttonText.c_str(),
-		static_cast<unsigned int>(buttonText.size()),
+		text.c_str(),
+		static_cast<unsigned int>(text.size()),
 		buttonTextFormat,
 		width,
 		height,
@@ -39,34 +36,32 @@ void UIButton::Initialize(
 	);
 
 	const auto position = GetWorldPosition();
-	deviceResources->GetD2DFactory()->CreateRoundedRectangleGeometry(D2D1::RoundedRect(D2D1::RectF(position.x, position.y, position.x + width, position.y + height), 3.0f, 3.0f), buttonGeometry.ReleaseAndGetAddressOf());
+	deviceResources->GetD2DFactory()->CreateRectangleGeometry(D2D1_RECT_F{ position.x, position.y, position.x + width, position.y + height }, bodyGeometry.ReleaseAndGetAddressOf());
 }
 
-void UIButton::Draw()
+void UIEditorToolButton::Draw()
 {
 	if (!isVisible) return;
 
 	// Draw Input
-	const float borderWeight = pressed ? 2.0f : 1.0f;
+	const float borderWeight = IsSelected ? 2.0f : 1.0f;
 	ID2D1SolidColorBrush* buttonColor;
-	if (pressed)
+	if (IsSelected)
 		buttonColor = pressedButtonBrush;
-	else if (!enabled)
-		buttonColor = disabledBrush;
 	else
 		buttonColor = buttonBrush;
 
 	const auto d2dDeviceContext = deviceResources->GetD2DDeviceContext();
 
-	d2dDeviceContext->FillGeometry(buttonGeometry.Get(), buttonColor);
-	d2dDeviceContext->DrawGeometry(buttonGeometry.Get(), buttonBorderBrush, borderWeight);
+	d2dDeviceContext->FillGeometry(bodyGeometry.Get(), buttonColor);
+	d2dDeviceContext->DrawGeometry(bodyGeometry.Get(), buttonBorderBrush, borderWeight);
 
 	// Draw Input Text   
 	const auto position = GetWorldPosition();
-	d2dDeviceContext->DrawTextLayout(D2D1::Point2F(position.x, position.y), buttonTextLayout.Get(), buttonTextBrush);
+	d2dDeviceContext->DrawTextLayout(D2D1::Point2F(position.x, position.y), buttonTextLayout.Get(), buttonTextBrush); // (location + 1) looks better
 }
 
-const void UIButton::HandleEvent(const Event* const event)
+const void UIEditorToolButton::HandleEvent(const Event* const event)
 {
 	// first pass the event to UIComponent base so it can reset localPosition based on new client dimensions
 	UIComponent::HandleEvent(event);
@@ -81,20 +76,13 @@ const void UIButton::HandleEvent(const Event* const event)
 			if (isVisible)
 			{
 				const auto position = GetWorldPosition();
-				if (Utility::DetectClick(position.x, position.y, position.x + width, position.y + height, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
+				if (Utility::DetectClick(position.x, position.y, position.x + 20.0f, position.y + 20.0f, mouseDownEvent->MousePosX, mouseDownEvent->MousePosY))
 				{
-					pressed = true;
-					onClick();
+					parent->DeselectAllButtons();
+					IsSelected = true;
+					//onClick();
 				}
 			}
-
-			break;
-		}
-		case EventType::LeftMouseUp:
-		{
-			const auto mouseUpEvent = (MouseEvent*)event;
-
-			pressed = false;
 
 			break;
 		}
@@ -112,7 +100,7 @@ const void UIButton::HandleEvent(const Event* const event)
 		case EventType::WindowResize:
 		{
 			const auto position = GetWorldPosition();
-			deviceResources->GetD2DFactory()->CreateRoundedRectangleGeometry(D2D1::RoundedRect(D2D1::RectF(position.x, position.y, position.x + width, position.y + height), 3.0f, 3.0f), buttonGeometry.ReleaseAndGetAddressOf());
+			deviceResources->GetD2DFactory()->CreateRectangleGeometry(D2D1_RECT_F{ position.x, position.y, position.x + 20.0f, position.y + 20.0f }, bodyGeometry.ReleaseAndGetAddressOf());
 
 			break;
 		}

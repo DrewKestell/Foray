@@ -9,6 +9,7 @@ private:
 
 public:
 	GameObject& CreateGameObject();
+	void DeleteGameObjectComponents(const unsigned int gameObjectId);
 	void DeleteGameObject(const unsigned int gameObjectId);
 	void UpdateGameObjects();
 	void Clear();
