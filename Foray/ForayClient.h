@@ -14,6 +14,7 @@
 #include "UI/UIEditorToolButtonGroup.h"
 #include "UI/UIEditorToolButton.h"
 #include "UI/UIEditorTexturePicker.h"
+#include "UI/UIInput.h"
 
 const std::unordered_map<std::string, const DWRITE_FONT_WEIGHT> FONT_WEIGHT_MAP
 {
@@ -45,6 +46,7 @@ const std::unordered_map<std::string, const DWRITE_PARAGRAPH_ALIGNMENT> PARAGRAP
 
 const std::unordered_map<std::string, Layer> LAYER_MAP
 {
+	{ "All",         Layer::All },
 	{ "MainMenu",    Layer::MainMenu },
 	{ "MainOptions", Layer::MainOptions },
 	{ "Game",        Layer::Game },
@@ -72,6 +74,7 @@ private:
 	void InitializeMenuItems();
 	void InitializePanels();
 	void InitializeEditorToolButtons();
+	void InitializeInputs();
 
 	// UI Json
 	json brushesJson;
@@ -96,6 +99,7 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<UIEditorToolButtonGroup>> editorToolButtonGroups;
 	std::unordered_map<std::string, std::unique_ptr<UIEditorToolButton>> editorToolButtons;
 	std::unique_ptr<UIEditorTexturePicker> editorTexturePicker;
+	std::unique_ptr<UIInput> consoleInput;
 
 	// Textures
 	std::vector<ComPtr<ID3D11ShaderResourceView>> textures;

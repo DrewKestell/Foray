@@ -16,5 +16,6 @@ enum class EventType
 	GamepadInput,
 	FireProjectile,
 	DestroyGameObject,
-	ReorderUIComponents
+	ReorderUIComponents,
+	SystemKeyDown
 };

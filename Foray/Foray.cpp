@@ -314,7 +314,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				keyCode = wParam;
 				break;
 		}
-		e = std::make_unique<KeyDownEvent>(keyCode);
+		e = std::make_unique<KeyPressEvent>(EventType::SystemKeyDown, keyCode);
 		g_eventHandler->QueueEvent(e);
 		break;
 

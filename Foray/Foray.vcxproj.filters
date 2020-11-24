@@ -31,6 +31,7 @@
     <ClCompile Include="UI\UIEditorToolButton.cpp" />
     <ClCompile Include="UI\UIEditorTexturePicker.cpp" />
     <ClCompile Include="UI\UIEditorToolButtonGroup.cpp" />
+    <ClCompile Include="UI\UIInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="UI\UIEditorToolButton.h" />
     <ClInclude Include="UI\UIEditorToolButtonGroup.h" />
     <ClInclude Include="UI\UIEditorTexturePicker.h" />
+    <ClInclude Include="UI\UIInput.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Foray.ico" />

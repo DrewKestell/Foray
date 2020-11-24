@@ -38,6 +38,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;

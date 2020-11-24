@@ -317,7 +317,7 @@ void ForayClient::CreateUIElements()
 			panels[id]->AddChildComponent(*buttons[buttonId]);
 		}
 
-		// hard code certain elements for the Editor panel. TODO: is there a better way to do this?
+		// hard code certain elements for the Editor and Console panels. TODO: is there a better way to do this?
 
 		if (id == "editorToolbox")
 		{
@@ -351,6 +351,15 @@ void ForayClient::CreateUIElements()
 			editorTexturePicker = std::make_unique<UIEditorTexturePicker>(UIComponentArgs{ deviceResources.get(), uiComponents, [texturePickerX, texturePickerY](const float, const float) { return XMFLOAT2{ texturePickerX, texturePickerY }; }, Layer::Editor, 1 });
 			panels[id]->AddChildComponent(*editorTexturePicker);
 		}
+
+		if (id == "console")
+		{
+			const auto inputX = 0.0f;
+			const auto inputY = height - 20.0f;
+			consoleInput = std::make_unique<UIInput>(UIComponentArgs{ deviceResources.get(), uiComponents, [inputX, inputY](const float, const float) { return XMFLOAT2{ inputX, inputY }; }, Layer::Editor, 1 }, width, 20.0f);
+		
+			panels[id]->AddChildComponent(*consoleInput);
+		}
 	}
 }
 
@@ -363,6 +372,7 @@ void ForayClient::CreateDeviceDependentResources()
 	InitializeMenuItems();
 	InitializePanels();
 	InitializeEditorToolButtons();
+	InitializeInputs();
 	g_renderingEngine->Initialize();
 }
 
@@ -513,6 +523,11 @@ void ForayClient::InitializeEditorToolButtons()
 {
 	editorToolButtons.at("addTile")->Initialize(brushes.at("blue").Get(), brushes.at("darkBlue").Get(), brushes.at("gray").Get(), brushes.at("black").Get(), textFormats.at("button").Get());
 	editorToolButtons.at("removeTile")->Initialize(brushes.at("blue").Get(), brushes.at("darkBlue").Get(), brushes.at("gray").Get(), brushes.at("black").Get(), textFormats.at("button").Get());
+}
+
+void ForayClient::InitializeInputs()
+{
+	consoleInput->Initialize(brushes.at("white").Get(), brushes.at("gray").Get(), brushes.at("black").Get(), textFormats.at("input").Get());
 }
 
 void ForayClient::OnWindowSizeChanged(const int width, const int height)

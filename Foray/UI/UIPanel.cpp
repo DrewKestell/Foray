@@ -163,7 +163,7 @@ const bool UIPanel::HandleEvent(const Event* const event)
 		{
 			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
 
-			if (derivedEvent->Layer == uiLayer)
+			if (derivedEvent->Layer == uiLayer || uiLayer == Layer::All)
 			{
 				isActive = true;
 			}
@@ -174,11 +174,11 @@ const bool UIPanel::HandleEvent(const Event* const event)
 			}
 			break;
 		}
-		case EventType::KeyDown:
+		case EventType::SystemKeyDown:
 		{
 			if (isActive)
 			{
-				const auto keyDownEvent = (KeyDownEvent*)event;
+				const auto keyDownEvent = (KeyPressEvent*)event;
 
 				if (keyDownEvent->CharCode == showKey)
 					ToggleVisibility();
