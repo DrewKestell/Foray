@@ -18,7 +18,6 @@ Editor::Editor(UIEditorToolButtonGroup* toolButtonGroup, UIEditorTexturePicker* 
 	  texturePicker{ texturePicker }
 {
 	g_eventHandler->Subscribe(*this);
-	ClearTiles();
 }
 
 void Editor::Initialize()
@@ -100,15 +99,17 @@ void Editor::ClearTiles()
 	{
 		for (auto j = 0; j < 1000; j++)
 		{
-			mapTiles[i][j] = -1;
+			mapTiles[i][j].reset();
 		}
 	}
 }	
 
 void Editor::CreateTile(const int x, const int y)
 {
+	if (mapTiles[x][y])
+		RemoveTile(x, y);
+
 	const auto textureId = texturePicker->GetActiveTextureId();
-	mapTiles[x][y] = textureId;
 
 	const auto position = XMFLOAT2{ (x * 50.0f) + 25.0f, (y * 50.0f) + 25.0f };
 	GameObject& gameObject = g_objectManager->CreateGameObject();
@@ -119,9 +120,17 @@ void Editor::CreateTile(const int x, const int y)
 
 	RenderComponent& renderComponent = g_renderingEngine->CreateRenderComponent(gameObject.GameObjectId, textureId, 1, position, 50.0f, 50.0f, false);
 	gameObject.RenderComponent = &renderComponent;
+
+	mapTiles[x][y] = std::make_unique<MapTile>(gameObject.GameObjectId, textureId);
 }
 
 void Editor::RemoveTile(const int x, const int y)
 {
+	if (mapTiles[x][y])
+	{
+		g_objectManager->DeleteGameObjectComponents(mapTiles[x][y]->GameObjectId);
+		g_objectManager->DeleteGameObject(mapTiles[x][y]->GameObjectId);
 
+		mapTiles[x][y].reset();
+	}
 }

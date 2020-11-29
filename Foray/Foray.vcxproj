@@ -89,6 +89,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BehaviorComponent.h" />
+    <ClInclude Include="Editor\MapTile.h" />
     <ClInclude Include="UI\UIInput.h" />
     <ClInclude Include="UI\UIEditorTexturePicker.h" />
     <ClInclude Include="UI\UIEditorToolButtonGroup.h" />
@@ -143,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BehaviorComponent.cpp" />
+    <ClCompile Include="Editor\MapTile.cpp" />
     <ClCompile Include="UI\UIInput.cpp" />
     <ClCompile Include="UI\UIEditorTexturePicker.cpp" />
     <ClCompile Include="UI\UIEditorToolButtonGroup.cpp" />
