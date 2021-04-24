@@ -77,7 +77,7 @@ const bool UIInput::HandleEvent(const Event* const event)
 			{
 				const auto keyDownEvent = (KeyDownEvent*)event;
 
-				if (inputIndex <= 50)
+				if (inputIndex <= 50 && keyDownEvent->CharCode != 96)
 				{
 					inputValue[inputIndex] = keyDownEvent->CharCode;
 					inputIndex++;
@@ -116,11 +116,6 @@ const bool UIInput::HandleEvent(const Event* const event)
 		case EventType::ChangeActiveLayer:
 		{
 			const auto derivedEvent = (ChangeActiveLayerEvent*)event;
-
-			if (derivedEvent->Layer == uiLayer || uiLayer == Layer::All)
-				isVisible = true;
-			else
-				isVisible = false;
 
 			break;
 		}
